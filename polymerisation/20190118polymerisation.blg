@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: 20190118polymerisation.aux
+The style file: unsrt.bst
+Database file #1: 20190118biblio.bib
+Warning--empty year in LBrivadis
+You've used 3 entries,
+            1791 wiz_defined-function locations,
+            463 strings with 3973 characters,
+and the built_in function-call counts, 455 in all, are:
+= -- 35
+> -- 12
+< -- 1
++ -- 6
+- -- 3
+* -- 18
+:= -- 79
+add.period$ -- 9
+call.type$ -- 3
+change.case$ -- 1
+chr.to.int$ -- 0
+cite$ -- 4
+duplicate$ -- 28
+empty$ -- 53
+format.name$ -- 3
+if$ -- 100
+int.to.chr$ -- 0
+int.to.str$ -- 3
+missing$ -- 5
+newline$ -- 18
+num.names$ -- 3
+pop$ -- 17
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 8
+stack$ -- 0
+substring$ -- 0
+swap$ -- 4
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 1
+while$ -- 3
+width$ -- 4
+write$ -- 32
+(There was 1 warning)
