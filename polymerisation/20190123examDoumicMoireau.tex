@@ -1,0 +1,232 @@
+%% PRE EDITION
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{soul}
+\usepackage[pdftex]{graphicx}
+
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{thmtools}
+
+%% LAYOUT
+\declaretheoremstyle[
+    bodyfont=\normalfont\color{red},
+    headfont=\color{red}
+]{styleattention}
+
+\declaretheoremstyle[
+    spacebelow=1em
+]{styleremarque}
+
+\declaretheoremstyle[
+    spaceabove=-6pt, 
+    spacebelow=6pt, 
+    headfont=\normalfont\bfseries, 
+    bodyfont = \normalfont,
+    postheadspace=1em, 
+    qed=$\Box$, 
+    headpunct={$\rhd$}
+]{mystyle} 
+
+\declaretheorem[thmbox=M,numberwithin=section,title=Définition]{definition}
+\declaretheorem[thmbox=M,sibling=definition]{proposition}
+\declaretheorem[thmbox=M,sibling=definition]{corollaire}
+\declaretheorem[thmbox=M,sibling=definition,title=Théorème]{theoreme}
+\declaretheorem[thmbox=M,sibling=definition]{lemme}
+\declaretheorem[thmbox=M,sibling=definition,title=Propriété]{propriete}
+\declaretheorem[thmbox=M,sibling=definition,title=Propriétés]{proprietes}
+\declaretheorem[style=styleremarque,sibling=definition,title=Remarque]{remarque}
+\declaretheorem[style=styleattention,title=À revoir]{Arevoir}
+\declaretheorem[name={}, style=mystyle, unnumbered]{preuve}
+
+
+\renewcommand\qedsymbol{$\blacksquare$}
+
+%% NEW COMMAND
+\newcommand{\mass}{\mathrm{M}}
+\newcommand{\pol}{p}
+\newcommand{\dep}{d}
+\newcommand{\Y}{\mathscr{U}}
+\newcommand{\Z}{\mathscr{Z}}
+
+\usepackage{geometry}
+\geometry{hmargin=3cm,vmargin=2.5cm}
+
+\usepackage{tabularx}
+\usepackage{float}
+
+\title{Examen : Probèmes inverses et dynamique des population}
+\author{Cécile Della Valle}
+
+%% DEBUT DE REDACTION
+\begin{document}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+ 
+\begin{equation}
+		\label{eq:poldep}
+		\begin{cases}
+			\displaystyle \frac{\partial y}{\partial t}+ v(t) \frac{\partial y} {\partial x}  = 0 & (x,t) \in [0,L] \times [0, \tau] \\
+             y(x,0) = y_{0} (x) & x\in[0,L]\\
+			 v(t) = M - \int_0^L x y(x,t)dx - \dep & t \in [0,\tau]\\
+			 v(t)y(0,t)\mathbb{I}_{v(t) > 0} = 0 \\
+			 v(t)y(L,t)\mathbb{I}_{v(t) < 0} = 0 \\
+		\end{cases}
+\end{equation}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Etude du problème direct}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+On se propose d'étudier le système linéaire issu du modèle de Lifshitz-Slyosov où la vitesse de réaction totale, 
+somme de la vitesse de polymérisation et dépolimérisation, ne dépend que du temps. 
+Les coefficients de polymérisation $\pol$ et de dépolymérisation $\dep$ associés aux réactions sont constants 
+et ne dépendent pas de la taille des polymères notée $x$. 
+
+Soit $y$ la distribution en taille des polymères, 
+par conservation de la masse,
+la vitesse se déduit de la mesure du moment d'ordre 1, noté $\mu_1$, des polymères.
+
+Ainsi le modèle de Lifshitz-Slyosov s'écrit pour $y(x,t)$ la concentration de polymères de taille $x$ en temps $t$ :
+
+\begin{equation}
+\label{eq:general}
+\begin{cases}
+ \displaystyle \frac{\partial y}{\partial t}+ v(t) \frac{\partial y} {\partial x}  = 0  \\
+ y(x,0) = y_{0} (x) 
+\end{cases}
+\end{equation}
+
+où la vitesse $v(t)$ est calculée par conservation de la masse totale $\mass$, des coefficients de polymérisation $\pol$ et $\dep$:
+
+\[
+v(t) = \pol(\mass - \int_0 ^\infty x y(x,t) dx)-\dep
+\]
+
+et 
+
+\[
+\mu_1 = \int_0 ^\infty x y(x,t) dx
+\]
+
+ On note que le problème~\eqref{eq:general} est incomplet et qu'il peut être nécessaire d'imposer des conditions aux limites quand cette vitesse est positive ou négative, en fonction du domaine $\Omega$ sur lequel on souhaite résoudre cette équation.
+Sans perdre de généralité, 
+on pose que le coefficient de polymérisation est égal à 1, 
+soit $\pol =1$.
+
+Soit $L>0$ et $\tau>0$, l'objectif est de reconstruire $\hat{y_0}$ 
+la condition initiale de l'équation~\eqref{eq:general} 
+à partir de mesures de moments $\Psi_n$ pour $n \geq 0$:
+
+ \begin{equation}
+	\begin{array}{ccccc}
+	\Psi_n & : & L^2([0,L]) & \to & L^2([0,\tau]) \\
+	 & & y_0 & \mapsto & t \to \int_0^L x^n y_0(x-\theta(t)) dx\\
+	\end{array}
+\end{equation}
+
+Nous souhaitons étudier sous quelles conditions ce problème est dit observable.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Etude du problème inverse, premier cas : $c(t)$ connu, on mesure $\mu_0$}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Question 4}
+
+\textbf{a}
+
+Soit $\Y = L^2(0,L)$ et $\Z = L^2(\mathbb{R}^+)$ deux espaces de Hilbert. 
+On définit l'application $\Psi$ :
+
+ \begin{equation}
+	 \Psi \; : \; \left\vert
+	\begin{array}{ccc}
+	\Y & \to & \Z \\
+	u^{in} & \mapsto & t \to \int_0^L u(x,t) dx\\
+	\end{array} \right.
+\end{equation}
+
+Alors l'application $\Psi$ appartient à $L(\Y,\Z)$.
+
+\begin{definition}
+Le problème inverde que nous allons étudier se définit ainsi : 
+étant donné $z \in \Z$, on cherche $u_{\epsilon}^{in} \in \Y$ 
+tel que $\Psi u^{in} = z$.
+\end{definition}
+
+\textbf{b}
+Soit $u^{in} \in \Y$, et $t \geq 0$ :
+
+\[ \begin{split}
+\Psi u^{in}(t) &= \mu_0 (t) \\
+               &= \int_0^L u(x,t) dx \\
+			   &= \int_0^L u^in( x - a\int_0^tc(s)ds + bt) dx \\
+\end{split}\]
+
+\textbf{b}
+
+L'application $\Psi$ est linéaire par linéarité de l'opérateur intégrale.
+De plus $\Psi $ est positive dès que $u^{in}$ l'est, par intégration d'une fonction positive.
+
+Montrons que $\Psi$ est continu en montrant que :
+
+\[ \forall (u_1^{in}, u_2^{in}) \in \Y, \; \| \Psi u_1^{in} - \Psi u_2^{in} \|_{\Z} \leq  C \| u_1^{in} - u_2^{in} \|_{\Y}\]
+
+Soit la fonction $\theta$ telle que :
+
+\[\theta \; : \; \left\vert
+	\begin{array}{ccc}
+	\mathbb{R}^+ & \to & \mathbb{R}^+\\
+	t & \mapsto & \int_0^t (ac(s)-b)ds \\
+	\end{array} \right.
+\]
+
+Puisque pour tout $t \geq 0 $ on a $c(t)< \frac{b}{a}$ alors $ac(t)-b<0$ et $\theta$ est une fonction strictement décroissante.
+
+De plus, $\theta (0) =0$ donc $\theta$ est négatif pour tout $t \geq 0$,
+et il existe $\tau$ tel que $\theta(\tau) = - L$.
+
+On pose $u^{in} = u_1^{in} - u_2^{in}$, et $u$ l'unique solution de ~\eqref{eq:general} pour la condition initiale $y^{in}$.
+
+On pose le changement de variable $x'=x - a\int_0^tc(s)ds + bt) = x - \theta (t)$ il vient pour tout $t \geq 0$ :
+\[ \begin{split}
+\|\Psi u^{in}\|_{\Z}^2 &= \int_0^\infty |u(x,t)|^2 dx \\
+			   &= \int_0^\infty \int_0^L |u^in( x - \theta(t))|^2 dx \\
+			   &= \int_0^\infty \int_{-\theta(t)}^{L} |u^{in}(x')|^2 dx' \\
+			   & \leq int_0^\tau \int_{-\theta(t)}^L |u^{in}(x')|^2 dx'\\
+			   & \leq \tau \| u^{in} \|^2
+\end{split}\]
+avec $\tau = \theta ^{-1}(-L) =$ constante.
+
+On vient donc par cette inégalité de montrer la continuité de $\Psi$. De plus la norme de $\Psi$ est majorée par $\tau = \theta ^{-1}(-L)$.
+
+\textbf{c}
+
+
+	
+\end{document}

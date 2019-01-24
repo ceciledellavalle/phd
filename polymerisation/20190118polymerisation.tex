@@ -798,6 +798,122 @@ alors on peut déterminer tous les moments d'ordre suprérieur à tout temps.
 \subsection{Résolution du problème inverse (pistes)}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+D'après la proposition \ref{pol-moment}, le problème inverse, posé en introduction, qui consiste à estimer $y_0$ la condition initiale du problème de Cauchy~\eqref{eq:pol} connaissant la fonction  $t \to v(t)$ vitesse de réaction et les moments $\mu_n= \Psi_ny_0$ à un instant donné, est équivalent au problème de Hausdorff rappelé ci-dessous.
+
+\begin{definition}[Problème de Hausdorff]
+	Soit $I=[0,1]$ un invervalle fermé de $\mathbb{R}$. Soit $(c_n)\in\mathbb{R}^{\mathbb{N}}$ telle que $c_0=1$.
+	Le problème de Hausdorff consiste à démontrer l'existence et l'unicité d'une mesure borélienne positive $\mu$ positive portée par $I$ telle que :
+	\[ \forall n \in \mathbb{N} \; ,\; c_n =\int_I x^n d\mu(x) \]
+\end{definition}
+
+Par analogie avec la démonstration du problème de Hausdorff pour lequel la variable aléatoire bornée qui ont les mêmes moments sont de mêmes lois.
+
+\begin{proposition}
+	\label{hausdorff}
+	Deux fonctions continues de $I=[0,L]$ qui pour tout $n \in \mathbb{N}$ ont les mêmes moments sont égales. 
+\end{proposition}
+
+\begin{preuve}
+	Soit $y_1$ et $y_2$ deux fonctions de $C^0([0,L])$ telles que 
+	\[\forall n \in \mathbb{N}, \; \int_0^L x^n y_1(x)dx = \int_0^L x^n y_2(x)dx \]
+	On pose $y=y_1 - y_2$ donc tous les moments sont nuls. Montrons que $y$ est la fonction nulle de $I$.
+	D'après le théorème de Weierstrass, puisque $y$ est continu, pour tout $\epsilon>0$, il existe $N \in \mathbb{N}$ et une fonction polynomiale $P_N$ de degré $N$ tel que pour tout $x \in I$ :
+	\[ |y(x) - P_N(x)| < \epsilon \]
+	Donc,
+	\[ \int_0^L |y(x) - P_N(x)|^2 dx < L \epsilon^2 \]
+	Or,
+	\[ \int_0^L |y(x) - P_N(x)|^2 dx = \int_0^L |y(x)|^2 dx  + \int_0^L |P_N(x)|^2 dx 
+	                                   + int_0^L y(x)P_N(x)dx \]
+ Puisque tous les moments d'ordre $n$ inférieur ou égal à $N$ sont nuls, on obtient :
+ 
+ \[ \forall \epsilon>0, \; \alpha = \sqrt{\epsilon/L}  , \; \exists N \; t.q. \; \int_0^L |y(x)|^2 dx  + \int_0^L |P_N(x)|^2 dx <\epsilon \]
+ 
+ Donc $y =0$ sur $I=[0,L]$ et $y_1=y_2$.
+
+\end{preuve}
+
+\begin{proposition}
+	Soit $\tau >0$, $L>0$, $y_0 \in C^0([0,L])$ et $v \in C^0([0,\tau],\mathbb{R}^+)$.
+	Supposons l'hypothèse~\eqref{hyp:compact} vérifiée.
+	Alors il existe au moins deux conditions initiales non identiques telles que leurs moments d'ordre 0 et d'ordre 1 sont égaux. 
+\end{proposition}
+
+\begin{remarque}
+	On pourrait élargir le résultat pour un nombre fini de moments. En effet, dans la démontration de la proposition \ref{hausdorff}, on voit qu'il suffit de choisir un polynôme dans un espace orthogonal à $\mathbb{P}_N$ pour que tous ses moments d'ordres inférieur à $N$ soit nul. Un tel polynôme existe bien, on peut par exemple choisir un polynôme de Legendre. La dynamique donnée par l'équation~\eqref{eq:pol} sous l'hypothèse~\eqref{hyp:compact} assure alors que ces moments resteront égaux au cours du temps.
+\end{remarque}
+
+\begin{preuve}
+	Démontrons la proposition en trouvant un contre exemple.
+	On suppose que $l=1$, $\tau =1$, $\mass=2$ et $\dep=1$. 
+	
+	Soit $f_0$ une fonction continue de l'intervalle $[0,2]$ telle que :
+	\begin{itemize}
+		\item $y_0$ est nulle sur $[1,2]$ ;
+		 \item pour tout $x$ on a $y_0(x)> 6x(1-x)$ ;
+		 \item la fonction est continue en $x=1$ soit $y_0(1)=0$
+   \end{itemize}
+
+Il existe une infinité de solution qui vérifie ces deux points. On peut par exemple choisir :
+	\[
+	f_0 (x) = \begin{cases}
+		       4(1-x)(1+x) & x \in [0,1]\\
+		       0  & x \in [1,2]
+	          \end{cases}
+	\]
+	$f_0$ est bien continue, elle vérifie l'hypothèse~\eqref{hyp:compact}. 
+	
+	On considère les polynômes de Legendre de degré 2 et 3 sur l'intervalle [0,1] :
+	
+	\[
+	\begin{cases}
+		P_2(2x+1) = 6x^2-6x+1 \\
+		P_3(2x+1) = 20x^3 - 30x^2 +12x -1
+	\end{cases}
+	\]
+	
+	Ces polynomes sont orthogonaux aux polynômes de degré inférieur et, par construction : 
+	\[ \int_0^1 P_2(2x+1)dx = \int_0^1 x P_2(2x+1)dx  =0 \]
+	\[ \int_0^1 P_3(2x+1)dx = \int_0^1 x P_3(2x+1)dx =0 \]
+	
+	Posons maintenant :
+	
+	\[
+	g_0 (x) = \begin{cases}
+		       f_0 (x) - P_2(2x+1) + P_3(2x+1) & x \in [0,1]\\
+		       0  & x \in [1,2]
+	          \end{cases}
+	\]
+	
+	On vérifie que $g_0$ appartient à $\in C^0([0,L])$ à valeur dans $\mathbb{R}^+$.
+	
+	Soit $f$ et $g$ les solutions de l'équation ~\eqref{eq:pol} associée respectivement aux conditions initiales $f_0$ et $g_0$. On a alors :
+	\[
+	\begin{split}
+		\Psi_0 g_0 (0) & = \int_0^2 g_0(x)dx \\
+		               & = \int_0^1 f_0 (x) - P_2(2x+1) + P_3(2x+1) dx \\
+					   & =  \int_0^1 f_0 (x) \\
+					   & = \Psi_0 f_0 
+	\end{split}
+	\]
+	
+	\[
+	\begin{split}
+		\Psi_1 g_0 (0) & = \int_0^2 x g_0(x)dx \\
+		               & = \int_0^1 xf_0 (x) - xP_2(2x+1) + xP_3(2x+1) dx \\
+					   & =  \int_0^1 xf_0 (x) \\
+					   & = \Psi_1 f_0 (0)
+	\end{split}
+	\]
+	D'après la proposition \ref{pol-moment} on a donc l'égalité des moments d'ordre 0 et 1 pour tout $t$ :
+	\[ \forall t \in [0,1], \; \Psi_0 f_0 (t) = \Psi_0 g_0 (t), \; \Psi_1 f_0 (t)=\Psi_1 g_0 (t)\]
+	
+	On vient de montrer qu'il existe au moins deux conditions initiales non identiques $f_0$ et $g_0$ telles que leurs moments d'ordre 0 et d'ordre 1 sont égaux. 
+	
+	\includegraphics[width=9cm]{f0g0.png}
+	
+
+\end{preuve}
+	
 A écrire à partir du cours de Driss Boutat envoyé par Philippe le 18 janvier.
 
 
