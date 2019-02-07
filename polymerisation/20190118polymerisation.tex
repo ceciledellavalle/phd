@@ -51,8 +51,8 @@
 
 %% NEW COMMAND
 \newcommand{\mass}{\mathrm{M}}
-\newcommand{\pol}{p}
-\newcommand{\dep}{d}
+\newcommand{\pol}{a}
+\newcommand{\dep}{b}
 
 \usepackage{geometry}
 \geometry{hmargin=3cm,vmargin=2.5cm}
@@ -79,11 +79,11 @@ On souhaite étudier le problème d'observabilité suivant : sachant des mesures
 
 On s'intéresse dans une première partie à l'équation de Lifshitz-Slyozov. 
 Sous l'hypothèse qu'une solution existe et qu'elle est unique, alors on obtient des propriétés sur la vitesse de réaction, définie comme la somme des vitesses de polymérisation et de dépolymérisation.
-Puisque, sous certaines hypothèses, la vitesse ne change pas de signe, il est intéressant d'étudier séparément les cas où elle est positive (polymérisation) et négative (dépolymérisation)
+Puisque, sous certaines hypothèses, la vitesse ne change pas de signe, il est intéressant d'étudier séparément les cas où elle est positive (polymérisation) et négative (dépolymérisation).
 
 
 On se place ensuite dans le cas où la vitesse est positive. On suppose alors que cette vitesse est une fonction continue donnée. 
-On en déduit la dynamique explicite de tous les moments par la simple mesure à un temps donné.
+On en déduit la dynamique explicite de tous les moments par la mesure de tous les moments à un temps donné.
 
 D'autre part, on étudie le cas où la vitesse est négative, elle est également une fonction continue donnée. On peut redémontrer dans ce cas les résultats d'A. Armiento \cite{AArmiento}.
 
@@ -202,11 +202,17 @@ Et on ajoute une hypothèse sur la condition initiale $y_0$ :
 \end{equation}
 
 \begin{lemme}
-	Dès lors que le support de $y_0$ est un compact $[0,l]$ de $\mathbb{R+}$,
-	on peut toujours construire un domaine $[0,L]\times [0,\tau]$
-	tel que la condition~\eqref{hyp:compact} est vérifiée.
+	\label{lemme:compact}
+	Dès lors que le support de $y_0 \in C^0$ est un compact $[0,l]$ de $\mathbb{R+}$,
+	alors quelque soit $\tau >0$, il existe $L>0$ tel que le domaine $[0,L]\times [0,\tau]$
+	vérifie la condition~\eqref{hyp:compact} pour $y_0$.
 \end{lemme}
 
+\begin{remarque}
+	On note qu'ici nous avons défini $y_0$ dans $C^0$, et la valeur de $y_0$ n'est pas nécessairement nulle sur les bords de son domaine.
+	
+	Cette hypothèse~\eqref{hyp:compact} et ce lemme \ref{lemme:compact} peuvent être étendu au cas où $y_0$ appartient à $L^2(0,l)$ et son support devient $(0,l)$.
+\end{remarque}
 
 \begin{preuve}
 	Il suffit de remarquer que $\forall t$ :
@@ -222,7 +228,7 @@ Cette condition~\eqref{hyp:compact} signifie que le support de la fonction $y( \
 On peut donc remplacer la condition aux limites en $x=L$ par $y(L,t)=0$, et ce quelque soit le signe de la vitesse.
 
 Pour la suite on définit deux types de solution du pb de Cauchy~\eqref{eq:poldep}, une solution classique qui appartient à $C^1([0,\tau]\times[0,L])$ 
-et une solution "faible" qui appartient à $C^1([0,\tau],L^2[0,L])$.
+et une solution faible qui appartient à $C^1([0,\tau],L^2[0,L])$.
 
 \begin{definition}
 	Soit $\tau>0$, $\mass$ et $\dep$ deux constantes de $\mathbb{R}^+$, $L>0$, $y_0 \in C^1([0,L])$.
@@ -253,7 +259,11 @@ et une solution "faible" qui appartient à $C^1([0,\tau],L^2[0,L])$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{definition} 
 	Pour toute solution classique de l'équation~\eqref{eq:poldep}, on définit la fonction $\theta$ de la façon suivante : 
-	\[ \theta (t) = \int_0^tv(t')dt'\]
+\begin{equation} 
+	\label{def:theta}
+	\theta (t) = \int_0^tv(t')dt'
+\end{equation}
+
 \end{definition}
 
 \begin{lemme}
@@ -287,12 +297,13 @@ et une solution "faible" qui appartient à $C^1([0,\tau],L^2[0,L])$.
 \begin{preuve}
 	Soit $y$ solution classique de l'équation~\eqref{eq:poldep}, 
 	alors le problème de Cauchy suivant :
-	\[
+	\begin{equation}
 	\begin{cases}
+		\label{eq:caract}
 		\displaystyle \frac{\mathrm{d}}{\mathrm{d}s} X(s;x,t)= (\mass - \dep) - \int_0^L x y(x,t)ds\\
 		X(t;x,t) = x
 	\end{cases}
-	\]
+	\end{equation}
 	admet une unique solution, de plus elle est de classe $C^1$.
 	On dérive $y$ le long de la courbe caractéristique définie par $X$.
 	On pose $Y(X(s))=y(X(s),s)$ où l'on suppose que $y$ est une solution classique de~\eqref{eq:poldep}.
@@ -313,7 +324,8 @@ et une solution "faible" qui appartient à $C^1([0,\tau],L^2[0,L])$.
 	il faut qu'il n'y ait qu'une seule courbe qui passe par le point $(x,t)$.
 	Pour $t$ fixé, $t \in [0,\tau]$, la caractéristique associée passant par le point $(\xi,0)$ s'écrit :
 	\[ \xi = x - \int_0^t v(s)ds \]
-	C'est le cas dès que la vitesse $v$ ne change pas de signe.
+	C'est le cas puisque $v$ ne dépend pas de $x$ et d'après Cauchy-Lipschitz il existe une unique trajectoire $X$ solution de~\eqref{eq:caract}. On peut donc définir la fonction $\theta$ par~\eqref{def:theta}.
+	\[ \forall \xi \in [0,l], \; \exists ! \; (x,t) \in [0,L]\times[0,\tau] \; t.q. \xi = x - \theta(t) \].
 \end{remarque}
 
 
@@ -343,7 +355,7 @@ et une solution "faible" qui appartient à $C^1([0,\tau],L^2[0,L])$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{preuve}
 	(lemme \ref{lemmesol})
-	Sous l'hypothèse d'existence et d'unicité du problème de Cauchy~\eqref{eq:poldep}, la solution de l'équation~\eqref{eq:poldep} est constante le long d'une courbe caractéristique et s'écrit donc :
+	Sous l'hypothèse d'existence et d'unicité du problème de Cauchy~\eqref{eq:poldep}, la solution de l'équation~\eqref{eq:poldep} est constante le long d'une courbe caractéristique et s'écrit donc à partir de la fonction~\eqref{def:theta} :
 \[ y(x,t) = y_0(x-\theta(t)) \]
 \end{preuve}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -411,12 +423,12 @@ Donc, pour une solution classique de~\eqref{eq:poldep}, on a la relation :
 	$l>0, L>0$, $y_0 \in L^2([0,L])$.
 	Soit $y$ solution classique de l'équation ~\eqref{eq:poldep} et l'hypothèse~\eqref{hyp:compact} vérifiée.
 	
-	Si $\mass-dep < 0 $,
+	Si $\mass-\dep < 0 $,
 	\begin{itemize}
 		\item  alors $\forall t \in [0,\tau] \;, \;$ on a $v(t) <0$ . 
 	\end{itemize}
 	
-	Sinon,
+	Sinon, $0 < \mass-\dep$,
 	\begin{itemize}
 	 \item soit $v(0)<0$ alors pour $\tau$ suffisamment grand, il existe $t^* < \tau$ tel que $v(t^*) = 0 $, 
 	 \item soit $v(0) >0$ alors de même $\forall t \in [0,\tau] \;$ on a $v(t) >0$.
@@ -426,43 +438,7 @@ Donc, pour une solution classique de~\eqref{eq:poldep}, on a la relation :
 
 
 \begin{preuve}
-	Soit l'unique solution classique $y$ du problème de Cauchy~\eqref{eq:poldep}, 
-	alors la vitesse $v$ de réaction s'écrit pour tout temps $t \in [0,\tau]$ par définition :
-	\[v(t) = \mass -\int_0^L x y(x,t)dx -\dep\]
-	 
- 	Sachant la définition de la vitesse $v$, on a l'implication :
- 	\[ v(t) = \mass -\dep - \mu_1(t) <0 \; \iff \; \; \mass-\dep < \int_0^L x y(x,t)dx  \]
-	
-	Si $\mass-\dep < 0 $, on remarque que la condition est toujours vérifiée, 
-	et dans ce cas on est dans un régime de dépolymérisation, 
-	la vitesse est toujours négative.
-	
-	Sinon, pour $\mass-dep > 0$ on a :
-	
-	\[ \frac{\mathrm{d} v }{\mathrm{d}t} =  - \frac{\mathrm{d} \mu_1 }{\mathrm{d}t} = - v(t) \mu_{0} \]
-	
-	Montrons que la proposition est valable pour une vitesse négative $v(0)<0$, ie en cas de dépolymérisation.
-	
-	Démonstration par l'absurde, on suppose qu'il n'existe pas de $t^*$ tel que la vitesse s'annule.
-	Sachant qu'à $t=0$ la vitesse $v$ est négative, 
-	c'est donc une fonction croissante de $[0,\tau]$ .
-	La vitesse $v$ ne change pas de signe (par hypothèse) donc $\mu_1$ est décroissante.
-	($x \to xy (x,t)$ et $x \to y(x,t)$ sont des fonctions positives de même support). 
-	De plus, la fonction $\theta$ est négative et :
-	\[ 
-	\begin{split}
-		\mu_1(t) & = \int_0^L x y(x,t)dx \\
-		      & = \int_0^L x y_0(x-\theta(t) dx \\
-		      & = \int_{max(0,-\theta(t))}^{L} (x+\theta(t)) y_0(x) dx \\
-	\end{split}
-	\]
-	Donc pour $\tau$ suffisamment grand $\mu_1 \rightarrow 0$ ce qui contredit $ \mass-\dep < \mu_1$.
-	L'hypothèse est fausse et il existe $t^*$ tel que $v(t^*)=0$.
-	
-	La dernière assertion de la proposition, 
-	si $v(0) >0$ alors de même $\forall t \in [0,\tau] \;, \;$ on a $v(t) >0$,
-	est démontrée ultérieurement dans la preuve de la proposition~\ref{prop:vp}.
-	
+	A REVOIR
 \end{preuve}
 
 
@@ -503,7 +479,7 @@ On s'intéresse alors à l'équation :
 \subsection{Existence et unicité}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Afin de démontrer l'existence et l'unicité, on adpaye la définition de solution donnée par la définition~\ref{def:cauchy}, 
+Afin de démontrer l'existence et l'unicité, on admet la définition de solution donnée par la définition~\ref{def:cauchy}, 
 cette fois-ci avec une vitesse de réaction $v$ continue positive, donc connue et mesurée
 qui ne dépend plus de $y$. 
 Ce problème correspond physiquement à l'étude de la polymérisation.
@@ -515,7 +491,7 @@ Ce problème correspond physiquement à l'étude de la polymérisation.
 	
 	Soit $y_0 \in L^2([0,L])$ tel que $supp(y_0) \subset [0,l]$.
 	
-	Soit $L=l+\tau*(\mass-\dep)$, et $v \in C^0([0,\tau])$.
+	Soit $L=l+\tau*(\mass-\dep)$, et $v \in C^0([0,\tau],\mathbb{R}^+)$.
 	
 	Supposons que $\forall t \in[0,\tau]$, $v(t)>0$.
 	
@@ -555,7 +531,7 @@ Ce problème correspond physiquement à l'étude de la polymérisation.
 	
 	On commence par démontrer l'unicité : 
 	soit $y_1$ et $y_2$ solution du problème de Cauchy au sens de la définition~\ref{def:cauchyp}. 
-	Alors on pose $y=y_1-y2$ et pour tout $t \in [0,\tau]$, $y \in C^0([0,T],L^2(0,L))$.
+	Alors on pose $y=y_1-y_2$ et pour tout $t \in [0,\tau]$, $y \in C^0([0,T],L^2(0,L))$.
 	Et pour toute fonction $\phi \in C^1([0,\tau] \times [0,L])$ telle que $\phi (L,\cdot)=0$ :
 \begin{equation}
 	\label{dem:f}
@@ -568,11 +544,13 @@ Ce problème correspond physiquement à l'étude de la polymérisation.
 \[
 \begin{cases}
 	f_n =0 \; \; sur \; \; [L, \infty), & \forall n \\
-	f_{n|(0,L)} \to y(\cdot,t) \in L^2(0,L) & pour \; \;  n\rightarrow \infty.
+	f_{n|(0,L)} \to y(\cdot,t) \; dans \; L^2(0,L) & pour \; \;  n\rightarrow \infty.
 \end{cases}
 \]
 
-Pour $n \in \mathbb(N)$ on pose alors $\phi_n \in C^1([0,t]\times [0,L])$ :
+Pour tout $t>0$, la fonction $f_{n|(0,L)}$ converge fortement dans $L^2$ vers $y(\cdot,t)$ (on remarque qu'en fait une convergence faible serait suffisante).
+
+Pour $n \in \mathbb{N}$ on pose alors $\phi_n \in C^1([0,t]\times [0,L])$ :
 
 \[ \phi_n(x,t) = f_n(x + \int_t^{t^*} v(s)ds), \; \forall (x,t) \in [0,t^*]\times [0,L]. \]
 
@@ -591,7 +569,7 @@ or $\phi_n (x,t^*) = f_n(x)$ et pour $n \rightarrow \infty$ :
 
 On a donc montré que pour tout $t^*$ de $[0,\tau]$ on a $y(\cdot, t^*) =0 $.
 
-Pour démontrer l'existence, on remplace dans l'expression~\eqref{eq:pol} la solution :
+Pour démontrer l'existence, on remplace dans l'expression~\eqref{eq:pol} la solution issue de la méthode des caractéristiques qui dépend de la fonction $\theta$ définie par~\eqref{def:theta}:
 
 \begin{equation}
 	\label{sol:p}
@@ -607,7 +585,7 @@ Pour démontrer l'existence, on remplace dans l'expression~\eqref{eq:pol} la sol
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Dans cette partie, on revient sur l'hypothèse de $v$ une fonction continue connue.
-En effet, le résultat suivant reste a forciori valable pour $v$ connu puisqu'il repose essentitellement sur l'écriture de la solution du pb de Cauchy~\eqref{eq:pol} sour la forme $y(x,t)=y_0(x-\theta(t))$.
+En effet, le résultat suivant reste a forciori valable pour $v$ connu puisqu'il repose essentitellement sur l'écriture de la solution du problème de Cauchy~\eqref{eq:pol} sour la forme $y(x,t)=y_0(x-\theta(t))$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{proposition}
@@ -615,8 +593,7 @@ En effet, le résultat suivant reste a forciori valable pour $v$ connu puisqu'il
 	Soit $\tau>0$, $\mass$ et $\dep$ deux constantes de $\mathbb{R}^+$, 
 	$l>0, L>0$, $y_0 \in L^2([0,L])$ et l'hypothèse~\eqref{hyp:compact} vérifiée.
 	
-	On rappelle l'hypothèse~\eqref{hyp:compact} :
-     $\exists l>0 \; t.q. \; supp \, (y_{0}) \subset [0,l]\subset [0,L-\int_{t^*}^t v(s)ds]$ ;
+	L'hypothèse~\eqref{hyp:compact} est vérifiée et $v \in C^0([0,\tau],\mathbb{R}^+)$
 	
 	Soit $y$ solution de l'équation de transport :
 	\begin{equation}
@@ -624,7 +601,7 @@ En effet, le résultat suivant reste a forciori valable pour $v$ connu puisqu'il
 		\begin{cases}
 			\displaystyle \frac{\partial y}{\partial t}+ v(t) \frac{\partial y} {\partial x}  = 0 & (x,t) \in [0,L] \times [0, \tau] \\
              y(x,0) = y_{0} (x) & x \in [0,L] \\
-			 v(t) = M - \int_0^L y(x,t)dx - \dep & t \in [0,\tau]\\
+			 v(t) = M - \int_0^L xy(x,t)dx - \dep & t \in [0,\tau]\\
 			 y(0,t) = 0 & t \in [0,\tau]\\
 		\end{cases}
 	\end{equation}
@@ -806,7 +783,7 @@ D'après la proposition \ref{pol-moment}, le problème inverse, posé en introdu
 	\[ \forall n \in \mathbb{N} \; ,\; c_n =\int_I x^n d\mu(x) \]
 \end{definition}
 
-Par analogie avec la démonstration du problème de Hausdorff pour lequel la variable aléatoire bornée qui ont les mêmes moments sont de mêmes lois.
+Par analogie avec la démonstration du problème de Hausdorff pour lequel deux variables aléatoires bornées qui ont les mêmes moments sont de mêmes lois.
 
 \begin{proposition}
 	\label{hausdorff}
@@ -823,7 +800,7 @@ Par analogie avec la démonstration du problème de Hausdorff pour lequel la var
 	\[ \int_0^L |y(x) - P_N(x)|^2 dx < L \epsilon^2 \]
 	Or,
 	\[ \int_0^L |y(x) - P_N(x)|^2 dx = \int_0^L |y(x)|^2 dx  + \int_0^L |P_N(x)|^2 dx 
-	                                   + int_0^L y(x)P_N(x)dx \]
+	                                   + \int_0^L y(x)P_N(x)dx \]
  Puisque tous les moments d'ordre $n$ inférieur ou égal à $N$ sont nuls, on obtient :
  
  \[ \forall \epsilon>0, \; \alpha = \sqrt{\epsilon/L}  , \; \exists N \; t.q. \; \int_0^L |y(x)|^2 dx  + \int_0^L |P_N(x)|^2 dx <\epsilon \]
@@ -949,9 +926,9 @@ En effet, la condition n'est imposée qu'en $x=L$.
 \begin{definition}
 	\label{def:cauchyd}
 	Soit $\tau>0$, $\mass$ et $\dep$ deux constantes de $\mathbb{R}^+$, 
-	$l>0$ et $L>0$. 
+	et $L>0$. 
 	
-	Soit $y_0 \in L^2([0,L])$ tel que $supp(y_0) \subset [0,l]$.
+	Soit $y_0 \in L^2([0,L])$.
 	
 	Soit $v \in C^0([0,\tau])$.
 	
@@ -1047,7 +1024,7 @@ Dans ce cas, l'équation des moments~\eqref{eq:mmt} d'écrit :
 	
 	\begin{equation}
 		\label{mexplicit}
-		y_0(x) = \frac{1}{n! v(-\theta^-1(x))^{n+1}} \frac{\mathrm{d}^{n+1}}{\mathrm{d}t^{n+1}} (\Psi_n(-\theta^-1(x)))
+		y_0(x) = \frac{1}{n! v(-\theta^{-1}(x))^{n+1}} \frac{\mathrm{d}^{n+1}}{\mathrm{d}t^{n+1}} (\Psi_n(-\theta^-1(x)))
 	\end{equation}
 \end{proposition}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1202,6 +1179,180 @@ On munit $\mathscr{X}$ de la semi-norme pour tout $n>0$:
 	
 	
 \end{preuve}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Analyse numérique pour la dépolymérisation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Pour tous les développements qui suivent, on considère que $\dep>\mass$. Dans ce cas le système dépolymérise et $v(t)<0$ pour tout $t>0$.
+
+On rappelle le système~\eqref{eq:dep} auquel on s'intéresse :
+
+\[
+\begin{cases}
+		\displaystyle \frac{\partial y}{\partial t}+ v(t) \frac{\partial y} {\partial x}  = 0 & (x,t) \in [0,L] \times [0, \tau] \\
+        y(x,0) = y_{0} (x) \\
+	    v(t)y(L,t) = 0 \\
+\end{cases}
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Discrétisation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Pour implémenter numériquement la résolution , on choisit d'approcher la solution $y$ par sa valeur sur les points d'un maillage régulier $(x_i)_{i \in [0,N_X]}$ de l'intervalle $[0,L]$ avec le pas d'espace $ delta x = x_{i+1} - x_i$ pour $i$ dans $[0,N_X-1]$. On introduit donc une approximation par morceaux de la solution :
+
+\[ Y(t) = (y_{i=0}(t), y_{i=1}(t),...,y_{i=N_X}(t)) \; \in \mathbb{C^0}^{N_X}\]
+
+Puisque le système ne fait que dépolymériser, c'est à dire transporter l'information vers les $x$ petits, on considère qu'il existe $L>0$ tel que quelque soit $t>0$ et $x>L$ la concentration de polymère est nulle et solution $y(x,t)=0$. On discrétise également le temps en une partition de $N_T$ points de durée $\delta t_j = t_{j+1} - t_j$ pour $j$ dans $[0,N_T-1]$. La fonction $y \in L^2$ est ainsi approximée par $\tilde{y}$ définie par :
+
+\[ \tilde{y} (x,t) = y(x_i,t_j)=y_i^j \; \forall \; (x,t) \in \; [x_i;x_{i+1}) \times [t_j;t_{j+1)}]\]
+
+De plus on admet la notation :
+
+\[Y(t_j) = Y^j \; \forall j \in [0,N_T] \]
+
+De même la vitesse peut être discrétisée et on note pour tout $j$ :
+
+\[ v(t_j) = v_j \]
+
+Pour résoudre ce qui suit, on ne considère pas que les $\delta t_j$ sont réguliers, contraitement à la discrétisation spatiale.
+
+Au contraire, on considère que $\displaystyle \delta t_j = \frac{\delta x}{v_{j}} $.
+Ainsi il est possible d'adopter un schéma explicite décentré gauche stable, puisqu'il s'agit d'une interpolation de la solution sur les caractéristiques, pour l'opérateur de dérivation, soit :
+
+\[ v(t)\partial_x y = v_j \frac{y_{i+1}^j - y_{i}^j}{\delta x} \]
+
+Soit $F_j = F(v(t_j))$ pour $J \leq 0$ l'opérateur discret tel que :
+
+\[ \begin{cases}
+F_0 = \mathbb{I} \\
+Y^{j+1} = F_j Y^{j-1} 
+\end{cases}\]
+
+Pour un schéma explicite en temps, $F_j$ s'écrit :
+
+\[
+\begin{cases}
+	\alpha_j = \frac{\delta t_j v_{j}}{\delta x}  \\
+	 F_j  =\left( \begin{array}{cccc}
+	1-\alpha_j &    \alpha_j   &  0     & 0 \\
+	0      & 1-\alpha_j   & \alpha_j   & 0 \\
+	0      &   0     & \ddots &  \alpha_j \\
+	0      & 0       &0        & 1-\alpha_j
+	 \end{array} \right)
+\end{cases}
+\]
+
+On définit de plus l'opérateur $S_j$ :
+
+\[ S_j = F_j o F_{j-1} o \cdots o F_1 o F_0 \]
+
+Et on observe que :
+
+\[ Y^j= S_j Y^0\]
+
+Pour les observations, on choisit pour l'opérateur intégrale une méthode des trapèzes :
+
+\[ z(t_j) = z_j = CY^j\]
+
+Avec :
+\[
+C =  \left( \begin{array}{cc}
+	\frac{\delta x}{2} x_0       &  \frac{\delta x}{2}x_0^2   \\
+	\delta x x_1       &  \delta xh x_1^2   \\
+	\vdots      & \vdots     \\
+	\delta x x_{NX-2}  & \delta xx_{NX-2}^2\\
+    \frac{\delta x}{2} x_{NX-1}  & \frac{\delta x}{2} x_{NX-1}^2
+	 \end{array} \right)
+\]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Filtre de Kalman}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Grâce aux notations introduites ci-dessus, on peut définir le critère discret $J$ que l'on souhaite discrétiser :
+\[
+\begin{split}
+    J(\zeta,N_T) &= \frac{1}{2}\alpha \parallel \zeta \parallel _{N_{\diamond},\mathscr{Y}}^2 + \frac{1}{2}\gamma \sum_{j=0}^{NTT} \delta t_j \parallel z_j - CS_j(y_{\diamond}+\zeta) \parallel_{M_j,\mathscr{Z}}^2 \\
+	                 &= \frac{1}{2}\alpha \zeta ^T N_{\diamond} \zeta + \frac{1}{2}\gamma \sum_{j=0}^{NTT} \delta t_j (z_j - CS_j(y_{\diamond}+\zeta)^T M_j (z - CS_j(y_{\diamond}+\zeta))\\
+					 &=  \frac{1}{2}\alpha \zeta ^T N_{\diamond} \zeta + \frac{1}{2}\gamma \delta t \sum_{j=0}^{NTT} (C S_j\zeta)^T M_jCS_j\zeta
+			            -2(z_j-CS_jy_{\diamond})^TM_jCS_j \zeta + cste\\
+					 &= 1/2 \zeta^T A_{N_T} \zeta - b_{N_T}^T\zeta
+\end{split}
+\]
+
+Le minimiseur de $J$ noté $\hat{\zeta}$ vérifie la propriété :
+
+\[
+\mathrm{d}_{\zeta} J{\hat{\zeta},N_T} = 0
+\]
+
+Soit :
+
+\[ \hat{\zeta}= A_{N_T}^{-1} b_{N_T} \]
+
+Dans un premier temps, on construit la suite $\zeta_{|n}$ qui vérifie les relations suivantes :
+
+\begin{equation}
+	\begin{cases}
+		\displaystyle A_n = (\alpha N_{\diamond} + \gamma  \sum_{j=0}^{n}\delta t_j S_j^TC^TM_jCS_j)\\
+		b_n = \gamma \sum_{j=0}^{n} \delta t_j  S_j^T C^T M_j(z(t_j)-CG^jy_{\diamond}) \\
+		\hat{\zeta}_{|n} = argmin J(\cdot,n) \\
+		A_n \hat{\zeta}_{|n} = b_n
+	\end{cases}
+\end{equation}
+
+
+Soit la matrice de norme $\tilde{M}_n= \gamma \delta t_n M_n$.
+
+
+On utilise le lemme d'inversion matricielle pour trouver une relation de récurrence entre $A_n$ et $A_{n-1}$ et il vient :
+
+\[\zeta_{|n} = \zeta_{|n-1} + A_{n}^{-1} \S_n^T C^T \tilde{M}_n (z_n- C S_n (y_{\diamond} + \zeta_{|n-1}) ) \]
+
+Dans un deuxième temps, on construit la suite donnée par le filtre de Kalman $y_{n|n}$ telle que :
+
+\[
+\begin{cases}
+	y_{0|n} = y_{\diamond} + \zeta_{|n} \\
+	y_{n|n} = S_n y_{0|n} 
+\end{cases}
+\]
+
+La relation de récurrence entre $y_{n|n}$ et $y_{n-1|n-1}$ est donnée par :
+
+\[
+\begin{split}
+y_{n|n} &= S_n (y_{\diamond} + \zeta_{|n}) \\
+        &= S_n (y_{\diamond} + \zeta_{|n-1}) + S_n A_{n}^{-1}S_n^T C^T \tilde{M}_n (z_n-C S_n y_{0|n-1}) \\
+		&= F_n y_{n-1|n-1} + (S_nA_{n}^{-1} S_n^TC^T \tilde{M}_n (z_n -CF_n( S_{n-1} y_{0|n-1})) \\
+		&= F_n y_{n-1|n-1} + P_n C^T \tilde{M}_n (z(t_n)-CF_ny_{n-1|n-1})		
+\end{split}
+\]
+
+
+De part cette expression on peut reconstruire en deux étapes la dynamique de l'estimateur de Kalman discret $\hat{y}_n = y_{n|n}$ : 
+
+\[
+\begin{cases}
+		\text{Initialisation :}\\
+		P_0^- = P_{\diamond} = \mathbb{I} \\
+		\hat{y}_0^- = y_{\diamond} \\
+		\text{Correction :}\\
+		K_n = P_n^- C^T (\tilde{M}_n^{-1} + C^TP_n^-C)^-1 \\
+		P_n^+ = (\mathbb{I} - K_nC)P_n^-(\mathbb{I}-K_nC)^T + K_n \tilde{M}_n^{-1} K_n^T\\
+		\hat{y}_n^+ = \hat{y}_n^- + P_n^+C^T \tilde{M}_n ( z_n - C \hat{y}_n^-)\\
+		\text{Prediction :}\\
+		P_{n+1}^- = F_n P_n^+ F_n^T
+		\hat{y}_{n+1}^- = F_n \hat{y}_n^+
+	\end{cases}
+\]
    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

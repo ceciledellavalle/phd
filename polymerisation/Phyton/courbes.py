@@ -8,12 +8,12 @@ import matplotlib.pyplot as plt
 
 x = np.linspace(0,1,100)
 f0 = 4*np.multiply(1+x,1-x)
-g0 = f0 + 20*x**3 - 40*x**2+18*x+2
+g0 = f0 + 20*x**3 - 36*x**2+ 18*x-2
 
 
 # Create plots with pre-defined labels.
 fig, ax = plt.subplots()
-ax = plt.axes(xlim=(0, 1), ylim=(0, 10))
+ax = plt.axes(xlim=(0, 1), ylim=(0, 6))
 ax.plot(x, f0, 'k--', label='f0=4(1-x)(1+x)')
 ax.plot(x, g0, 'k:', label='g0=f0-P2+P3')
 

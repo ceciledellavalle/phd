@@ -1,0 +1,197 @@
+%% PRE EDITION
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{soul}
+\usepackage[pdftex]{graphicx}
+
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{thmtools}
+\usepackage{ulem}
+
+%% LAYOUT
+\declaretheoremstyle[
+    bodyfont=\normalfont\color{red},
+    headfont=\color{red}
+]{styleattention}
+
+\declaretheoremstyle[
+    spacebelow=1em
+]{styleremarque}
+
+\declaretheoremstyle[
+    spaceabove=-6pt, 
+    spacebelow=6pt, 
+    headfont=\normalfont\bfseries, 
+    bodyfont = \normalfont,
+    postheadspace=1em, 
+    qed=$\Box$, 
+    headpunct={$\rhd$}
+]{mystyle} 
+
+\declaretheorem[thmbox=M,numberwithin=section,title=Définition]{definition}
+\declaretheorem[thmbox=M,sibling=definition]{proposition}
+\declaretheorem[thmbox=M,sibling=definition]{corollaire}
+\declaretheorem[thmbox=M,sibling=definition,title=Théorème]{theoreme}
+\declaretheorem[thmbox=M,sibling=definition]{lemme}
+\declaretheorem[thmbox=M,sibling=definition,title=Propriété]{propriete}
+\declaretheorem[thmbox=M,sibling=definition,title=Propriétés]{proprietes}
+\declaretheorem[style=styleremarque,sibling=definition,title=Remarque]{remarque}
+\declaretheorem[style=styleattention,title=À revoir]{Arevoir}
+\declaretheorem[name={}, style=mystyle, unnumbered]{preuve}
+
+
+\renewcommand\qedsymbol{$\blacksquare$}
+
+%% NEW COMMAND
+% solution
+\newcommand{\y}{y}
+% concentration monomers
+\newcommand{\cmono}{c}
+\newcommand{\pol}{a}
+\newcommand{\dep}{b}
+\newcommand{\mass}{\mathrm{M}}
+
+\usepackage{geometry}
+\geometry{hmargin=3cm,vmargin=2.5cm}
+
+\usepackage{tabularx}
+\usepackage{float}
+
+\title{Réunion du 01/02}
+\author{Cécile Della Valle}
+
+%% DEBUT DE REDACTION
+\begin{document}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Soit $L>0$ et $\tau>0$,
+soit $v$ une fonction continue, $v \in C^0([0,\tau])$, 
+On souhaite démontrer l'existence d'une solution de :
+
+\begin{equation}
+\label{eq:general}
+\begin{cases}
+ \displaystyle \frac{\partial y}{\partial t}
+ + v(t) \frac{\partial y} {\partial x}  
+ - \epsilon \frac{\partial^2 y} {\partial x^2}
+ = 0  & \forall (x,t) \in [0,L] \times [0, \tau]\\
+ y(x,0) = y_{0} (x) & \forall x \in [0,L] \\
+ 1_{v(t)>0}y(0,t) = 0 & \forall t \in [0,\tau] \\
+ 1_{v(t)<0}y(L,t) = 0 & \forall t \in [0,\tau] \\
+\end{cases}
+\end{equation}
+
+
+\vspace{0.5cm}
+
+\underline{$v=$cste, $\epsilon = 0$}
+
+On suppose dans un premier temps que $v$ est une constante, et on suppose,
+sans perte de généralité, 
+que cette constante est positive $v>0$.
+De plus on suppose que la constante $\epsilon$ est nulle.
+
+L'équation~\eqref{eq:general} devient :
+
+\begin{equation}
+\label{eq:cas0}
+\begin{cases}
+ \displaystyle \frac{\partial y}{\partial t}
+ + v \frac{\partial y} {\partial x}  
+ = 0  & \forall (x,t) \in [0,L] \times [0, \tau]\\
+ y(x,0) = y_{0} (x) & \forall x \in [0,L] \\
+ y(0,t) = 0 & \forall t \in [0,\tau] \\
+\end{cases}
+\end{equation}
+
+Soit $\mathscr{Y} = L^2([0,L])$ l'espace de Banach et l'opérateur $A$ sur cet espace tel que :
+\[ \forall y \in D(A), \; \; Ay = -v \partial_x y \]
+
+On souhaite démontrer la propriété suivante :
+
+\begin{proposition}
+	L'opérateur $A: D(A) \to \mathscr{Y}$ est générateur d'un semi-groupe $C_0$ de contraction dans $\mathscr{Y}$.
+\end{proposition}
+
+\begin{preuve}
+	On souhaite appliquer le théorème de Hille-Yoshida, 
+	il nous faut donc démontrer que $A$ possède les deux propriétés suivantes :
+\begin{itemize}
+	\item (1) $A$ est un opérateur fermé et $\bar{D{A}} = \mathscr{Y}$ ;
+	\item (2) l'ensemble résolvant de A contient la demi-droite $]0; + \infty)$ et on a 
+	$\forall \lambda > 0 \; \| (\lambda - A)^{-1} \|_{L({\mathscr{Y}})} \leq 1/\lambda $
+\end{itemize}
+
+(1)
+
+L'opérateur A est défini sur l'ensemble $D(A)$ des fonctions absoluement continues sur $[0,L]$ qui s'annulent en $0$. 
+On peut par exemple utilisee lemme suivant :
+
+\begin{lemme}
+	Une fonction $y$ de $\mathscr{Y}$ est absolument continue sur $[0,L]$ si et seulement si pour presque tout $x \in [0,L]$, 
+	$y$ est dérivable en $x$ de dérivée $y' \in L^2([0,L])$ et 
+	\[ y(x) = y(0) + \int_0^x y' \]
+\end{lemme}
+
+Sur cet ensemble, l'opérateur dérivation est fermée, densément défini.
+
+(2)
+
+Soit $y_1 \in \mathscr{Y}$ tel aue $(\lambda -A)y = y_1$, alors on a de façon équivalente :
+\[ \begin{cases}
+\lambda y - v y' = y_1 \\
+y(0) = 0
+\end{cases}\]
+
+Pour tout $\lambda \in \mathbb{R}$, cette équation possède une unique solution donnée par la formule de Duhamel :
+\[ y(x) = - \int_0^x e^{\lambda/v (x-x')}y_1(x')dx' \]
+
+et on vérifie que $ \| y \|_{\mathscr{Y}} \leq 1/ \lambda \|y_1 \|_{\mathscr{Y}}$.
+
+\[
+\begin{split}
+	\|y\|_{\mathscr{Y}}^2 &= \int_0^L |\int_0^x e^{\lambda/v (x-x')}y_1(x')dx' |^2 dx \\
+                        & \leq (\int_0^L e^{2 \lambda/v x} dx) (\int_0^L |\int_0^x e^{-2\lambda/v x'} y_1(x') dx' |^2 dx \\
+						& \leq \frac{v}{2 \lambda}(e^{\frac{2L\lambda}{v}}-1) (\int_0^L e^{-2\lambda/v x'}dx' \int_0^L |y_1(x')|^2 dx') \\
+						& \leq \frac{v}{2 L \lambda}^2(e^{\frac{2L\lambda}{v}}-1)^2 \|y_1 \|_{\mathscr{Y}} \\
+						& \leq \frac{1}{\lambda} \|y_1 \|_{\mathscr{Y}} 
+\end{split}
+\]
+	
+\end{preuve}
+
+On obtient donc l'existence de solution de~\eqref{eq:cas0}.
+
+\underline{$v \in C^0$, $\epsilon = 0$}
+
+On suppose cette fois que $v \in C^0$ et de plus que $v$ ne change pas de signe. 
+Sans perdre de généralité on suppose que $\forall t \in [0,\tau]$ on a $v(t)>0$
+
+\begin{equation}
+\label{eq:cas0}
+\begin{cases}
+ \displaystyle \frac{\partial y}{\partial t}
+ + v(t) \frac{\partial y} {\partial x}  
+ = 0  & \forall (x,t) \in [0,L] \times [0, \tau]\\
+ y(x,0) = y_{0} (x) & \forall x \in [0,L] \\
+ y(0,t) = 0 & \forall t \in [0,\tau] \\
+\end{cases}
+\end{equation}
+
+\end{document}
+
