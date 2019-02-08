@@ -78,6 +78,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Existence}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Soit $L>0$ et $\tau>0$,
 soit $v$ une fonction continue, $v \in C^0([0,\tau])$, 
@@ -97,9 +100,11 @@ On souhaite démontrer l'existence d'une solution de :
 \end{equation}
 
 
-\vspace{0.5cm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{$v=$cste, $\epsilon = 0$}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\underline{$v=$cste, $\epsilon = 0$}
+
 
 On suppose dans un premier temps que $v$ est une constante, et on suppose,
 sans perte de généralité, 
@@ -119,24 +124,26 @@ L'équation~\eqref{eq:general} devient :
 \end{cases}
 \end{equation}
 
-Soit $\mathscr{Y} = L^2([0,L])$ l'espace de Banach et l'opérateur $A$ sur cet espace tel que :
+Soit $\mathscr{Y} = L^2([0,L])$ l'espace de Banach et l'opérateur $A$ sur $D(A)$ tel que :
 \[ \forall y \in D(A), \; \; Ay = -v \partial_x y \]
 
 On souhaite démontrer la propriété suivante :
 
 \begin{proposition}
+	\label{prop:cas0}
 	L'opérateur $A: D(A) \to \mathscr{Y}$ est générateur d'un semi-groupe $C_0$ de contraction dans $\mathscr{Y}$.
 \end{proposition}
 
 \begin{preuve}
-	On souhaite appliquer le théorème de Hille-Yoshida, 
-	il nous faut donc démontrer que $A$ possède les deux propriétés suivantes :
+	On souhaite appliquer le théorème de Lumer-Phillips, 
+	il nous faut donc démontrer que $A$ possède les trois propriétés suivantes :
 \begin{itemize}
 	\item (1) $A$ est un opérateur fermé et $\bar{D{A}} = \mathscr{Y}$ ;
-	\item (2) l'ensemble résolvant de A contient la demi-droite $]0; + \infty)$ et on a 
-	$\forall \lambda > 0 \; \| (\lambda - A)^{-1} \|_{L({\mathscr{Y}})} \leq 1/\lambda $
+	\item (2) $A$ est dissipatif ;
+	\item (3) il existe $\lambda_0$ tel que $\lambda_0 - A : D(A) \to \mathscr{Y}$ est surjectif.
 \end{itemize}
 
+\vspace{0.3cm}
 (1)
 
 L'opérateur A est défini sur l'ensemble $D(A)$ des fonctions absoluement continues sur $[0,L]$ qui s'annulent en $0$. 
@@ -150,40 +157,61 @@ On peut par exemple utilisee lemme suivant :
 
 Sur cet ensemble, l'opérateur dérivation est fermée, densément défini.
 
+\vspace{0.3cm}
 (2)
 
-Soit $y_1 \in \mathscr{Y}$ tel aue $(\lambda -A)y = y_1$, alors on a de façon équivalente :
+Montrons que $A$ est dissipatif.
+Soit $y \in \mathscr{Y}$, 
+calculons la quantité :
+
+\[ \begin{split}
+\langle Ay,y \rangle_{\mathscr{Y}} &= \langle v \partial_x y, y \rangle_{\mathscr{Y}}  \\
+                     &= v \int_0^L y(z) \partial_x y(z) d(z) \\
+					 & = v[y(z)^2]_{z=0}^L - v \int_0^L y(z) \partial_x y(z) d(z)
+\end{split} \]
+
+Soit :
+
+\[ \langle Ay,y \rangle_{\mathscr{Y}} = -\frac{1}{2}vy(0)^2 \leq 0 \]
+
+Donc $\forall$ $y \in \mathscr{Y}$, $\langle Ay,y \rangle_{\mathscr{Y}} \leq 0$.
+
+
+\vspace{0.3cm}
+(3)
+
+Soit $y_1 \in \mathscr{Y}$ et $\lambda >0$.
+
+On cherche une solution $y$ tel que $(\lambda -A)y = y_1$.
+
+Alors on a de façon équivalente que $y$ est solution de :
 \[ \begin{cases}
 \lambda y - v y' = y_1 \\
 y(0) = 0
 \end{cases}\]
 
-Pour tout $\lambda \in \mathbb{R}$, cette équation possède une unique solution donnée par la formule de Duhamel :
+donc, pour tout $y_1 \in \mathscr{Y}$, cette équation possède une unique solution donnée par la formule de Duhamel :
+
 \[ y(x) = - \int_0^x e^{\lambda/v (x-x')}y_1(x')dx' \]
 
-et on vérifie que $ \| y \|_{\mathscr{Y}} \leq 1/ \lambda \|y_1 \|_{\mathscr{Y}}$.
+(On peut par ailleurs vérifier que $ \| y \|_{\mathscr{Y}} \leq 1/ \lambda \|y_1 \|_{\mathscr{Y}}$).
 
-\[
-\begin{split}
-	\|y\|_{\mathscr{Y}}^2 &= \int_0^L |\int_0^x e^{\lambda/v (x-x')}y_1(x')dx' |^2 dx \\
-                        & \leq (\int_0^L e^{2 \lambda/v x} dx) (\int_0^L |\int_0^x e^{-2\lambda/v x'} y_1(x') dx' |^2 dx \\
-						& \leq \frac{v}{2 \lambda}(e^{\frac{2L\lambda}{v}}-1) (\int_0^L e^{-2\lambda/v x'}dx' \int_0^L |y_1(x')|^2 dx') \\
-						& \leq \frac{v}{2 L \lambda}^2(e^{\frac{2L\lambda}{v}}-1)^2 \|y_1 \|_{\mathscr{Y}} \\
-						& \leq \frac{1}{\lambda} \|y_1 \|_{\mathscr{Y}} 
-\end{split}
-\]
+Donc d'après (1),(2) et (3), on peut appliquer le théorème de Lumer-Phillips, et $A$ est le générateur infinitésimal d'un semi-group $C_0$.
+On a donc l'existence d'une solution de~\eqref{eq:cas0}.
 	
 \end{preuve}
 
-On obtient donc l'existence de solution de~\eqref{eq:cas0}.
 
-\underline{$v \in C^0$, $\epsilon = 0$}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{$v \in C^0$, $\epsilon = 0$}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 On suppose cette fois que $v \in C^0$ et de plus que $v$ ne change pas de signe. 
 Sans perdre de généralité on suppose que $\forall t \in [0,\tau]$ on a $v(t)>0$
 
 \begin{equation}
-\label{eq:cas0}
+\label{eq:cas1}
 \begin{cases}
  \displaystyle \frac{\partial y}{\partial t}
  + v(t) \frac{\partial y} {\partial x}  
@@ -192,6 +220,47 @@ Sans perdre de généralité on suppose que $\forall t \in [0,\tau]$ on a $v(t)>
  y(0,t) = 0 & \forall t \in [0,\tau] \\
 \end{cases}
 \end{equation}
+
+Soit $\mathscr{Y} = L^2([0,L])$ l'espace de Banach et l'opérateur d'évolution $A(t)$ définit sur $D(A(t))$ tel que :
+\[ \forall y \in D(A(t)), \; \; A(t)y = -v (t)\partial_x y \]
+
+\begin{proposition}
+	Pour $t>0$, l'opérateur $A(t)$ est le générateur infinitésimal du semi-groupe $C_0$ sur $\mathscr{Y}$,
+	noté $S_t$.
+\end{proposition}
+
+\begin{preuve}
+	Pour $t>0$ fixé, on est ramené au cas de la proposition~\ref{prop:cas0}.
+\end{preuve}
+
+\begin{proposition}
+	Il existe une unique solution $U(t,s)$, $0\leq s \leq t \leq \tau $, qui satisfait :
+	\begin{itemize}
+		\item 
+		\item 
+		\item 
+	\end{itemize}
+\end{proposition}
+
+\begin{preuve}
+	On souhaite appliquer le théorème du chap.5 de Pazy.
+	
+	\begin{lemme}
+		Pour tout $t>0$, le semi-groupe $C_0$ généré par $A(t)$ est la translation :
+		\[ \forall y \in D(A(t)), \; \; S_t(s)y = y(x - \theta(s)) \chi_{0<x - \theta(s)<L} \]
+		avec $\theta (s) = v(t)s$.
+		
+	\end{lemme}
+	
+	Vérifions les hypothèses.
+	
+	\vspace{0.3cm}
+	(1)
+	Montrons que $(A(t))_{t \in [0,\tau]}$ est stable.
+	
+	D'après le théorème de Hille-Yoshida, la demi droite $(0; +\infty)$ est incluse dans l'ensemble résolvent de $A(t)$ pour tout $t>0$.
+	
+\end{preuve}
 
 \end{document}
 
