@@ -196,16 +196,20 @@ L'équation~\eqref{eq:general} complétée par des conditions aux limites liées
 
 Et on ajoute une hypothèse sur la condition initiale $y_0$ :
 
+Et on suppose que la condition initiale $y_0$ est à support compact.
+
 \begin{equation}
 	\label{hyp:compact}
-	\exists l>0 \; t.q. \; \forall t \leq \tau, \; supp \, (y_0) \subset [0,l]\subset [0,L-\int_{0}^t v(s)ds]
+	\exists l>0, \; supp(y_0) \, \subset \, [0,l]
 \end{equation}
+
 
 \begin{lemme}
 	\label{lemme:compact}
 	Dès lors que le support de $y_0 \in C^0$ est un compact $[0,l]$ de $\mathbb{R+}$,
 	alors quelque soit $\tau >0$, il existe $L>0$ tel que le domaine $[0,L]\times [0,\tau]$
-	vérifie la condition~\eqref{hyp:compact} pour $y_0$.
+	vérifie la condition pour $y_0$ :
+	\[\exists l>0 \; t.q. \; \forall t \leq \tau, \; supp \, (y_0) \subset [0,l]\subset [0,L-\int_{0}^t v(s)ds] \]
 \end{lemme}
 
 \begin{remarque}
@@ -591,9 +595,9 @@ En effet, le résultat suivant reste a forciori valable pour $v$ connu puisqu'il
 \begin{proposition}
 	\label{pol-moment}
 	Soit $\tau>0$, $\mass$ et $\dep$ deux constantes de $\mathbb{R}^+$, 
-	$l>0, L>0$, $y_0 \in L^2([0,L])$ et l'hypothèse~\eqref{hyp:compact} vérifiée.
+	$l>0, L>0$, $y_0 \in L^2([0,L])$.
 	
-	L'hypothèse~\eqref{hyp:compact} est vérifiée et $v \in C^0([0,\tau],\mathbb{R}^+)$
+	L'hypothèse~\eqref{hyp:compact} est vérifiée pour $y_0$ et $v \in C^0([0,\tau],\mathbb{R}^+)$
 	
 	Soit $y$ solution de l'équation de transport :
 	\begin{equation}

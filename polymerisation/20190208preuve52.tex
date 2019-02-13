@@ -76,12 +76,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Ce document est consacré à la démonstration de la propriété~\ref{prop:v}, 
+Ce document est consacré à la démonstration de la propriété 
+du comportement en temps long
+(ci après notée ~\ref{prop:v}), 
 qui étudie les variations de la fonction $v \in C^0([0,\tau])$ 
 (vitesse du système de Lifschitz-Slyozov) 
 en fonction des conditions initiales et des paramètres du système.
 
-Nous rappelons dans un premier temps le système étudié et les équations vérifées par les moments de la solution.
+Nous rappelons dans un premier temps le système étudié et les équations vérifiées par les moments de la solution.
 
 Puis, dans un deuxième temps, nous énnonçons la proposition et procédons à la démonstration 
 (à noter que ce document est transitoire et que la preuve reste pour l'heure incomplète).
@@ -98,7 +100,7 @@ Puis, dans un deuxième temps, nous énnonçons la proposition et procédons à 
 \item $y$ -- fonction de la concentration des polymères en fonction de leur taille x ;
 \item $c$ -- fonction de concentration du monomère ;
 \item $v(t)$ -- vitesse totale de réaction (dépolymérisation et polymérisation) ;
-\item $\theta(t)$ -- intégrale de la vitesse $\theta(t)=\int_0^t v(s)ds$ ;
+\item $\theta(t)$ -- fonction intégrale de la vitesse $\theta(t)=\int_0^t v(s)ds$ ;
 \item $\pol$ -- coefficient de polymérisation, par la suite on posera $\pol=1$;
 \item $\dep$ -- coefficient de dépolymérisation ;
 \item $\mu_i$ -- moment d'ordre i de la fonction y, soit $\mu_i = \int_0^L x^i y(x,t)dx$.
@@ -125,7 +127,7 @@ on pose que le coefficient de polymérisation est égal à 1,
 soit $\pol =1$.
 
 
-On souhaite caractériser le comportement asymptotique des solutions du problème de Cahuchy :
+On souhaite caractériser le comportement asymptotique des solutions du problème de Cauchy :
 
 \begin{equation}
 		\label{eq:poldep}
@@ -138,12 +140,19 @@ On souhaite caractériser le comportement asymptotique des solutions du problèm
 		\end{cases}
 \end{equation}
 
-Et on suppose que la condition initiale $y_0$ vérifie l'hypothèse :
+Et on suppose que la condition initiale $y_0$ est à support compact.
 
 \begin{equation}
 	\label{hyp:compact}
-	\exists l>0 \; t.q. \; \forall t \leq \tau, \; supp \, (y_0) \subset [0,l]\subset [0,L-\int_{0}^t v(s)ds]
+	\exists l>0, \; supp(y_0) \, \subset \, [0,l]
 \end{equation}
+
+\begin{lemme}
+	Soit $y_0$ vérifiant l'hypothèse~\eqref{hyp:compact},
+	et $y$ la solution associée à $y_0$ de ~\eqref{eq:poldep} 
+	alors 
+ \[\forall t \in [0,\tau], \; supp \, (y(\cdot, t)) \subset [0,L]\subset [0,l-\int_{0}^t v(s)ds] \]
+ \end{lemme}
 
 On peut donc remplacer la condition aux limites en $x=L$ par $y(L,t)=0$, et ce quelque soit le signe de la vitesse.
 
@@ -200,7 +209,7 @@ On peut donc remplacer la condition aux limites en $x=L$ par $y(L,t)=0$, et ce q
 	Si $\mass-\dep < 0 $,
 	\begin{itemize}
 		\item  alors $\forall t \in [0,\tau] \;, \;$ on a $v(t) <0$. 
-		De plus, il existe $t^*$ tel que $\mu_0(t^*)=0$ et $\mu_1(t^*) = 0$. 
+		De plus, si $\tau> \displaystyle \frac{L}{\dep-\mass}$, alors il existe $t^* \in [0,\tau]$ tel que $\mu_0(t^*)=0$ et $\mu_1(t^*) = 0$. 
 	\end{itemize}
 	
 	Sinon, $0 < \mass-\dep$,
@@ -226,8 +235,9 @@ On peut donc remplacer la condition aux limites en $x=L$ par $y(L,t)=0$, et ce q
 	
 	Comme $y$ est une densité, elle est positive et cette hypothèse est toujours vérifiée.
 	
-	De plus, $\forall t>0$, $v(t)> \mass-\dep$, donc $\theta (t)>t*(\mass-\dep)$.
-	Donc pour $t^* = \frac{L}{\mass-\dep}>0$ on a $\ \mu_1(t^*) = 0$ et donc $\mu_0(t^*) =0$.
+	De plus, $\forall t>0$, $v(t)> \mass-\dep$, donc $|\theta (t)|> t^*\times
+	|\mass-\dep|$.
+	Donc pour $t^* = \frac{L}{\mass-\dep}>0$, par hypothèse $t^* \in [0,\tau]$, et on a $ \mu_1(t^*) = \int_{-\theta(t)}^L xy_0(x)dx = 0$ et donc $\mu_0(t^*) =0$.
 	
 	
 	\vspace{0.5cm}
@@ -256,11 +266,14 @@ On peut donc remplacer la condition aux limites en $x=L$ par $y(L,t)=0$, et ce q
 	Supposons qu'il exite $t^*>0$ tel que $\mu_1(t^*)= \mass -\dep $, 
 	alors $v(t^*)=0$, $\frac{\mathrm{d} v }{\mathrm{d}t} (t^*)= 0$.
 	
-	Si $\mu_0(t^*)>0$ alors $\forall t<t^*$, $0<\mu_0(t^*)<mu_0(t)$ et on note $ \mu_0(t^*)= \alpha$, et il vient :
+	Si $\mu_0(t^*)>0$ alors $\forall t<t^*$, $0<\mu_0(t^*)<\mu_0(t)$ et on note $ \mu_0(t^*)= \alpha$, et il vient :
 	
-	\[ \frac{\mathrm{d} v }{\mathrm{d}t} \leq - alpha v(t) \]
-	\[ v(t) \leq v(0) e^{-\alpha t} < 0 \]
+	\[ \frac{\mathrm{d} |v| }{\mathrm{d}t} = \mu_0(t)|v(t)| \geq \alpha |v(t)| \]
 	
+	Donc d'après le lemme de Grönwall :
+	\[ |v(t)| \geq |v(0)| e^{-\alpha t} \]
+	
+	Ceci contredit le fait que $v$ s'annule en $t=t^*$.
 	Donc nécessairement $\mu_0(t^*) = 0$, 
 	or, $x \to xy (x,t)$ et $x \to y(x,t)$ sont des fonctions positives de même support,
 	donc $\mu_1(t^*) =0 \implies \mu_0(t^*)=0$ .
