@@ -233,7 +233,8 @@ On peut donc remplacer la condition aux limites en $x=L$ par $y(L,t)=0$, et ce q
  	Sachant la définition de la vitesse $v$, on a l'implication :
  	\[ v(t) = \mass -\dep - \mu_1(t) <0 \; \iff \; \; \mass-\dep < \int_0^L x y(x,t)dx  \]
 	
-	Comme $y$ est une densité, elle est positive et cette hypothèse est toujours vérifiée.
+	Comme la fonction $y_0$ est positive, la solution $y$ l'est également.
+	Cette hypothèse est donc toujours vérifiée
 	
 	De plus, $\forall t>0$, $v(t)> \mass-\dep$, donc $|\theta (t)|> t^*\times
 	|\mass-\dep|$.
@@ -247,9 +248,7 @@ On peut donc remplacer la condition aux limites en $x=L$ par $y(L,t)=0$, et ce q
 	
 	\textbf{v(0)<0} :
 	
-	Sachant qu'à $t=0$ la vitesse $v(0)<0$, $\mu_0 >0$, la vitesse est négative, 
-	alors $\mu_1$ est une fonction décroissante et $v$ est une fonction strictement croissante de $[0,\tau]$.
-	L'intégrale de la vitesse $v$ (la fonction $\theta$) est donc une fonction négative décroissante.
+	Sachant qu'à $t=0$ la vitesse $v(0)<0$, $\mu_0 >0$.
 	\[ 
 	\begin{split}
 		\mu_1(t) & = \int_0^L x y(x,t)dx \\
@@ -257,11 +256,10 @@ On peut donc remplacer la condition aux limites en $x=L$ par $y(L,t)=0$, et ce q
 		      & = \int_{-\theta(t)}^{L} (x+\theta(t)) y_0(x) dx \\
 	\end{split}
 	\]
-	La vitesse $v$ ne change pas de signe tant que $\mu_1 > \mass- \dep >0$. 
+	La vitesse $v$ est décroissante, négative, et  ne change pas de signe tant que $\mu_1 > \mass- \dep >0$. 
 	Donc
 	\[ \mu_1 > \mass- \dep >0 \implies \mu_1 \searrow \]
-    Donc $\mu_1$ est une fonction décroissante strictement et minorée, 
-	et elle converge vers son minorant.
+    Donc $\mu_1$ est une fonction décroissante strictement et minorée.
 	
 	Supposons qu'il exite $t^*>0$ tel que $\mu_1(t^*)= \mass -\dep $, 
 	alors $v(t^*)=0$, $\frac{\mathrm{d} v }{\mathrm{d}t} (t^*)= 0$.

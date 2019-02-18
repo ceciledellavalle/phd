@@ -100,10 +100,25 @@ On souhaite démontrer l'existence d'une solution dans $C^0([0,\tau],\mathscr{Y}
 \end{cases}
 \end{equation}
 
-Dans une première partie, on s'intéresse aux cas particuliers ($v$ est une fonction constante négative, et $\epsilon$ est nul), pour progressivement revenir sur ces hypothèses simplificatrices.
+Dans une première partie, on s'intéresse aux cas particuliers ($v$ est une fonction constante négative, et $\epsilon$ est nul), 
+pour progressivement revenir sur ces hypothèses.
+
+
+\vspace{0.3cm}
+
+On s'intéresse ensuite au problème d'observabilité lié à la mesure d'un moment d'ordre $n$ d'une solution $y$ :
+
+ \begin{equation}
+	\begin{array}{cc|ccc}
+	C_n & : & \mathscr{Y} & \to & \mathscr{Z} \\
+	 & & y_0 & \mapsto & t \to \int_0^L x^n y_0(x-\theta(t)) dx\\
+	\end{array}
+\end{equation}
+
+Par la suite on supposera $n$ fixé et on notera simplement $C$ l'observateur.
 
 Dans une deuxième partie, on cherche démontrer l'existence et l'unicité de solutions
-de l'équation de Riccati associée à l'observation de moments de la solution.
+de l'équation de Riccati associée à l'observateur $C$ de moments de la solution.
 Ce problème mal posé sera régularisé par une méthode de Tikhonov.
 
 Enfin la dernière partie portera sur l'étude de la résolution numérique 
@@ -153,7 +168,8 @@ Soit $\mathscr{Y} = L^2([0,L])$ l'espace de Banach et l'opérateur $A$ sur $D(A)
 	\forall y \in D(A), \; \; Ay = -v \partial_x y
 \end{equation}
 
-\[ D(A)=\left\{y \; | \; y \; absoluement \; continue \; sur \; [0,L],\; y(L) =0| \right\}\]
+\[ D(A)=\left\{y \; | \; \partial_x y \in L^2 ([0,L]),\; y(L) =0| \right\} 
+       = H_{R}^1([0,L])\]
 
 
 \begin{proposition}
@@ -174,20 +190,16 @@ Soit $\mathscr{Y} = L^2([0,L])$ l'espace de Banach et l'opérateur $A$ sur $D(A)
 \vspace{0.3cm}
 $(i)$
 
-L'opérateur A est défini sur l'ensemble $D(A)$ des fonctions absoluement continues sur $[0,L]$ qui s'annulent en $L$. 
-
-En effet, $y$ est absolument continue sur un compact $\Omega$ si et seulement si pour presque tout $x \in \Omega$, $y$ est dérivable en $x$ de dérivée $y'\in L^1(\Omega)$ et
-pour tout $x$ de $\Omega$ : $y(x)=y(0)+\int_0^x y'(s)ds$ 
-(d'après le chapitre 7 du livre de W. Rudin \cite{WRudin}).
-
+L'opérateur A est défini sur l'ensemble $D(A)$ des fonctions de $H^1$ sur $[0,L]$ qui s'annulent en $L$. 
 Sur cet ensemble, l'opérateur dérivation est fermée, densément défini.
-(démonstration ? très difficile).
+(REF ??)
+
 
 \vspace{0.3cm}
 $(ii)$
 
 Montrons que $A$ est dissipatif.
-Soit $y \in \mathscr{Y}$, 
+Soit $y \in D(A) \subset \mathscr{Y}$, 
 calculons la quantité :
 
 \[ \begin{split}
@@ -247,6 +259,9 @@ Dans ce cas simple, on peut donner une formule explicite de l'opérateur de semi
 	où $S$ est le semi-groupe d'évolution donné par lemme~\ref{lem:cas0}.
 \end{theoreme}
 
+
+
+\vspace{1.0cm}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{$v \in C^0$, $\epsilon = 0$}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -276,7 +291,8 @@ Soit $\mathscr{Y} = L^2([0,\infty))$ l'espace de Banach et l'opérateur d'évolu
 Avec 
 
 \[\forall t \in [0,\tau], \; D(A(t)) = 
-\left\{y \; | \; y \; absoluement \; continue \; sur \; [0,L],\; y(L) =0| \right\}\]
+\left\{y \; | \; \partial_x y \in L^2 ([0,L]),\; y(L) =0| \right\}
+   = H_{R}^1\]
 
 \begin{proposition}
 	Soit $\mathscr{Y}$ un espace de Banach, pour $t>0$, 
@@ -318,7 +334,7 @@ Avec
 	\[
 	\begin{split}
 		\displaystyle \|R(\lambda:A(t_j))y_1 \|^2 & = \int_0^L |\int_x^L e^{\lambda/v(t_j)(x-x')}y_1(x')dx'|^2dx \\
-		                                          & \leq \int_0^L (\int_x^L e^{2\lambda/v(t_j)(x-x')}dx') (\int_x^L] y_1(x')^2 dx') dx \\
+		                                          & \leq \int_0^L (\int_x^L e^{2\lambda/v(t_j)(x-x')}dx') (\int_x^L y_1(x')^2 dx') dx \\
 												  & \leq \|y_1\|^2 \int_0^L (\int_x^L e^{2\lambda/v(t_j)(x-x')}dx')dx \\
 												  & \leq \|y_1\|^2 \int_0^L \displaystyle \frac{-v(t_j)}{2\lambda}[e^{2\lambda/v(t_j)(x-x')}]_x^L dx \\
 												  & \leq \|y_1\|^2 \displaystyle \frac{-v(t_j)}{2\lambda} \int_0^L (e^{2\lambda/v(t_j)(x-L)}-e^{2\lambda/v(t_j)x}) dx \\
@@ -366,8 +382,8 @@ Avec
 	Il existe une unique solution $U(t,s)$, $0\leq s \leq t \leq \tau $, qui satisfait :
 	\begin{itemize}
 		\item $\|U(t,s)\| \leq M e^{\omega(t-s)}$ pour tout $0\leq s \leq t\leq \tau$ ;
-		\item $\partial_t^+ U(t,s)v|_{t=s} = A(sv)$ pour $v\in mathscr{Y}$, $0\leq s\leq \tau$ ;
-		\item $\partial_s U(t,s)v = - U(t,s)A(s)v$ pour $v\in mathscr{Y}$, $0\leq s\leq t\leq \tau$.
+		\item $\partial_t^+ U(t,s)v|_{t=s} = A(sv)$ pour $v\in \mathscr{Y}$, $0\leq s\leq \tau$ ;
+		\item $\partial_s U(t,s)v = - U(t,s)A(s)v$ pour $v\in \mathscr{Y}$, $0\leq s\leq t\leq \tau$.
 	\end{itemize}
 \end{proposition}
 
@@ -376,7 +392,7 @@ Avec
 	On rappelle les hypothèses que doit vérifier la famille $(A(t))_{t \in [0,\tau]}$ pour appliquer 
 	le théorème 3.1 page 135 livre de Pazy \cite{APazy}.
 	\begin{itemize}
-		\item $(i)$ $(A(t))$ est une famille d'opérateur stable pour les constantes $M$ et $\omega$ ;
+		\item $(i)$ $(A(t))$ est une famille d'opérateurs stables pour les constantes $M$ et $\omega$ ;
 		\item $(ii)$ $\mathscr{H}$ est $A(t)$-admissible pour $t \in [0,\tau]$ et la famille $(\tilde{A}(t))$
 		de $A(t)$ dans $\mathscr{H}$ est une famille stable de $\mathscr{H}$ 
 		pour les constantes $\tilde{M}$ et $\tilde{\omega}$ ;
@@ -396,7 +412,7 @@ Avec
 	  et la norme associée à cet espace $\| \cdot \|_{\mathscr{H}}$ est définie de la façon suivante :
 	\[ \forall y \in \mathscr{H}, \; \|y\|_{\mathscr{H}} = \|y\|_{\mathscr{Y}} + \|y'\|_{\mathscr{Y}} \]
 	
-	Et de plus on définie la norme des applications bornées de $\mathscr{H}$ dans $\mathscr{Y}$:
+	Et de plus on définit la norme des applications bornées de $\mathscr{H}$ dans $\mathscr{Y}$:
 	
 	\[ \forall A \in B(\mathscr{H},\mathscr{Y}), 
 	\; \| A \|_{\mathscr{H}\to \mathscr{Y}} =\sup_{y\in\mathscr{H}} \frac{\|Ay\|_{\mathscr{H}}}{\|y\|_{\mathscr{H}}} \]
@@ -427,6 +443,9 @@ Avec
 	où $U$ est le semi-groupe d'évolution donné par \ref{prop:cas1}.
 \end{theoreme}
 
+
+
+\vspace{1.0cm}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{$v =$ cste, $\epsilon \ne 0$}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -449,7 +468,7 @@ On s'intéresse à l'équation :
 \end{cases}
 \end{equation}
 
-Puisque $v<0$, pour facilioter la lecture, on pose $\dep = - v >0$.
+Puisque $v<0$, pour faciliter la lecture, on pose $\dep = - v >0$.
 
 On remarque que la principale difficulté par rapport à ce qui a été développé 
 précédemment est la condition au bord en $x=0$.
@@ -478,7 +497,7 @@ m\\
 \end{array}\right) \]
 
 Soit $a$ une forme bilinéaire telle que :
-\[ \forall (y_1,y_2) \in D(A), \; a(y_1,y_2) = \langle A y_1,y_2\rangle_{\mathscr{Y}} \]
+\[ \forall (y_1,y_2) \in D(A), \; a(y_1,y_2) \equiv - \langle A y_1,y_2\rangle_{\mathscr{Y}} \]
 
 Il vient donc pour tout $(y_1,y_2) \in \mathscr{Y}$ :
 
@@ -487,18 +506,18 @@ Il vient donc pour tout $(y_1,y_2) \in \mathscr{Y}$ :
 	\langle A y_1,y_2\rangle_{\mathscr{Y}} & = 
 	                  \langle \dep \partial_x u_1 + \epsilon \partial_{xx}u_1 ,u_2\rangle
 					  + \displaystyle \frac{\epsilon}{\dep} \langle \dep \partial_x u_1(0),m_2\rangle \\	
-                        &= \int_0^L b (\partial_xu_1)u_2
+                        &= \int_0^L \dep (\partial_xu_1)u_2
                            + \int_0^L \epsilon (\partial_{xx} u_1)u_2
                            + \displaystyle \frac{\epsilon}{\dep} \dep \partial_xu_1(0)m_2\\
-						& =   \int_0^L b (\partial_xu_1)u_2
+						& =   \int_0^L \dep (\partial_xu_1)u_2
 						   + [\epsilon (\partial_x u_1)u_2]_0^L 
 						  - \int_0^L \partial_xu_1 \partial_xu_2
 						   + \epsilon \partial_xu_1(0)m_2\\
-						& = \int_0^L b (\partial_xu_1)u_2
+						& = \int_0^L \dep (\partial_xu_1)u_2
 						  -\epsilon m_2 \partial_x u_1(0) 
 						 - \int_0^L \epsilon \partial_xu_1 \partial_xu_2
 						   + \epsilon \partial_xu_1(0)m_2\\
-   						& = \int_0^L b (\partial_xu_1)u_2 
+   						& = \int_0^L \dep (\partial_xu_1)u_2 
    						 - \int_0^L \epsilon \partial_xu_1 \partial_xu_2
 \end{split}
 \]
@@ -510,7 +529,7 @@ Il vient donc pour tout $(y_1,y_2) \in \mathscr{Y}$ :
 	\begin{equation} 
 		\label{def:A2}
 	\forall (y_1,y_2) \in D(A), \; 
-	\langle A y_1,y_2\rangle_{\mathscr{Y}} =\int_0^L b (\partial_xu_1)u_2
+	\langle A y_1,y_2\rangle_{\mathscr{Y}} =\int_0^L \dep (\partial_xu_1)u_2
                            -  \int_0^L \epsilon \partial_xu_1 \partial_xu_2
 	\end{equation}
 	est générateur d'un semi-groupe $C_0$ de contraction dans $\mathscr{Y}$.
@@ -531,20 +550,20 @@ Soit $y \in \mathscr{Y}$,
 calculons la quantité :
 
 \[ \begin{split}
-\langle Ay,y \rangle_{\mathscr{Y}} &= \int_0^L b (\partial_x u)u
+\langle Ay,y \rangle_{\mathscr{Y}} &= \int_0^L \dep (\partial_x u)u
                            - \epsilon \int_0^L (\partial_x u)^2\\
-						           &= \int_0^L \displaystyle \frac{b}{2} \partial_x u^2
+						           &= \int_0^L \displaystyle \frac{\dep}{2} \partial_x u^2
                            - \epsilon \int_0^L (\partial_x u)^2 \\
-						           & = \displaystyle \frac{b}{2} [u^2]_0^L
+						           & = \displaystyle \frac{\dep}{2} [u^2]_0^L
                            - \epsilon \int_0^L (\partial_x u)^2 \\
-	   						           & = - \displaystyle \frac{b}{2} u(0)^2
+	   						           & = - \displaystyle \frac{\dep}{2} u(0)^2
 	                              - \int_0^L \epsilon (\partial_x u)^2
 \end{split} \]
 
 Soit :
 
 \[
-	\langle Ay,y \rangle_{\mathscr{Y}} = - \displaystyle \frac{b}{2} u(0)^2
+	\langle Ay,y \rangle_{\mathscr{Y}} = - \displaystyle \frac{\dep}{2} m^2
 	                              - \epsilon \int_0^L (\partial_x u)^2 
 \]
 
@@ -684,6 +703,146 @@ d'une équation de dissipation d'énergie.
 
 
 
+\vspace{1.0cm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{$v \in C^0$, $\epsilon \ne 0$}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Supposons $v$ une fonction connue, négative strictement 
+(ce qui correspond pqr exemple au cas dans Lifschitz-Slyozov où $0<\dep -\mass $ ), 
+et supposons $\epsilon>0$. 
+
+On suppose que $v$ est bornée, et pout tout $t \in[0,\tau]$, 
+$ \dep \leq |v(t)| \leq v_{\infty} $
+On s'intéresse à l'équation :
+
+
+\begin{equation}
+\label{eq:cas3}
+\begin{cases}
+ \displaystyle \frac{\partial y}{\partial t}
+ + v(t) \frac{\partial y} {\partial x}  
+ - \epsilon \frac{\partial^2 y} {\partial x^2}
+ = 0  & \forall (x,t) \in [0,L] \times [0, \tau]\\
+ y(x,0) = y_{0} (x) & \forall x \in [0,L] \\
+ \displaystyle \frac{\partial y}{\partial t}|_{x=0}
+ + v(t) \frac{\partial y} {\partial x}|_{x=0} = 0 & \forall t \in [0,\tau]\\
+ y(L,t)=0 & \forall t \in [0,\tau]
+\end{cases}
+\end{equation}
+
+Puisque $v<0$, pour faciliter la lecture, on pose $\dep (t) = - v(t) >0$.
+
+Par analogie avec ce qui a été fait dans la section précédente, on pose : 
+
+\[\mathscr{Y} = \left\{ y \; | \; y = (u,m) \in H^1([0,L])\times \mathbb{R},
+ \; u(0)=m, \; u(L)=0 \right\} \]
+ 
+  Avec la normne associée 
+  (on rappelle que $\forall t>0, \;  \dep \leq |v(t)|$) :
+  
+  \[\| y\|_{\mathscr{Y}}^2 = \int_0^L u^2 + \displaystyle \frac{\epsilon}{\dep} m^2 \]
+
+
+ On cherche à définir l'opérateur $A(t)$ tel que :
+ \[ \forall y \in D(A(t)) \subset \mathscr{Y}, \; \; 
+ \left( \begin{array}{c}
+ \dot{u}\\
+ \dot{m}
+ \end{array} \right)
+ = A(t) \left( \begin{array}{c}
+ u\\
+ m\\
+ \end{array} \right) 
+ = \left(\begin{array}{c}
+ \dep(t) \partial_x u + \epsilon \partial_{xx} u\\
+ \dep(t) \partial_x u(0)
+ \end{array}\right) \]
+ 
+ Soit $a_t$ une forme bilinéaire telle que :
+ \[ \forall (y_1,y_2) \in D(A), \; 
+ a(t,y_1,y_2) \equiv - \langle A(t) y_1,y_2\rangle_{\mathscr{Y}} \]
+
+ Il vient donc pour tout $(y_1,y_2) \in \mathscr{Y}$ :
+
+ \[
+ \begin{split}
+ 	\langle A(t) y_1,y_2\rangle_{\mathscr{Y}} 
+	                   & =  \langle \dep (t) \partial_x u_1 + \epsilon \partial_{xx}u_1 ,u_2\rangle
+ 					  + \displaystyle \frac{\epsilon}{\dep} \langle \dep (t) \partial_x u_1(0),m_2 \rangle \\	
+                         &= \int_0^L \dep (t) (\partial_x u_1)u_2
+                            + \int_0^L \epsilon (\partial_{xx} u_1)u_2
+                            + \displaystyle \frac{\epsilon}{\dep} \dep (t) \partial_xu_1(0)m_2\\
+ 						& =   \int_0^L \dep(t) (\partial_xu_1)u_2
+ 						   + [\epsilon (\partial_x u_1)u_2]_0^L 
+ 						  - \int_0^L \partial_xu_1 \partial_xu_2
+ 						   + \displaystyle \frac{\epsilon}{\dep} \dep (t) \partial_xu_1(0)m_2\\
+ 						& = \int_0^L \dep (t) (\partial_xu_1)u_2
+ 						 - \int_0^L \epsilon \partial_xu_1 \partial_xu_2
+ 					+ \epsilon (\displaystyle \frac{\dep (t)}{\dep} - 1) \partial_xu_1(0)m_2
+\end{split}
+\]
+
+\begin{lemme}
+ 	On définit la famille 
+	$a(t,\cdot, \cdot): D(A(t)) \times D(A(t)) \to \mathbb{R}$ par :
+ 	\[
+ 	\forall (y_1,y_2) \in D(A(t)) \times D(A(t))
+	\]
+	\begin{equation}
+		\label{def:a3}
+		 a(t,y_1,y_2) = \int_0^L \epsilon \partial_xu_1 \partial_xu_2
+		                 - \int_0^L \dep (t) (\partial_xu_1)u_2
+						 + \epsilon (1 - \displaystyle \frac{\dep (t)}{\dep}) \partial_xu_1(0)m_2
+	\end{equation}
+	Alors, pour tout $t>0$, la forme bilinéaire $a(t, \cdot, \cdot)$ est coercive sur $D(A(t)$.
+\end{lemme}
+
+\begin{preuve}
+	Soient $y=(u,m)$ dans $D(A(t)) \subset {\mathscr{Y}}$, calculons la quantité :
+	\[
+	\begin{split}
+		 a(t,y,y) &=  \int_0^L \epsilon (\partial_x u)^2
+		                 - \int_0^L \dep (t) (\partial_x u)u
+						 + \epsilon (1 - \displaystyle \frac{\dep (t)}{\dep}) \partial_xu(0)m\\
+				  &= \int_0^L \epsilon (\partial_xu)^2
+				     - \int_0^L \dep (t) \displaystyle \frac{1}{2} (\partial_xu^2)
+					 + \epsilon (1 -  \frac{\dep (t)}{\dep}) \partial_xu(0)m \\
+				 & = \int_0^L \epsilon (\partial_xu)^2
+				 -  \dep (t)\displaystyle \frac{1}{2} [u^2]_0^L
+				  + \epsilon (1 -  \frac{\dep (t)}{\dep}) \partial_xu(0)m \\
+ 				 & = \int_0^L \epsilon (\partial_xu)^2
+ 				   + \dep (t)\displaystyle \frac{1}{2} m^2
+ 				    + \epsilon (1-\displaystyle \frac{\dep (t)}{\dep}) \partial_xu(0)m		  
+    \end{split}
+	\]
+	
+	
+	
+	
+	QUEL EST LE  SIGNE DE $\partial_xu(0)$ \textbf{?} pour obtenir :
+	
+	\[  |a(t,y,y)| \geq \int_0^L \epsilon (\partial_xu)^2
+ 				   + \dep \displaystyle \frac{1}{2} m^2 \]
+	
+\end{preuve}
+ 
+ 
+ 
+ \begin{proposition}
+ 	\label{prop:cas3}
+ 	La famille d'opérateurs définie par :
+ 	\begin{equation} 
+ 		\label{def:A3}
+ 	\langle A(t) y_1,y_2\rangle_{\mathscr{Y}} 
+                                     = \int_0^L \dep (t) (\partial_xu_1)u_2
+ 						 - \int_0^L \epsilon \partial_xu_1 \partial_xu_2
+ 					+ \epsilon (\displaystyle \frac{\dep (t)}{\dep}-1) \partial_xu_1(0)m_2
+ 	\end{equation}
+ 	est une famille de générateurs infinitésimal
+	 d'un semi-groupe $C_0$ de contraction dans $\mathscr{Y}$.
+ \end{proposition}						
+ 
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -700,12 +859,74 @@ d'une équation de dissipation d'énergie.
 \subsection{$v =$ cste, $\epsilon \ne 0$}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Approche variationnelle, on souhaite minimiser la fonctionnelle :
+
+\begin{equation}
+	\label{cas2:critere}
+	\displaystyle
+	\min_{\xi} = J(\xi,t) = \frac{\alpha}{2}\|\xi \|_{\mathscr{Y}} 
+	                      + \frac{\gamma}{2}\int_0^t (\|z(s)-C(s)y_{| \xi}\|_{\mathscr{Z}})ds
+\end{equation}
+
+
+On définit l'observateur de Kalman sur pour tout temps sur l'intervalle 
+d'observation $[0,\tau]$ comme l'optimum de la fonctionnelle~\eqref{cas2:critere}.
+
+\[ \forall t>0, \; t\in (0,\tau], \; \; \hat{y}(t) = \bar{y}_{|t}(t) \]
+
+\textit{On cherche l'équation vérifiée par $\hat{y}$ 
+et $P$ et $\bar{q}_{|t}$ tel que 
+$\hat{y}$ soit l'estimateur associé au modèle et aux mesures
+et qu'on ait la relation pour $0<s<t$, 
+$\hat{y}(s)+ P(s)\bar{q}_{|t} = \bar{y}_{|t}(s)$}
+
+\vspace{0.3cm}
+Soit $\bar{q}$ l'adjoint au Lagrangien (qui vérifie la condition d'optimalité du point selle) :
+
+\[ 
+\mathscr{L}(y,q)= J(\xi,t)+\int_0^t \langle \dot{y}-Ay, q \rangle_{\mathscr{Y}}
+\]
+
+Alors au point optimal $q$, pour tout $\delta y$ de $\mathscr{Y}$ :
+
+\[
+\begin{split}
+\langle \partial_y \mathscr{L}, \delta y \rangle_{\mathscr{Y}} & =0 \\ 
+          &= \int_0^t \langle z(s) - Cy(s), C \delta y(s) \rangle_{\mathscr{Z}}ds
+		   - \int_0^t \langle \dot{q}(s), \delta y(s) \rangle_{\mathscr{Y}}ds
+		   - \int_0^t \langle A \delta y(s), q(s) \rangle_{\mathscr{Y}} ds\\
+		  & = \int_0^t \langle C^* (z(s) - Cy(s))
+		   - \dot{q}(s)
+		   -A^* q(s)
+		   , \delta y(s) \rangle_{\mathscr{Y}} ds
+\end{split}
+\]
+
+Soit l'équation adjointe associée au Lagrangien pour la fonctionnelle $J(\xi,t)$ :
+
+\begin{equation}
+	\label{cas2:adjoint}
+	\begin{cases}
+	\dot{q}_{\xi,t} + A^* q_{\xi,t} = - C^*(z-Cy_{\xi}) \\
+	q_{\xi,t}(t) =0
+	\end{cases}
+\end{equation}
+
+\begin{remarque}
+	Le changement de produit vectoriel, de norme, 
+	n'induit pas de différence dans l'équation vérifiée par l'adjoint
+	au sens du multiplicateur de Lagrande.
+	De même, l'équation de Riccati n'est pas modifiée.
+\end{remarque}
+
+\vspace{0.3cm}
 On cherche l'adjoint de l'opérateur $A$ sur $\mathscr{Y}$ tel que :
 
 \begin{equation}
 	\begin{cases}
 		\mathscr{Y} = \left\{ y \; | \; y = (u,m) \in H^1([0,L])\times \mathbb{R},
  \; u(0)=m, \; u(L)=0 \right\} \\
+        \\
         \forall y \in D(A), \; \;
 		\left( \begin{array}{c}
 		\dot{u}\\

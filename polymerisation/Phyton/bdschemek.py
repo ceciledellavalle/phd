@@ -73,3 +73,22 @@ def BeckerDoringScheme(L,NX,T,NT,a,b,c0,state_init):
     state_bd = np.concatenate((state[1:,:],np.zeros((1,NT))),axis=0)
 
     return state_bd
+
+##################################################################################
+##################################################################################
+# Compitation of Speed vector with BD Scheme output
+def SpeedComputation(L,NX,T,NT,a,b,c0,state0):
+    ### OBSERVER - MOMENT OPERATOR
+    # First moment
+    observer_1= L/NX*np.linspace(L/NX, L-L/NX, NX-1)
+
+    ### MOMENT 1rst and 2nd order
+    mu1 = np.dot(observer_1,state0[1:,:])
+
+    ### SPEED Computation
+    masse_rho = L/NX*np.linspace(L/NX, L-NX/L, NX-1)\
+    .dot(state0[1:,0])+c0
+    speed0 = a*(masse_rho-mu1)\
+    -b*np.linspace(1,1,NT)
+
+    return speed0

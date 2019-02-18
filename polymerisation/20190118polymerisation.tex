@@ -429,20 +429,95 @@ Donc, pour une solution classique de~\eqref{eq:poldep}, on a la relation :
 	
 	Si $\mass-\dep < 0 $,
 	\begin{itemize}
-		\item  alors $\forall t \in [0,\tau] \;, \;$ on a $v(t) <0$ . 
+		\item  alors $\forall t \in [0,\tau] \;, \;$ on a $v(t) <0$. 
+		De plus, si $\tau> \displaystyle \frac{L}{\dep-\mass}$, alors il existe $t^* \in [0,\tau]$ tel que $\mu_0(t^*)=0$ et $\mu_1(t^*) = 0$. 
 	\end{itemize}
 	
 	Sinon, $0 < \mass-\dep$,
 	\begin{itemize}
-	 \item soit $v(0)<0$ alors pour $\tau$ suffisamment grand, il existe $t^* < \tau$ tel que $v(t^*) = 0 $, 
-	 \item soit $v(0) >0$ alors de même $\forall t \in [0,\tau] \;$ on a $v(t) >0$.
+	 \item soit $v(0)<0$, alors $\forall t>0 $, on a $v(t)<0$ et $\mathrm{lim}_{t \rightarrow \infty} v(t) = 0$. 
+	 \item soit $v(0)>0$ alors $\forall t \in [0,\tau] \;$ on a $v(t) >0$ et $\mathrm{lim}_{t \rightarrow \infty} v(t) = 0$.
 	 \end{itemize}
 \end{proposition}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \begin{preuve}
-	A REVOIR
+	Soit l'unique solution classique $y$ du problème de Cauchy~\eqref{eq:poldep}, 
+	vérifiant l'hypothèse~\eqref{hyp:compact},
+	alors la vitesse $v$ de réaction s'écrit pour tout temps $t \in [0,\tau]$ par définition :
+	\[v(t) = \mass -\int_0^L x y(x,t)dx -\dep\]
+
+	\vspace{0.5cm}
+	\underline{Si $\mass-\dep < 0 $} :
+	
+ 	Sachant la définition de la vitesse $v$, on a l'implication :
+ 	\[ v(t) = \mass -\dep - \mu_1(t) <0 \; \iff \; \; \mass-\dep < \int_0^L x y(x,t)dx  \]
+	
+	Comme la fonction $y_0$ est positive, la solution $y$ l'est également.
+	Cette hypothèse est donc toujours vérifiée
+	
+	De plus, $\forall t>0$, $v(t)> \mass-\dep$, donc $|\theta (t)|> t^*\times
+	|\mass-\dep|$.
+	Donc pour $t^* = \frac{L}{\mass-\dep}>0$, par hypothèse $t^* \in [0,\tau]$, et on a $ \mu_1(t^*) = \int_{-\theta(t)}^L xy_0(x)dx = 0$ et donc $\mu_0(t^*) =0$.
+	
+	
+	\vspace{0.5cm}
+	\underline{Sinon, pour $0<\mass-\dep$} :
+	
+	\[ \frac{\mathrm{d} v }{\mathrm{d}t} =  - \frac{\mathrm{d} \mu_1 }{\mathrm{d}t} = - v(t) \mu_0(t) \]
+	
+	\textbf{v(0)<0} :
+	
+	Sachant qu'à $t=0$ la vitesse $v(0)<0$, $\mu_0 >0$.
+	\[ 
+	\begin{split}
+		\mu_1(t) & = \int_0^L x y(x,t)dx \\
+		      & = \int_0^L x y_0(x-\theta(t)) dx \\
+		      & = \int_{-\theta(t)}^{L} (x+\theta(t)) y_0(x) dx \\
+	\end{split}
+	\]
+	La vitesse $v$ est décroissante, négative, et  ne change pas de signe tant que $\mu_1 > \mass- \dep >0$. 
+	Donc
+	\[ \mu_1 > \mass- \dep >0 \implies \mu_1 \searrow \]
+    Donc $\mu_1$ est une fonction décroissante strictement et minorée.
+	
+	Supposons qu'il exite $t^*>0$ tel que $\mu_1(t^*)= \mass -\dep $, 
+	alors $v(t^*)=0$, $\frac{\mathrm{d} v }{\mathrm{d}t} (t^*)= 0$.
+	
+	Si $\mu_0(t^*)>0$ alors $\forall t<t^*$, $0<\mu_0(t^*)<\mu_0(t)$ et on note $ \mu_0(t^*)= \alpha$, et il vient :
+	
+	\[ \frac{\mathrm{d} |v| }{\mathrm{d}t} = \mu_0(t)|v(t)| \geq \alpha |v(t)| \]
+	
+	Donc d'après le lemme de Grönwall :
+	\[ |v(t)| \geq |v(0)| e^{-\alpha t} \]
+	
+	Ceci contredit le fait que $v$ s'annule en $t=t^*$.
+	Donc nécessairement $\mu_0(t^*) = 0$, 
+	or, $x \to xy (x,t)$ et $x \to y(x,t)$ sont des fonctions positives de même support,
+	donc $\mu_1(t^*) =0 \implies \mu_0(t^*)=0$ .
+	
+	En effet, le système est entièrement dépolymérisé et le système vérifie :
+	
+	$\forall t>t^*$:
+	\begin{itemize}
+		\item $\theta(t)= \theta(t^*) \geq L $
+		\item $y(x,t)=y(x,t^*)= 0$
+	\end{itemize}
+	
+	Donc $v(t^*) = \mass - \dep - \mu_1(t^*) = \mass- \dep > 0$.
+	
+	C'est une contradiction.	
+	
+	
+	\vspace{0.3cm}
+	\textbf{v(0)>0}
+ 	
+	Alors $\mu_0>0$ est une constante et 
+ 	\[ v(t) = ( \mass - \mu_1 (t)) - \dep = v(0)e^{- \mu_0 t} \]
+ 	On voit donc que la vitesse ne change jamais de signe sur $[0,\tau]$.
+	Cette formule explicite garantie de plus que et $\mathrm{lim}_{t \rightarrow \infty} v(t) = 0$.
+	
 \end{preuve}
 
 
@@ -1028,7 +1103,7 @@ Dans ce cas, l'équation des moments~\eqref{eq:mmt} d'écrit :
 	
 	\begin{equation}
 		\label{mexplicit}
-		y_0(x) = \frac{1}{n! v(-\theta^{-1}(x))^{n+1}} \frac{\mathrm{d}^{n+1}}{\mathrm{d}t^{n+1}} (\Psi_n(-\theta^-1(x)))
+		y_0(x) = \frac{1}{n! v(-\theta^{-1}(x))^{n+1}} \frac{\mathrm{d}^{n+1}}{\mathrm{d}t^{n+1}} (\Psi_n(-\theta^{-1}(x)))
 	\end{equation}
 \end{proposition}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1166,11 +1241,20 @@ On munit $\mathscr{X}$ de la semi-norme pour tout $n>0$:
 \begin{preuve}
 	L'équation~\eqref{mexplicit} est vérifiée :
 	\[y_0(x) = \frac{1}{n! v(-\theta^{-1}(x))^{n+1}} \frac{\mathrm{d}^{n+1}}{\mathrm{d}t^{n+1}} (\Psi_ny_0(-\theta^{-1}(x)))\]
-	On pose alors $ 1/k_n = n! \| v\|_{L^\infty}^{n+1}$.
-	Alors:
+	
+	On doit à présent distinguer deux cas :
+	
+	\vspace{0.3cm}
+	\underline{$0<\dep-\mass $}
+	
+	On pose alors $ 1/k_n = n! |\mass - \dep|^{n+1} $.
+	
+	Comme $x \to \frac{\mathrm{d}^{n+1}}{\mathrm{d}t^{n+1}} (\Psi_ny_0(-\theta^{-1}(x))) $ est défini sur $[0,L]$, on peut intégrer et on obtient 
+	alors:
 	\[ 
 		\int_0^Ly_0(x)dx \leq 1/k_n \int_0^L \frac{\mathrm{d}^{n+1}}{\mathrm{d}t^{n+1}} (\Psi_ny_0(-\theta^{-1}(x))) dx
 		\]
+
 		
 	Pour $ -\theta(\tau) > L$ on peut effectuer un changement de variable et retrouver :
 	
@@ -1179,6 +1263,33 @@ On munit $\mathscr{X}$ de la semi-norme pour tout $n>0$:
 	Soit l'inégalité d'observabilite :
 	
 	\[\| \Psi_n(y_0)\|_{\mathscr{Z}}^2 \geq k_n \|y_0\|^2_{\mathscr{Y}}\]
+	
+	
+	\underline{$0<\mass-\dep$}
+	
+	On rappelle les résultats de la propriété ~\ref{prop:v} :
+	
+	$\forall t>0 $, on a $v(t)<0$ et 
+	\[
+	\begin{cases}
+		\mathrm{lim}_{t \rightarrow \infty} v(t) = 0 \\
+		\mathrm{lim}_{t \rightarrow \infty} \mu_1(t)= \mass -\dep 
+	\end{cases}
+	\]
+	
+	S'il existe $t^*$ tel que $- \theta(t^*)>L$ alors $\mu_1(t^*) =0$ 
+	ce qui est une contradiction avec la limite établie précédemment.
+	
+	On note alors $l_1 = \int_0^{+\infty} v(t)dt < L $.
+	
+	Et on obtient :
+	
+	\[ 
+\int_0^{l_1} \frac{\mathrm{d}^{n+1}}{\mathrm{d}t^{n+1}} (\Psi_ny_0(-\theta^{-1}(x))) dx
+ < \int_0^L y_0(x)dx
+		\]
+	
+	On obtient donc l'inégalité d'observabilité uniquement sur le segment $[0,l_1]$.
 	
 	
 	

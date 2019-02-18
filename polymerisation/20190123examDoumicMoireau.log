@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.9.3)  18 FEB 2019 12:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.9.3)  15 FEB 2019 11:30
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**"20190206 existence.tex"
-(./20190206 existence.tex
+**20190123examDoumicMoireau.tex
+(./20190123examDoumicMoireau.tex
 LaTeX2e <2018-04-01> patch level 2
 Babel <3.18> and hyphenation patterns for 84 language(s) loaded.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/base/article.cls
@@ -29,6 +29,17 @@ Package: inputenc 2018/04/06 v1.3b Input encoding file
 \inpenc@prehook=\toks14
 \inpenc@posthook=\toks15
 )
+(/usr/local/texlive/2018/texmf-dist/tex/latex/ucs/ucs.sty
+Package: ucs 2013/05/11 v2.2 UCS: Unicode input support
+
+(/usr/local/texlive/2018/texmf-dist/tex/latex/ucs/data/uni-global.def
+File: uni-global.def 2013/05/13 UCS: Unicode global data
+)
+\uc@secondtry=\count88
+\uc@combtoks=\toks16
+\uc@combtoksb=\toks17
+\uc@temptokena=\toks18
+)
 (/usr/local/texlive/2018/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2017/04/05 v2.0i Standard LaTeX package
 
@@ -47,27 +58,27 @@ Language: french 2018/03/25 v3.4c French support from the babel system
 
 (/usr/local/texlive/2018/texmf-dist/tex/generic/babel/babel.def
 File: babel.def 2018/02/14 3.18 Babel common definitions
-\babel@savecnt=\count88
+\babel@savecnt=\count89
 \U@D=\dimen103
 
 (/usr/local/texlive/2018/texmf-dist/tex/generic/babel/txtbabel.def)
-\bbl@dirlevel=\count89
+\bbl@dirlevel=\count90
 )
 \l@acadian = a dialect from \language\l@french 
-\FB@nonchar=\count90
+\FB@nonchar=\count91
 Package babel Info: Making : an active character on input line 415.
 Package babel Info: Making ; an active character on input line 416.
 Package babel Info: Making ! an active character on input line 417.
 Package babel Info: Making ? an active character on input line 418.
-\FBguill@level=\count91
-\FB@everypar=\toks16
+\FBguill@level=\count92
+\FB@everypar=\toks19
 \FB@Mht=\dimen104
-\mc@charclass=\count92
-\mc@charfam=\count93
-\mc@charslot=\count94
-\std@mcc=\count95
-\dec@mcc=\count96
-\c@FBcaption@count=\count97
+\mc@charclass=\count93
+\mc@charfam=\count94
+\mc@charslot=\count95
+\std@mcc=\count96
+\dec@mcc=\count97
+\c@FBcaption@count=\count98
 \listindentFB=\skip43
 \descindentFB=\skip44
 \labelwidthFB=\skip45
@@ -78,15 +89,15 @@ Package babel Info: Making ? an active character on input line 418.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/carlisle/scalefnt.sty)
 (/usr/local/texlive/2018/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
-\KV@toks@=\toks17
+\KV@toks@=\toks20
 )
 (/usr/local/texlive/2018/texmf-dist/tex/latex/soul/soul.sty
 Package: soul 2003/11/17 v2.4 letterspacing/underlining (mf)
-\SOUL@word=\toks18
-\SOUL@lasttoken=\toks19
-\SOUL@cmds=\toks20
-\SOUL@buffer=\toks21
-\SOUL@token=\toks22
+\SOUL@word=\toks21
+\SOUL@lasttoken=\toks22
+\SOUL@cmds=\toks23
+\SOUL@buffer=\toks24
+\SOUL@token=\toks25
 \SOUL@spaceskip=\skip48
 \SOUL@ttwidth=\dimen106
 \SOUL@uldp=\dimen107
@@ -114,7 +125,7 @@ File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
 )
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
-\@emptytoks=\toks23
+\@emptytoks=\toks26
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
@@ -122,15 +133,15 @@ LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 )
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amscls/amsthm.sty
 Package: amsthm 2017/10/31 v2.20.4
-\thm@style=\toks24
-\thm@bodyfont=\toks25
-\thm@headfont=\toks26
-\thm@notefont=\toks27
-\thm@headpunct=\toks28
+\thm@style=\toks27
+\thm@bodyfont=\toks28
+\thm@headfont=\toks29
+\thm@notefont=\toks30
+\thm@headpunct=\toks31
 \thm@preskip=\skip49
 \thm@postskip=\skip50
 \thm@headsep=\skip51
-\dth@everypar=\toks29
+\dth@everypar=\toks32
 )
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2017/09/02 v2.17a AMS math features
@@ -142,7 +153,7 @@ Package: amstext 2000/06/29 v2.01 AMS text
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
-\@emptytoks=\toks30
+\@emptytoks=\toks33
 \ex@=\dimen111
 ))
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amsmath/amsbsy.sty
@@ -152,13 +163,13 @@ Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 2016/03/08 v2.02 operator names
 )
-\inf@bad=\count98
+\inf@bad=\count99
 LaTeX Info: Redefining \frac on input line 213.
-\uproot@=\count99
-\leftroot@=\count100
+\uproot@=\count100
+\leftroot@=\count101
 LaTeX Info: Redefining \overline on input line 375.
-\classnum@=\count101
-\DOTSCASE@=\count102
+\classnum@=\count102
+\DOTSCASE@=\count103
 LaTeX Info: Redefining \ldots on input line 472.
 LaTeX Info: Redefining \dots on input line 475.
 LaTeX Info: Redefining \cdots on input line 596.
@@ -167,26 +178,26 @@ LaTeX Info: Redefining \cdots on input line 596.
 \big@size=\dimen113
 LaTeX Font Info:    Redeclaring font encoding OML on input line 712.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
-\macc@depth=\count103
-\c@MaxMatrixCols=\count104
+\macc@depth=\count104
+\c@MaxMatrixCols=\count105
 \dotsspace@=\muskip10
-\c@parentequation=\count105
-\dspbrk@lvl=\count106
-\tag@help=\toks31
-\row@=\count107
-\column@=\count108
-\maxfields@=\count109
-\andhelp@=\toks32
+\c@parentequation=\count106
+\dspbrk@lvl=\count107
+\tag@help=\toks34
+\row@=\count108
+\column@=\count109
+\maxfields@=\count110
+\andhelp@=\toks35
 \eqnshift@=\dimen114
 \alignsep@=\dimen115
 \tagshift@=\dimen116
 \tagwidth@=\dimen117
 \totwidth@=\dimen118
 \lineht@=\dimen119
-\@envbody=\toks33
+\@envbody=\toks36
 \multlinegap=\skip53
 \multlinetaggap=\skip54
-\mathdisplay@stack=\toks34
+\mathdisplay@stack=\toks37
 LaTeX Info: Redefining \[ on input line 2817.
 LaTeX Info: Redefining \] on input line 2818.
 )
@@ -209,12 +220,12 @@ Package: booktabs 2016/04/27 v1.618033 publication quality tables
 \cmidrulesep=\dimen127
 \cmidrulekern=\dimen128
 \defaultaddspace=\dimen129
-\@cmidla=\count110
-\@cmidlb=\count111
+\@cmidla=\count111
+\@cmidlb=\count112
 \@aboverulesep=\dimen130
 \@belowrulesep=\dimen131
-\@thisruleclass=\count112
-\@lastruleclass=\count113
+\@thisruleclass=\count113
+\@lastruleclass=\count114
 \@thisrulewidth=\dimen132
 )
 (/usr/local/texlive/2018/texmf-dist/tex/latex/siunitx/siunitx.sty
@@ -223,18 +234,18 @@ Package: expl3 2018/03/05 L3 programming layer (loader)
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/l3kernel/expl3-code.tex
 Package: expl3 2018/03/05 L3 programming layer (code)
-\c_max_int=\count114
-\l_tmpa_int=\count115
-\l_tmpb_int=\count116
-\g_tmpa_int=\count117
-\g_tmpb_int=\count118
-\g__intarray_font_int=\count119
-\g__prg_map_int=\count120
-\c_log_iow=\count121
-\l_iow_line_count_int=\count122
-\l__iow_line_target_int=\count123
-\l__iow_one_indent_int=\count124
-\l__iow_indent_int=\count125
+\c_max_int=\count115
+\l_tmpa_int=\count116
+\l_tmpb_int=\count117
+\g_tmpa_int=\count118
+\g_tmpb_int=\count119
+\g__intarray_font_int=\count120
+\g__prg_map_int=\count121
+\c_log_iow=\count122
+\l_iow_line_count_int=\count123
+\l__iow_line_target_int=\count124
+\l__iow_one_indent_int=\count125
+\l__iow_indent_int=\count126
 \c_zero_dim=\dimen133
 \c_max_dim=\dimen134
 \l_tmpa_dim=\dimen135
@@ -253,77 +264,77 @@ Package: expl3 2018/03/05 L3 programming layer (code)
 \l_tmpb_muskip=\muskip14
 \g_tmpa_muskip=\muskip15
 \g_tmpb_muskip=\muskip16
-\l_keys_choice_int=\count126
-\c__fp_leading_shift_int=\count127
-\c__fp_middle_shift_int=\count128
-\c__fp_trailing_shift_int=\count129
-\c__fp_big_leading_shift_int=\count130
-\c__fp_big_middle_shift_int=\count131
-\c__fp_big_trailing_shift_int=\count132
-\c__fp_Bigg_leading_shift_int=\count133
-\c__fp_Bigg_middle_shift_int=\count134
-\c__fp_Bigg_trailing_shift_int=\count135
-\c__fp_rand_size_int=\count136
-\c__fp_rand_four_int=\count137
-\c__fp_rand_eight_int=\count138
-\l__sort_length_int=\count139
-\l__sort_min_int=\count140
-\l__sort_top_int=\count141
-\l__sort_max_int=\count142
-\l__sort_true_max_int=\count143
-\l__sort_block_int=\count144
-\l__sort_begin_int=\count145
-\l__sort_end_int=\count146
-\l__sort_A_int=\count147
-\l__sort_B_int=\count148
-\l__sort_C_int=\count149
-\l__tl_build_start_index_int=\count150
-\l__tl_build_index_int=\count151
-\l__tl_analysis_normal_int=\count152
-\l__tl_analysis_index_int=\count153
-\l__tl_analysis_nesting_int=\count154
-\l__tl_analysis_type_int=\count155
-\l__regex_internal_a_int=\count156
-\l__regex_internal_b_int=\count157
-\l__regex_internal_c_int=\count158
-\l__regex_balance_int=\count159
-\l__regex_group_level_int=\count160
-\l__regex_mode_int=\count161
-\c__regex_cs_in_class_mode_int=\count162
-\c__regex_cs_mode_int=\count163
-\l__regex_catcodes_int=\count164
-\l__regex_default_catcodes_int=\count165
-\c__regex_catcode_D_int=\count166
-\c__regex_catcode_S_int=\count167
-\c__regex_catcode_L_int=\count168
-\c__regex_catcode_O_int=\count169
-\c__regex_catcode_A_int=\count170
-\c__regex_all_catcodes_int=\count171
-\l__regex_show_lines_int=\count172
-\l__regex_min_state_int=\count173
-\l__regex_max_state_int=\count174
-\l__regex_left_state_int=\count175
-\l__regex_right_state_int=\count176
-\l__regex_capturing_group_int=\count177
-\l__regex_min_pos_int=\count178
-\l__regex_max_pos_int=\count179
-\l__regex_curr_pos_int=\count180
-\l__regex_start_pos_int=\count181
-\l__regex_success_pos_int=\count182
-\l__regex_curr_char_int=\count183
-\l__regex_curr_catcode_int=\count184
-\l__regex_last_char_int=\count185
-\l__regex_case_changed_char_int=\count186
-\l__regex_curr_state_int=\count187
-\l__regex_step_int=\count188
-\l__regex_min_active_int=\count189
-\l__regex_max_active_int=\count190
-\l__regex_replacement_csnames_int=\count191
-\l__regex_match_count_int=\count192
-\l__regex_min_submatch_int=\count193
-\l__regex_submatch_int=\count194
-\l__regex_zeroth_submatch_int=\count195
-\g__regex_trace_regex_int=\count196
+\l_keys_choice_int=\count127
+\c__fp_leading_shift_int=\count128
+\c__fp_middle_shift_int=\count129
+\c__fp_trailing_shift_int=\count130
+\c__fp_big_leading_shift_int=\count131
+\c__fp_big_middle_shift_int=\count132
+\c__fp_big_trailing_shift_int=\count133
+\c__fp_Bigg_leading_shift_int=\count134
+\c__fp_Bigg_middle_shift_int=\count135
+\c__fp_Bigg_trailing_shift_int=\count136
+\c__fp_rand_size_int=\count137
+\c__fp_rand_four_int=\count138
+\c__fp_rand_eight_int=\count139
+\l__sort_length_int=\count140
+\l__sort_min_int=\count141
+\l__sort_top_int=\count142
+\l__sort_max_int=\count143
+\l__sort_true_max_int=\count144
+\l__sort_block_int=\count145
+\l__sort_begin_int=\count146
+\l__sort_end_int=\count147
+\l__sort_A_int=\count148
+\l__sort_B_int=\count149
+\l__sort_C_int=\count150
+\l__tl_build_start_index_int=\count151
+\l__tl_build_index_int=\count152
+\l__tl_analysis_normal_int=\count153
+\l__tl_analysis_index_int=\count154
+\l__tl_analysis_nesting_int=\count155
+\l__tl_analysis_type_int=\count156
+\l__regex_internal_a_int=\count157
+\l__regex_internal_b_int=\count158
+\l__regex_internal_c_int=\count159
+\l__regex_balance_int=\count160
+\l__regex_group_level_int=\count161
+\l__regex_mode_int=\count162
+\c__regex_cs_in_class_mode_int=\count163
+\c__regex_cs_mode_int=\count164
+\l__regex_catcodes_int=\count165
+\l__regex_default_catcodes_int=\count166
+\c__regex_catcode_D_int=\count167
+\c__regex_catcode_S_int=\count168
+\c__regex_catcode_L_int=\count169
+\c__regex_catcode_O_int=\count170
+\c__regex_catcode_A_int=\count171
+\c__regex_all_catcodes_int=\count172
+\l__regex_show_lines_int=\count173
+\l__regex_min_state_int=\count174
+\l__regex_max_state_int=\count175
+\l__regex_left_state_int=\count176
+\l__regex_right_state_int=\count177
+\l__regex_capturing_group_int=\count178
+\l__regex_min_pos_int=\count179
+\l__regex_max_pos_int=\count180
+\l__regex_curr_pos_int=\count181
+\l__regex_start_pos_int=\count182
+\l__regex_success_pos_int=\count183
+\l__regex_curr_char_int=\count184
+\l__regex_curr_catcode_int=\count185
+\l__regex_last_char_int=\count186
+\l__regex_case_changed_char_int=\count187
+\l__regex_curr_state_int=\count188
+\l__regex_step_int=\count189
+\l__regex_min_active_int=\count190
+\l__regex_max_active_int=\count191
+\l__regex_replacement_csnames_int=\count192
+\l__regex_match_count_int=\count193
+\l__regex_min_submatch_int=\count194
+\l__regex_submatch_int=\count195
+\l__regex_zeroth_submatch_int=\count196
+\g__regex_trace_regex_int=\count197
 \c_empty_box=\box28
 \l_tmpa_box=\box29
 \l_tmpb_box=\box30
@@ -367,15 +378,15 @@ Package: expl3 2018/03/05 L3 programming layer (code)
 )
 (/usr/local/texlive/2018/texmf-dist/tex/latex/l3kernel/l3pdfmode.def
 File: l3pdfmode.def 2017/03/18 v L3 Experimental driver: PDF mode
-\l__driver_color_stack_int=\count197
+\l__driver_color_stack_int=\count198
 ))
 (/usr/local/texlive/2018/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
 Package: xparse 2018/02/21 L3 Experimental document command parser
-\l__xparse_current_arg_int=\count198
-\g__xparse_grabber_int=\count199
-\l__xparse_m_args_int=\count266
-\l__xparse_mandatory_args_int=\count267
-\l__xparse_v_nesting_int=\count268
+\l__xparse_current_arg_int=\count199
+\g__xparse_grabber_int=\count266
+\l__xparse_m_args_int=\count267
+\l__xparse_mandatory_args_int=\count268
+\l__xparse_v_nesting_int=\count269
 )
 Package: siunitx 2018-03-20 v2.7m A comprehensive (SI) units package
 
@@ -384,7 +395,7 @@ Package: array 2018/04/07 v2.4g Tabular extension package (FMi)
 \col@sep=\dimen164
 \ar@mcellbox=\box43
 \extrarowheight=\dimen165
-\NC@list=\toks35
+\NC@list=\toks38
 \extratabsurround=\skip61
 \backup@length=\skip62
 \ar@cellbox=\box44
@@ -394,27 +405,27 @@ Package: l3keys2e 2018/02/21 LaTeX2e option processing using LaTeX3 keys
 )
 \l__siunitx_tmp_box=\box45
 \l__siunitx_tmp_dim=\dimen166
-\l__siunitx_tmp_int=\count269
-\l__siunitx_number_mantissa_length_int=\count270
-\l__siunitx_number_uncert_length_int=\count271
-\l__siunitx_round_int=\count272
-\l__siunitx_process_decimal_int=\count273
-\l__siunitx_process_uncertainty_int=\count274
-\l__siunitx_process_fixed_int=\count275
-\l__siunitx_process_integer_min_int=\count276
-\l__siunitx_process_precision_int=\count277
-\l__siunitx_group_min_int=\count278
+\l__siunitx_tmp_int=\count270
+\l__siunitx_number_mantissa_length_int=\count271
+\l__siunitx_number_uncert_length_int=\count272
+\l__siunitx_round_int=\count273
+\l__siunitx_process_decimal_int=\count274
+\l__siunitx_process_uncertainty_int=\count275
+\l__siunitx_process_fixed_int=\count276
+\l__siunitx_process_integer_min_int=\count277
+\l__siunitx_process_precision_int=\count278
+\l__siunitx_group_min_int=\count279
 \l__siunitx_angle_marker_box=\box46
 \l__siunitx_angle_unit_box=\box47
 \l__siunitx_angle_marker_dim=\dimen167
 \l__siunitx_angle_unit_dim=\dimen168
-\l__siunitx_unit_int=\count279
-\l__siunitx_unit_denominator_int=\count280
-\l__siunitx_unit_numerator_int=\count281
-\l__siunitx_unit_prefix_int=\count282
-\l__siunitx_unit_prefix_base_int=\count283
-\l__siunitx_unit_prefix_gram_int=\count284
-\l__siunitx_number_product_int=\count285
+\l__siunitx_unit_int=\count280
+\l__siunitx_unit_denominator_int=\count281
+\l__siunitx_unit_numerator_int=\count282
+\l__siunitx_unit_prefix_int=\count283
+\l__siunitx_unit_prefix_base_int=\count284
+\l__siunitx_unit_prefix_gram_int=\count285
+\l__siunitx_number_product_int=\count286
 \c__siunitx_one_fill_skip=\skip63
 \l__siunitx_table_unit_align_skip=\skip64
 \l__siunitx_table_exponent_dim=\dimen169
@@ -553,15 +564,15 @@ Package: translator 2018/01/04 v1.12 Easy translation of strings in LaTeX
 ))
 (/usr/local/texlive/2018/texmf-dist/tex/latex/thmtools/thmtools.sty
 Package: thmtools 2014/04/21 v66
-\thmt@toks=\toks36
-\c@thmt@dummyctr=\count286
+\thmt@toks=\toks39
+\c@thmt@dummyctr=\count287
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/thmtools/thm-patch.sty
 Package: thm-patch 2014/04/21 v66
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/thmtools/parseargs.sty
 Package: parseargs 2014/04/21 v66
-\@parsespec=\toks37
+\@parsespec=\toks40
 ))
 (/usr/local/texlive/2018/texmf-dist/tex/latex/thmtools/thm-kv.sty
 Package: thm-kv 2014/04/21 v66
@@ -602,43 +613,184 @@ Package: thm-restate 2014/04/21 v66
 )
 (/usr/local/texlive/2018/texmf-dist/tex/latex/thmtools/thm-amsthm.sty
 Package: thm-amsthm 2014/04/21 v66
-\thmt@style@headstyle=\toks38
+\thmt@style@headstyle=\toks41
 ))
-(/usr/local/texlive/2018/texmf-dist/tex/generic/ulem/ulem.sty
-\UL@box=\box52
-\UL@hyphenbox=\box53
-\UL@skip=\skip67
-\UL@hook=\toks39
-\UL@height=\dimen178
-\UL@pe=\count287
-\UL@pixel=\dimen179
-\ULC@box=\box54
-Package: ulem 2012/05/18
-\ULdepth=\dimen180
-)
+(/usr/local/texlive/2018/texmf-dist/tex/latex/xymtex/chemist/chemist.sty
+Package `chemist' (ver5.01) <June 6, 2013> [SF]
+chemist.sty ver5.01 (for LaTeX2e) 2013/06/06[SF]
+\c@compd=\count288
+\c@deriv=\count289
+\reactarrowsep=\dimen178
+\verbatimleftmargin=\dimen179
+\verbatimbaselineskip=\dimen180
+\hsgr@d=\dimen181
+\vsgr@d=\dimen182
+\vwgr@d=\dimen183
+\hwgr@d=\dimen184
+\vsepgr@d=\dimen185
+\hsepgr@d=\dimen186
+\nrep=\count290
+\nrepmax=\count291
+\ybaselineshift=\dimen187
+\tbaselineshift=\dimen188
+\@savetbaselineshift=\dimen189
+LaTeX Info: Redefining \rm on input line 788.
+LaTeX Info: Redefining \mathversion on input line 892.
+\c@mv@chem=\count292
+LaTeX Font Info:    Encoding `OML' has changed to `OT1' for symbol font
+(Font)              `letters' in the math version `chem' on input line 965.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `chem'
+(Font)                  OML/cmm/m/it --> OT1/cmr/m/n on input line 965.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `chem'
+(Font)                  OT1/cmr/m/n --> OT1/cmr/m/n on input line 965.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `chem'
+(Font)                  OMS/cmsy/m/n --> OMS/cmsy/m/n on input line 965.
+\c@mv@boldchem=\count293
+LaTeX Font Info:    Overwriting symbol font `operators' in version `boldchem'
+(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 965.
+LaTeX Font Info:    Encoding `OML' has changed to `OT1' for symbol font
+(Font)              `letters' in the math version `boldchem' on input line 965.
+
+LaTeX Font Info:    Overwriting symbol font `letters' in version `boldchem'
+(Font)                  OML/cmm/m/it --> OT1/cmr/b/n on input line 965.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `boldchem'
+(Font)                  OMS/cmsy/m/n --> OMS/cmsy/b/n on input line 965.
+\TestCount=\count294
+(/usr/local/texlive/2018/texmf-dist/tex/latex/xymtex/chemist/assurechemist.sty
+Part of XyMTeX for Drawing Chemical Structural Formulas. Version 5.00
+ -- Released October 01, 2010 by Shinsaku Fujita
+XyMTeX Macro File `assurechemist' (ver5.00) <October 01, 2010> [SF]
+)) (/usr/local/texlive/2018/texmf-dist/tex/latex/etex-pkg/etex.sty
+Package: etex 2016/08/01 v2.7 eTeX basic definition package (PEB,DPC)
+
+
+Package etex Warning: Extended allocation already in use.
+(etex)                etex.sty code will not be used.
+(etex)                To force etex package to load, add
+(etex)                \RequirePackage{etex}
+(etex)                at the start of the document.
+
+) (/usr/local/texlive/2018/texmf-dist/tex/latex/context/ppchtex/m-pictex.sty
+Package: m-pictex 2004/07/30 package wrapper for m-pictex.tex
+
+(/usr/local/texlive/2018/texmf-dist/tex/context/modules/mkii/m-pictex.mkii
+(/usr/local/texlive/2018/texmf-dist/tex/generic/pictex/prepictex.tex)
+(/usr/local/texlive/2018/texmf-dist/tex/generic/pictex/pictex.tex)
+(/usr/local/texlive/2018/texmf-dist/tex/generic/pictex/postpictex.tex)))
+(/usr/local/texlive/2018/texmf-dist/tex/latex/context/ppchtex/m-ch-en.sty
+Package: m-ch-en 2004/07/30 package wrapper for m-ch-en.tex
+
+(/usr/local/texlive/2018/texmf-dist/tex/generic/context/ppchtex/m-ch-en.tex
+(/usr/local/texlive/2018/texmf-dist/tex/generic/context/ppchtex/ppchtex.noc
+(/usr/local/texlive/2018/texmf-dist/tex/context/base/mkii/supp-mis.mkii
+loading : ConTeXt Support Macros / Miscellaneous (2004.10.26)
+\protectiondepth=\count311
+\scratchcounter=\count312
+\scratchtoks=\toks45
+\scratchdimen=\dimen356
+\scratchskip=\skip67
+\scratchmuskip=\muskip17
+\scratchmuskip=\muskip18
+\scratchmuskip=\muskip19
+\scratchmuskip=\muskip20
+\scratchmuskip=\muskip21
+\scratchbox=\box58
+\scratchread=\read2
+\scratchwrite=\write4
+\zeropoint=\dimen357
+\onepoint=\dimen358
+\onebasepoint=\dimen359
+\minusone=\count313
+\thousandpoint=\dimen360
+\onerealpoint=\dimen361
+\emptytoks=\toks46
+\nextbox=\box59
+\nextdepth=\dimen362
+\everyline=\toks47
+\!!counta=\count314
+\!!countb=\count315
+\recursecounter=\count316
+) (/usr/local/texlive/2018/texmf-dist/tex/context/base/mkii/syst-gen.mkii
+\protectionlevel=\count317
+\scratchcounter=\count318
+\globalscratchcounter=\count319
+\scratchdimen=\dimen363
+\globalscratchdimen=\dimen364
+\scratchskip=\skip68
+\globalscratchskip=\skip69
+\scratchmuskip=\muskip22
+\globalscratchmuskip=\muskip23
+\scratchtoks=\toks48
+\globalscratchtoks=\toks49
+\scratchbox=\box60
+\globalscratchbox=\box61
+\scratchdimenone=\dimen365
+\scratchboxone=\box62
+\scratchcounterone=\count320
+\scratchdimentwo=\dimen366
+\scratchboxtwo=\box63
+\scratchcountertwo=\count321
+\!!counta=\count322
+\!!countb=\count323
+\!!countc=\count324
+\!!countd=\count325
+\!!counte=\count326
+\!!countf=\count327
+\!!widtha=\dimen367
+\!!heighta=\dimen368
+\!!deptha=\dimen369
+\!!widthb=\dimen370
+\!!heightb=\dimen371
+\!!depthb=\dimen372
+\!!widthc=\dimen373
+\!!heightc=\dimen374
+\!!depthc=\dimen375
+\zeroskip=\skip70
+\minustwo=\count328
+\everysafeexpanded=\toks50
+\commalevel=\count329
+\processlevel=\count330
+\commalistcounter=\count331
+\everyrobusttest=\toks51
+\everywritestring=\toks52
+\statuscounter=\count332
+\emptytoks=\toks53
+
+loading        : ConTeXt System Macros / General
+) (/usr/local/texlive/2018/texmf-dist/tex/context/base/mkii/syst-fnt.mkii)
+(/usr/local/texlive/2018/texmf-dist/tex/context/modules/mkii/ppchtex.mkii
+loading        : ConTeXt Chemical Macro's / 1996.3.1
+ppchtex        : using PiCTeX
+\horchemical=\count333
+\verchemical=\count334
+\txtchemical=\count335
+\levchemical=\count336
+\chemicalsymbols=\box64
+\currentchemical=\count337
+\chemicalstack=\count338
+))))
 Package thmtools Info: Key `qed' (with value `$\Box $')
 (thmtools)             is not a known style key.
 (thmtools)             Will pass this to every \declaretheorem
-(thmtools)             that uses `style=mystyle' on input line 37.
-Package thmtools Info: Automatically pulling in `thmdef-thmbox' on input line 3
-9.
-
-(/usr/local/texlive/2018/texmf-dist/tex/latex/thmtools/thmdef-thmbox.sty
+(thmtools)             that uses `style=mystyle' on input line 42.
+Package thmtools Info: Automatically pulling in `thmdef-thmbox' on input line 4
+4.
+ (/usr/local/texlive/2018/texmf-dist/tex/latex/thmtools/thmdef-thmbox.sty
 Package: thmdef-thmbox 2014/04/21 v66
 )
 (/usr/local/texlive/2018/texmf-dist/tex/latex/thmbox/thmbox.sty
 Package: thmbox 2005/04/24 v2.0 fancy theorem outlining
-\thmbox@leftmargin=\dimen181
-\thmbox@rightmargin=\dimen182
-\thmbox@hskip=\dimen183
-\thmbox@vskip=\dimen184
-\thmbox@thickness=\dimen185
-\thmbox@box=\box55
-\thmbox@box@=\box56
-\thmbox@dim=\dimen186
+\thmbox@leftmargin=\dimen376
+\thmbox@rightmargin=\dimen377
+\thmbox@hskip=\dimen378
+\thmbox@vskip=\dimen379
+\thmbox@thickness=\dimen380
+\thmbox@box=\box65
+\thmbox@box@=\box66
+\thmbox@dim=\dimen381
 )
-\c@definition=\count288
-\c@Arevoir=\count289
+\c@definition=\count339
+\c@Arevoir=\count340
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2018/03/24 v5.7 Page Geometry
@@ -653,69 +805,73 @@ Package ifvtex Info: VTeX not detected.
 (/usr/local/texlive/2018/texmf-dist/tex/generic/ifxetex/ifxetex.sty
 Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 )
-\Gm@cnth=\count290
-\Gm@cntv=\count291
-\c@Gm@tempcnt=\count292
-\Gm@bindingoffset=\dimen187
-\Gm@wd@mp=\dimen188
-\Gm@odd@mp=\dimen189
-\Gm@even@mp=\dimen190
-\Gm@layoutwidth=\dimen191
-\Gm@layoutheight=\dimen192
-\Gm@layouthoffset=\dimen193
-\Gm@layoutvoffset=\dimen194
-\Gm@dimlist=\toks40
+\Gm@cnth=\count341
+\Gm@cntv=\count342
+\c@Gm@tempcnt=\count343
+\Gm@bindingoffset=\dimen382
+\Gm@wd@mp=\dimen383
+\Gm@odd@mp=\dimen384
+\Gm@even@mp=\dimen385
+\Gm@layoutwidth=\dimen386
+\Gm@layoutheight=\dimen387
+\Gm@layouthoffset=\dimen388
+\Gm@layoutvoffset=\dimen389
+\Gm@dimlist=\toks54
 )
 (/usr/local/texlive/2018/texmf-dist/tex/latex/tools/tabularx.sty
 Package: tabularx 2016/02/03 v2.11b `tabularx' package (DPC)
-\TX@col@width=\dimen195
-\TX@old@table=\dimen196
-\TX@old@col=\dimen197
-\TX@target=\dimen198
-\TX@delta=\dimen199
-\TX@cols=\count293
-\TX@ftn=\toks41
+\TX@col@width=\dimen390
+\TX@old@table=\dimen391
+\TX@old@col=\dimen392
+\TX@target=\dimen393
+\TX@delta=\dimen394
+\TX@cols=\count344
+\TX@ftn=\toks55
 )
 (/usr/local/texlive/2018/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count294
-\float@exts=\toks42
-\float@box=\box57
-\@float@everytoks=\toks43
-\@floatcapt=\box58
+\c@float@type=\count345
+\float@exts=\toks56
+\float@box=\box67
+\@float@everytoks=\toks57
+\@floatcapt=\box68
 )
-(./20190206 existence.aux)
-\openout1 = `"20190206 existence.aux"'.
+(./20190123examDoumicMoireau.aux)
+\openout1 = `20190123examDoumicMoireau.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Info: Redefining \degres on input line 72.
-LaTeX Info: Redefining \dots on input line 72.
-LaTeX Info: Redefining \up on input line 72.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+
+(/usr/local/texlive/2018/texmf-dist/tex/latex/ucs/ucsencs.def
+File: ucsencs.def 2011/01/21 Fixes to fontencodings LGR, T3
+)
+LaTeX Info: Redefining \degres on input line 77.
+LaTeX Info: Redefining \dots on input line 77.
+LaTeX Info: Redefining \up on input line 77.
 
 (/usr/local/texlive/2018/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
-[Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count295
-\scratchdimen=\dimen256
-\scratchbox=\box59
-\nofMPsegments=\count296
-\nofMParguments=\count297
-\everyMPshowfont=\toks44
-\MPscratchCnt=\count298
-\MPscratchDim=\dimen257
-\MPnumerator=\count299
-\makeMPintoPDFobject=\count300
-\everyMPtoPDFconversion=\toks45
+loading        : ConTeXt Support Macros / PDF
+\scratchcounter=\count346
+\scratchdimen=\dimen395
+\scratchbox=\box69
+\nofMPsegments=\count347
+\nofMParguments=\count348
+\everyMPshowfont=\toks58
+\MPscratchCnt=\count349
+\MPscratchDim=\dimen396
+\MPnumerator=\count350
+\makeMPintoPDFobject=\count351
+\everyMPtoPDFconversion=\toks59
 ) (/usr/local/texlive/2018/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
@@ -755,76 +911,57 @@ Now handling font encoding TS1 ...
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/base/ts1enc.dfu
 File: ts1enc.dfu 2018/04/05 v1.2c UTF-8 support for inputenc
-   defining Unicode char U+00A2 (decimal 162)
-   defining Unicode char U+00A3 (decimal 163)
-   defining Unicode char U+00A4 (decimal 164)
-   defining Unicode char U+00A5 (decimal 165)
-   defining Unicode char U+00A6 (decimal 166)
-   defining Unicode char U+00A7 (decimal 167)
-   defining Unicode char U+00A8 (decimal 168)
-   defining Unicode char U+00A9 (decimal 169)
-   defining Unicode char U+00AA (decimal 170)
-   defining Unicode char U+00AC (decimal 172)
-   defining Unicode char U+00AE (decimal 174)
-   defining Unicode char U+00AF (decimal 175)
-   defining Unicode char U+00B0 (decimal 176)
-   defining Unicode char U+00B1 (decimal 177)
-   defining Unicode char U+00B2 (decimal 178)
-   defining Unicode char U+00B3 (decimal 179)
-   defining Unicode char U+00B4 (decimal 180)
-   defining Unicode char U+00B5 (decimal 181)
-   defining Unicode char U+00B6 (decimal 182)
-   defining Unicode char U+00B7 (decimal 183)
-   defining Unicode char U+00B9 (decimal 185)
-   defining Unicode char U+00BA (decimal 186)
-   defining Unicode char U+00BC (decimal 188)
-   defining Unicode char U+00BD (decimal 189)
-   defining Unicode char U+00BE (decimal 190)
-   defining Unicode char U+00D7 (decimal 215)
-   defining Unicode char U+00F7 (decimal 247)
-   defining Unicode char U+0192 (decimal 402)
-   defining Unicode char U+02C7 (decimal 711)
-   defining Unicode char U+02D8 (decimal 728)
-   defining Unicode char U+02DD (decimal 733)
-   defining Unicode char U+0E3F (decimal 3647)
-   defining Unicode char U+2016 (decimal 8214)
-   defining Unicode char U+2020 (decimal 8224)
-   defining Unicode char U+2021 (decimal 8225)
-   defining Unicode char U+2022 (decimal 8226)
-   defining Unicode char U+2030 (decimal 8240)
-   defining Unicode char U+2031 (decimal 8241)
-   defining Unicode char U+203B (decimal 8251)
-   defining Unicode char U+203D (decimal 8253)
-   defining Unicode char U+2044 (decimal 8260)
-   defining Unicode char U+204E (decimal 8270)
-   defining Unicode char U+2052 (decimal 8274)
-   defining Unicode char U+20A1 (decimal 8353)
-   defining Unicode char U+20A4 (decimal 8356)
-   defining Unicode char U+20A6 (decimal 8358)
-   defining Unicode char U+20A9 (decimal 8361)
-   defining Unicode char U+20AB (decimal 8363)
-   defining Unicode char U+20AC (decimal 8364)
-   defining Unicode char U+20B1 (decimal 8369)
-   defining Unicode char U+2103 (decimal 8451)
-   defining Unicode char U+2116 (decimal 8470)
-   defining Unicode char U+2117 (decimal 8471)
-   defining Unicode char U+211E (decimal 8478)
-   defining Unicode char U+2120 (decimal 8480)
-   defining Unicode char U+2122 (decimal 8482)
-   defining Unicode char U+2126 (decimal 8486)
-   defining Unicode char U+2127 (decimal 8487)
-   defining Unicode char U+212E (decimal 8494)
-   defining Unicode char U+2190 (decimal 8592)
-   defining Unicode char U+2191 (decimal 8593)
-   defining Unicode char U+2192 (decimal 8594)
-   defining Unicode char U+2193 (decimal 8595)
-   defining Unicode char U+2329 (decimal 9001)
-   defining Unicode char U+232A (decimal 9002)
-   defining Unicode char U+2422 (decimal 9250)
-   defining Unicode char U+25E6 (decimal 9702)
-   defining Unicode char U+25EF (decimal 9711)
-   defining Unicode char U+266A (decimal 9834)
-   defining Unicode char U+FEFF (decimal 65279)
+
+/usr/local/texlive/2018/texmf-dist/tex/latex/base/ts1enc.dfu:115: Missing numbe
+r, treated as zero.
+<to be read again> 
+                   F
+l.115 ...icodeCharacter{FEFF}{\ifhmode\nobreak\fi}
+                                                  
+A number should have been here; I inserted `0'.
+(If you can't figure out why I needed to see a number,
+look up `weird error' in the index to The TeXbook.)
+
+/usr/local/texlive/2018/texmf-dist/tex/latex/base/ts1enc.dfu:115: Missing numbe
+r, treated as zero.
+<to be read again> 
+                   F
+l.115 ...icodeCharacter{FEFF}{\ifhmode\nobreak\fi}
+                                                  
+A number should have been here; I inserted `0'.
+(If you can't figure out why I needed to see a number,
+look up `weird error' in the index to The TeXbook.)
+
+/usr/local/texlive/2018/texmf-dist/tex/latex/base/ts1enc.dfu:115: Missing numbe
+r, treated as zero.
+<to be read again> 
+                   F
+l.115 ...icodeCharacter{FEFF}{\ifhmode\nobreak\fi}
+                                                  
+A number should have been here; I inserted `0'.
+(If you can't figure out why I needed to see a number,
+look up `weird error' in the index to The TeXbook.)
+
+/usr/local/texlive/2018/texmf-dist/tex/latex/base/ts1enc.dfu:115: Missing numbe
+r, treated as zero.
+<to be read again> 
+                   F
+l.115 ...icodeCharacter{FEFF}{\ifhmode\nobreak\fi}
+                                                  
+A number should have been here; I inserted `0'.
+(If you can't figure out why I needed to see a number,
+look up `weird error' in the index to The TeXbook.)
+
+/usr/local/texlive/2018/texmf-dist/tex/latex/base/ts1enc.dfu:115: Missing numbe
+r, treated as zero.
+<to be read again> 
+                   F
+l.115 ...icodeCharacter{FEFF}{\ifhmode\nobreak\fi}
+                                                  
+A number should have been here; I inserted `0'.
+(If you can't figure out why I needed to see a number,
+look up `weird error' in the index to The TeXbook.)
+
 )
 (/usr/local/texlive/2018/texmf-dist/tex/latex/translator/translator-basic-dicti
 onary-English.dict
@@ -867,63 +1004,70 @@ File: siunitx-abbreviations.cfg 2017/11/26 v2.7k siunitx: Abbreviated units
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 72.
+LaTeX Font Info:    Try loading font information for U+msa on input line 77.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 72.
+LaTeX Font Info:    Try loading font information for U+msb on input line 77.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 72.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 77.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
-) [1
+)
+Overfull \hbox (0.99889pt too wide) in paragraph at lines 141--142
+[]\T1/cmr/m/n/10 La so-lu-tion clas-sique $\OML/cmm/m/it/10 u$ \T1/cmr/m/n/10 e
+st donc constante le long d'une courbe ca-rac-té-ris-tique et $\OML/cmm/m/it/10
+ u\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 s; X\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 s; x[
+]\OT1/cmr/m/n/10 )) =
+ []
 
-{/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
- [4]
-[5] [6] [7] [8] [9] [10] [11] [12] [13] (./20190206 existence.bbl) [14]
-(./20190206 existence.aux) ) 
+[1
+
+{/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+[2] [3] [4]
+Overfull \hbox (64.67856pt too wide) detected at line 500
+[]
+ []
+
+[5] [6] (./20190123examDoumicMoireau.aux) ) 
 Here is how much of TeX's memory you used:
- 16126 strings out of 492649
- 316134 string characters out of 6129623
- 362838 words of memory out of 5000000
- 19811 multiletter control sequences out of 15000+600000
- 548441 words of font info for 78 fonts, out of 8000000 for 9000
+ 18572 strings out of 492649
+ 351978 string characters out of 6129623
+ 435037 words of memory out of 5000000
+ 22207 multiletter control sequences out of 15000+600000
+ 549134 words of font info for 84 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,16n,36p,10392b,561s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2018/texmf-dist/fonts/enc/dvips
-/cm-super/cm-super-t1.enc}</usr/local/texlive/2018/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmex10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmmi12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmmi5.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmmi7.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmr10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmr12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmr7.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmr8.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cms
-y10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy
-5.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.
-pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/symbols/msa
-m10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/symbols
-/msbm10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/rsfs/rsfs10.
-pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/rsfs/rsfs7.pfb></usr
-/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfbi1000.pfb></usr/l
-ocal/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/loc
-al/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/local
-/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/t
-exlive/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/tex
-live/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texli
-ve/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/local/texlive
-/2018/texmf-dist/fonts/type1/public/cm-super/sfsl1000.pfb></usr/local/texlive/2
-018/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb>
-Output written on "20190206 existence.pdf" (14 pages, 326092 bytes).
+ 38i,18n,36p,10397b,458s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2018/texmf-dist/
+fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/texlive/2018/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2018/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2018/texmf-dist/font
+s/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2018/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2018/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2018/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr7.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmsy7.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/ams
+fonts/symbols/msbm10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public
+/rsfs/rsfs10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/rsfs/rs
+fs7.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfbx100
+0.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfbx1200.
+pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pf
+b></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
+</usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></
+usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></us
+r/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfsl1000.pfb>
+Output written on 20190123examDoumicMoireau.pdf (6 pages, 246282 bytes).
 PDF statistics:
- 152 PDF objects out of 1000 (max. 8388607)
- 109 compressed objects within 2 object streams
+ 108 PDF objects out of 1000 (max. 8388607)
+ 78 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

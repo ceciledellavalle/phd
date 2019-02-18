@@ -13,6 +13,7 @@ import math
 import sys
 ##
 from bdschemek import BeckerDoringScheme
+from bdschemek import SpeedComputation
 from laxwendroff import LaxWendroffScheme
 from kalmanfunc import KalmanAdaptedTimeScale
 from kalmanfunc import KalmanLW
@@ -46,35 +47,19 @@ def Gaussienne(x,c,i,s):
 state_init = Gaussienne(x,cmax,imax,sigma)
 
 ### SOLUTION OF BDSCHEME
-state = BeckerDoringScheme(L,NX,T,NT,a,b,c0,state_init)
+state_bd = BeckerDoringScheme(L,NX,T,NT,a,b,c0,state_init)
 
 ###PLOTTING
 #anim_bd = PlotDymamicSolution(1.1*L,1.1*cmax,\
 #np.linspace(0,L,NX),state,
 #NT,np.linspace(0,T,NT))
 
-### DATA GENERATION ###########################################################
-
-### OBSERVER - MOMENT OPERATOR
-# First moment
-operator_moment_1= L/NX*np.linspace(L/NX, L, NX)
-# Second moment
-operator_moment_2= L/NX*np.square(np.linspace(L/NX, L, NX))
-# Concatenate
-observer = np.vstack((operator_moment_1, operator_moment_2))
-
-### MOMENT 1rst and 2nd order
-mu = np.dot(observer,state)
-
-### SPEED Computation
-masse_rho = L/NX*np.linspace(L/NX, L, NX).dot(state_init)+c0
-speed = a*(masse_rho-mu[0,:])\
--b*np.linspace(1,1,NT)
+speed = SpeedComputation(L,NX,T,NT,a,b,c0,state_bd)
 
 ### PLOTs
 # Create plots with pre-defined labels.
 #fig0, ax0 = plt.subplots()
-#ax0.plot(np.linspace(0,T,NT), speed, 'k--', label='speed')
+#ax0.plot(np.linspace(0,T,NT), T/NT*NX/L*speed, 'k--', label='speed')
 #ax0.plot(np.linspace(0,T,NT), delta_time, 'k:', label='delta t')
 #legend = ax0.legend(loc='upper right', shadow=True, fontsize='x-large')
 
@@ -86,14 +71,19 @@ state_lw = LaxWendroffScheme(L,NX,T,NT,speed,state_init)
 anim_lw = PlotDymamicSolution(1.1*L,1.1*cmax,\
 np.linspace(0,L,NX),state_lw,
 NT,np.linspace(0,T,NT))
+plt.show()
+sys.exit()
 
-### Comparaison of observations
-#mu_lw = np.dot(observer,state_lw)
-# fig1, ax1 = plt.subplots()
-# ax1.plot(np.linspace(0,T,NT), mu[0,:], 'k--', label='bd')
-# ax1.plot(np.linspace(0,T,NT), mu_lw[0,:], 'k:', label='lw')
-# legend = ax1.legend(loc='upper right', shadow=True,\
-# fontsize='x-large')
+### DATA GENERATION ###########################################################
+### OBSERVER - MOMENT OPERATOR
+# First moment
+operator_moment_1= L/NX*np.linspace(L/NX, L, NX)
+# Second moment
+operator_moment_2= L/NX*np.square(np.linspace(L/NX, L, NX))
+# Concatenate
+observer = np.vstack((operator_moment_1, operator_moment_2))
+###
+mu = np.dot(observer,state_lw)
 
 
 ### KALMAN FILTER ############################################################
@@ -118,7 +108,7 @@ state_apriori = Gaussienne(x,0.7*cmax,0.5*imax,0.8*sigma)
 
 state_k =\
 KalmanLW(L,NX,T,NT,\
-np.dot(observer,state_lw),speed,\
+mu,speed,\
 state_apriori,np.eye(NX),\
 observer,inv_norm_observation)
 

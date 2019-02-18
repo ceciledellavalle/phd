@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.9.3)  13 FEB 2019 18:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.9.3)  15 FEB 2019 15:25
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -872,18 +872,18 @@ File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 
 {/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
  [4]
-[5] [6] [7] [8] [9] [10]
-<f0g0.png, id=54, 462.528pt x 346.896pt>
+[5] [6] [7] [8] [9] [10] [11]
+<f0g0.png, id=57, 462.528pt x 346.896pt>
 File: f0g0.png Graphic file (type png)
 <use f0g0.png>
-Package pdftex.def Info: f0g0.png  used on input line 893.
+Package pdftex.def Info: f0g0.png  used on input line 968.
 (pdftex.def)             Requested size: 256.0748pt x 192.06375pt.
- [11 <./f0g0.png>] [12] [13] [14] [15] [16]
-(./20190118polymerisation.bbl) [17] (./20190118polymerisation.aux) ) 
+ [12 <./f0g0.png>] [13] [14] [15] [16] [17]
+(./20190118polymerisation.bbl) [18] (./20190118polymerisation.aux) ) 
 Here is how much of TeX's memory you used:
  16075 strings out of 492649
  315773 string characters out of 6129623
- 361041 words of memory out of 5000000
+ 361042 words of memory out of 5000000
  19761 multiletter control sequences out of 15000+600000
  552055 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -916,10 +916,10 @@ lic/cm-super/sfrm1200.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/publi
 c/cm-super/sfrm1728.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/
 cm-super/sfsl1000.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm
 -super/sfti1000.pfb>
-Output written on 20190118polymerisation.pdf (17 pages, 414705 bytes).
+Output written on 20190118polymerisation.pdf (18 pages, 421862 bytes).
 PDF statistics:
- 168 PDF objects out of 1000 (max. 8388607)
- 119 compressed objects within 2 object streams
+ 171 PDF objects out of 1000 (max. 8388607)
+ 121 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
