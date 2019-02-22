@@ -16,7 +16,20 @@
 \usepackage{thmtools}
 \usepackage{ulem}
 
-%% LAYOUT
+%% LAYOUT TITLE
+\usepackage[explicit]{titlesec}
+\usepackage{xcolor}
+\usepackage{times}
+\usepackage{tikz}
+\usepackage{lipsum}
+\titleformat{\subsection}
+  {\color{blue!70}\large\sffamily\bfseries}
+  {}
+  {0em}
+  {\colorbox{blue!10}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\arabic{section}.\arabic{subsection}. #1}}}
+  []
+
+%% LAYOUT MATHS
 \declaretheoremstyle[
     bodyfont=\normalfont\color{red},
     headfont=\color{red}
@@ -870,7 +883,7 @@ Approche variationnelle, on souhaite minimiser la fonctionnelle :
 
 
 On définit l'observateur de Kalman sur pour tout temps sur l'intervalle 
-d'observation $[0,\tau]$ comme l'optimum de la fonctionnelle~\eqref{cas2:critere}.
+d'observation $[0,\tau]$ comme l'optimum de la fonctionnelle ~\eqref{cas2:critere}.
 
 \[ \forall t>0, \; t\in (0,\tau], \; \; \hat{y}(t) = \bar{y}_{|t}(t) \]
 
@@ -881,7 +894,7 @@ et qu'on ait la relation pour $0<s<t$,
 $\hat{y}(s)+ P(s)\bar{q}_{|t} = \bar{y}_{|t}(s)$}
 
 \vspace{0.3cm}
-Soit $\bar{q}$ l'adjoint au Lagrangien (qui vérifie la condition d'optimalité du point selle) :
+Soit $q$ l'adjoint au Lagrangien (qui vérifie la condition d'optimalité du point selle) :
 
 \[ 
 \mathscr{L}(y,q)= J(\xi,t)+\int_0^t \langle \dot{y}-Ay, q \rangle_{\mathscr{Y}}
@@ -920,14 +933,36 @@ Soit l'équation adjointe associée au Lagrangien pour la fonctionnelle $J(\xi,t
 \end{remarque}
 
 \vspace{0.3cm}
-On cherche l'adjoint de l'opérateur $A$ sur $\mathscr{Y}$ tel que :
+
+\underline{Dynamique}
 
 \begin{equation}
 	\begin{cases}
-		\mathscr{Y} = \left\{ y \; | \; y = (u,m) \in H^1([0,L])\times \mathbb{R},
+    \displaystyle \frac{\mathrm{d} \hat{y}}{\mathrm{d}t} = A \hat{y}(t) + P(t) C^* (z(t) - C(t)\hat{y}(t)) \\
+    y(0) = y_{\diamond}
+     \end{cases}	
+\end{equation}
+
+\underline{Riccati}
+
+\begin{equation}
+	\begin{cases}
+    \displaystyle \frac{\mathrm{d} P}{\mathrm{d}t} = P(t)A^* + AP(t) - P(t) C^* CP(t) \\
+    P(0) = P_{\diamond}
+     \end{cases}	
+\end{equation}
+
+
+\vspace{0.3cm}
+On cherche une expression explicite pour
+l'adjoint de l'opérateur $A$ sur $\mathscr{Y}$ tel que :
+
+\begin{equation}
+	\begin{cases}
+		D(A) = \left\{ y \; | \; y = (u,m) \in H^1([0,L])\times \mathbb{R},
  \; u(0)=m, \; u(L)=0 \right\} \\
         \\
-        \forall y \in D(A), \; \;
+        \forall y \in D(A^*), \; \;
 		\left( \begin{array}{c}
 		\dot{u}\\
 		\dot{m}
@@ -966,10 +1001,10 @@ On en déduit l'adjoint $A^*$ sur $\mathscr{Y}$ associé à la norme $\| \cdot \
 
 \begin{equation}
 	\begin{cases}
-		\mathscr{Y} = \left\{ y \; | \; y = (u,m) \in H^1([0,L])\times \mathbb{R},
+		D(A^*) = \left\{ y \; | \; y = (u,m) \in H^1([0,L])\times \mathbb{R},
  \; u(0)=m, \; u(L)=0 \right\} \\
-        \forall y \in D(A), \; \;
-	A \left( \begin{array}{c}
+        \forall y \in D(A^*), \; \;
+	A^* \left( \begin{array}{c}
 		u\\
 		m\\
 		\end{array} \right) 
@@ -979,6 +1014,46 @@ On en déduit l'adjoint $A^*$ sur $\mathscr{Y}$ associé à la norme $\| \cdot \
 		\end{array}\right)
 	\end{cases}
 \end{equation}
+
+On cherche une expression explicite 
+pour l'adjoint $C^*$ de l'opérateur de mesure $C$.
+
+Donc pour tout $y_1$ de $\mathscr{Y}$ et $z_2$ de $\mathscr{Z}$,
+on calcule la quantité suivante :
+
+\[ \begin{split}
+\langle Cy_1,z_2 \rangle_{\mathscr{Z}} &= \int_0^L z_2 x^n u_1(x)dx\\
+                                       &= \int_0^L  (x^n z_2) u_1(x)dx + \displaystyle \frac{\epsilon}{\dep} m_1 \times 0 \\
+									   &=  \langle y_1 , (x^n z_2, 0) \rangle_{\mathscr{Y}}
+\end{split} \]
+
+\begin{equation}
+	\begin{cases}
+		D(C^*) = \mathscr{Z} \\
+        \forall z \in D(C^*), \; \;
+	C^* z
+	= \left(\begin{array}{c}
+		x^n z \\
+		0
+		\end{array}\right)
+	\end{cases}
+\end{equation}
+
+\subsubsection{Opérateur à noyau}
+
+
+
+\begin{lemme}
+	On pose $P = (p_1,p_2) \in L(\mathscr{Y})\times L(\mathscr{Y})$
+	et $y=(u,m) \in \mathscr{Y}$,
+    alors $p_1$ ne dépend pas de $m$.
+\end{lemme}
+
+\begin{preuve}
+	
+\end{preuve}
+
+Il est possible de formuler $p_1$ à partir d'un noyau de convolution.
 
 
 

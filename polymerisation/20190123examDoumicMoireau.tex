@@ -191,7 +191,7 @@ Donc on obtient les deux inégalités :
 \[
 \begin{cases}
 	0 \leq c(t) \leq \rho_0 \\
-	0 \leq \mu_1(t) \leq rho_0
+	0 \leq \mu_1(t) \leq \rho_0
 \end{cases}
 \]
 
@@ -352,41 +352,42 @@ Soit $u^{in} \in \Y$, et $t \geq 0$ :
 L'application $\Psi$ est linéaire par linéarité de l'opérateur intégrale.
 De plus $\Psi $ est positive dès que $u^{in}$ l'est (d'après la question 1.b), par intégration d'une fonction positive.
 
-Montrons que $\Psi$ est continu en montrant que :
+Montrons que $\Psi$ est continu en montrant que $\Psi$ est borné.
 
-\[ \forall (u_1^{in}, u_2^{in}) \in \Y, \; \| \Psi u_1^{in} - \Psi u_2^{in} \|_{\Z} \leq  C \| u_1^{in} - u_2^{in} \|_{\Y}\]
+Pour se faire, montrons d'apord qu'il existe $T>0$ tel que :
 
-Soit la fonction $\theta$ telle que :
+\[ a\int_0^Tc(s)ds - bT = L\]
 
-\[\theta \; : \; \left\vert
+Soit la fonction $Y_0$ telle que :
+
+\[Y_0 \; : \; \left\vert
 	\begin{array}{ccc}
 	\mathbb{R}^+ & \to & \mathbb{R}^+\\
-	t & \mapsto & \int_0^t (ac(s)-b)ds \\
+	t & \mapsto & -\int_0^t (ac(s)-b)ds \\
 	\end{array} \right.
 \]
 
 Puisque pour tout $t \geq 0 $ on a $v(t)<0$,
-alors cela implique aue $c(t)< \frac{b}{a}$ alors $ac(t)-b<0$ et $\theta$ est une fonction strictement décroissante, de plus $\theta$ est bijective puisque sa dérivée ne s'annule pas sur $\mathbb{R}^+$, comme montré à la question 2.a..
+alors cela implique $c(t)< \frac{b}{a}$ et alors $ac(t)-b<0$, donc $Y_0$ est une fonction strictement croissante, de plus $Y_0$ est bijective puisque sa dérivée ne s'annule pas sur $\mathbb{R}^+$, comme montré à la question 2.a..
+$Y_0 (0) =0$ donc $Y_0$ est positif pour tout $t \geq 0$,
+et il existe $T$ tel que $Y_0(T) = L$.
 
-De plus, $\theta (0) =0$ donc $\theta$ est négatif pour tout $t \geq 0$,
-et il existe $T$ tel que $\theta(T) = - L$.
+Soit $u$ l'unique solution du système (1) pour la condition initiale $u^{in}$.
 
-On pose $u^{in} = u_1^{in} - u_2^{in}$, et $u$ l'unique solution du système (1) pour la condition initiale $u^{in}$.
-
-On pose le changement de variable $x'=x - a\int_0^tc(s)ds + bt) = x - \theta (t)$ il vient pour tout $t \geq 0$ :
+On pose le changement de variable $x'=x - a\int_0^tc(s)ds + bt = x + Y_0 (t)$ il vient pour tout $t \geq 0$ :
 \[ \begin{split}
 \|\Psi u^{in}\|_{\Z}^2 &= \int_0^\infty |u(x,t)|^2 dx \\
-			   &= \int_0^\infty \int_0^L |u^in( x - \theta(t))|^2 dx \\
-			   &= \int_0^\infty \int_{-\theta(t)}^{L} |u^{in}(x')|^2 dx' \\
-			   & \leq int_0^T \int_{-\theta(t)}^L |u^{in}(x')|^2 dx'\\
+			   &= \int_0^\infty \int_0^L |u^{in}( x + Y_0 (t))|^2 dx \\
+			   &= \int_0^\infty \int_{Y_0}^{L} |u^{in}(x')|^2 dx' \\
+			   & \leq \int_0^T \int_{Y_0}^L |u^{in}(x')|^2 dx'\\
 			   & \leq T \| u^{in} \|^2
 \end{split}\]
-avec $T = \theta^{-1}(-L) =$ constante.
+avec $T = Y_0^{-1}(L) =$ constante.
 
-On vient donc par cette inégalité de montrer la continuité de $\Psi$. De plus la norme de $\Psi$ est majorée par $T = \theta ^{-1}(-L)$.
+On vient donc par cette inégalité de montrer la continuité de $\Psi$. De plus la norme de $\Psi$ est majorée par $T = Y_0 ^{-1}(L)$.
 
 \textbf{d.}
-On introduit la notation $\theta(t)= \int_0^t v(s)ds$
+Comme précédemment, on introduit la notation $Y_0(t)= -\int_0^t v(s)ds$
 Soit $u_1^{in}$, $u_2^in$ de $\mathscr{Y}$,
 calculons la quantité :
 \[
@@ -397,18 +398,18 @@ calculons la quantité :
 									  (\int_{x_2=0}^L u_2(t,x_2) dx_2)
 									  dt\\
 	                                  &= \int_{t=0}^{T} 
-									  \int_{x_1=-\theta(t)}^L \int_{x_2=0}^L
+									  \int_{x_1=Y_0}^L \int_{x_2=0}^L
 									  u_1^{in}(x_1)
 									   u_2(t,x_2) 
 									  dx_2dx_1dt\\
 	                                  &= \int_{x_1=0}^L
 									  (u_1^{in}(x_1)
-									  \int_{t=0}^{\theta^{-1}(-x_1)} 
+									  \int_{t=0}^{Y_0^{-1}(x_1)} 
 									   \int_{x_2=0}^L
 									   u_2(t,x_2) 
 									  dx_2 dt )dx_1\\
 	                                  &= \langle u_1^{in},
-									  \Psi^* \Psi u_2^in \rangle_{\mathscr{Y}}
+									  \Psi^* \Psi u_2^{in} \rangle_{\mathscr{Y}}
 \end{split}
 \]
 
@@ -418,7 +419,7 @@ On définit donc l'adjoint :
 	 \Psi^* \; : \; \left\vert
 	\begin{array}{ccc}
 	\Z & \to & \Y \\
-	\mu_0 & \mapsto & x \to \int_0^{\theta(-x)} \mu_0(t)dt \\
+	\mu_0 & \mapsto & x \to \int_0^{Y_0(x)} \mu_0(t)dt \\
 	\end{array} \right.
 \end{equation}
 
@@ -437,7 +438,7 @@ Ce problème est mal posé d'ordre 1, en effet $\mu_0$ est une fonction de $L^2$
 
 \textbf{b.}
 On remarque que :
-\[ Y_0(t) = bt - a\int_0^t c(s)ds = -\int_0^t v(s)ds = -\theta (t)\]
+\[ Y_0(t) = bt - a\int_0^t c(s)ds = -\int_0^t v(s)ds\]
 
 Or reprend le même raisonnement qu'à la question 2.c., puisque pour tout $t \geq 0 $ on a $v(t)<0$,
 alors cela implique que $Y_0$ est une fonction strictement croissante de $\mathbb{R}^+$, elle est donc bijective.
@@ -458,7 +459,7 @@ On peut donc définir le pseudo inverse par cette formule :
 \begin{equation}
 	 \Psi^\dagger \; : \; \left\vert
 	\begin{array}{ccc}
-	\Z & \to & \Y \\
+	\Z & \mapsto & \Y \\
 	\mu_0 & \mapsto & \displaystyle \frac{1}{v(Y_0^{-1}(x))} \frac{\mathrm{d}}{\mathrm{d} t} \mu_0 (Y_0^{-1}(x)) \\
 	\end{array} \right.
 \end{equation}
@@ -513,13 +514,26 @@ Donc :
 	 = - \int_0^T \zea'(t)z_{\epsilon}(t) dt
 \]
 
-De plus, pour obtenir l'inégalité, posons le changement de variable $s = Y_0(t)$,
+De plus, pour obtenir l'inégalité, 
+on cherche à exprimer $\zea'$ en fonction de $\yea$
+Posons le changement de variable $s = Y_0(t)$,
 et $ds = Y_0'(t)dt$ :
 
 \[
 \begin{split}
 \int_0^T \zea'(t)^2 dt & = \int_0^T Y_0'(t)\yea(Y_0(t))^2 (Y_0'(t)dt) \\
                        & = \int_0^L Y_0'(Y_0^{-1}(s)) \, \yea(s)^2 ds\\
+					   & \geq v_{min} \| \yea \|_{\Y}^2
+\end{split}
+\]
+
+Puis, on cherche à exprimer $\zea(0)$ en fonction de $\yea$ :
+
+\[
+\begin{split}
+	\zea(0)^2 &= (\int_0^L \yea(x)dx)^2 \\
+	          & \leq (\int_0^L 1^2dx)(\int_0^L \yea(x)^2 dx) \\
+			  & \leq L \| \yea \|_{\Y}^2
 \end{split}
 \]
 
@@ -534,19 +548,20 @@ Donc :
 				      + \int_0^T \zea'(t)z_{\epsilon}(t) dt)\\
 					  &\leq \displaystyle \frac{1}{\alpha v_{min}}
 					      (\displaystyle \frac{1}{2}\zea(0)^2 
-					      + (\int_0^T \zea'(t)^2 dt \in_0^Tz_{\epsilon}(t)^2 dt)^{1/2}\,)\\
+					      + (\int_0^T \zea'(t)^2 dt)^{1/2}
+						   (\int_0^Tz_{\epsilon}(t)^2 dt)\,)^{1/2})\\
 				  &\leq \displaystyle \frac{1}{\alpha v_{min}}
-				      (\frac{1}{2}  \| \yea \|_{\Y}^2
-				      +  v_{max} \| \yea \|_{\Y}
+				      (\frac{L}{2}  \| \yea \|_{\Y}^2
+				      +  v_{max}^{1/2} \| \yea \|_{\Y}
 					  \|z_{\epsilon} \|_{\Z})
 \end{split}
 \]
 
-Soit, pour $0< 1-\displaystyle \frac{1}{2\alpha v_{min}} $  :
+Soit, pour $0< 1-\displaystyle \frac{L}{2\alpha v_{min}} $  :
 
 \[
-\| \yea \|_{\Y}^2 (1-\displaystyle \frac{1}{2\alpha v_{min}})
-  \leq \frac{v_{max}}{\alpha v_{min}}  \| \yea \|_{\Y} \|z_{\epsilon} \|_{\Z})
+\| \yea \|_{\Y}^2 (1-\displaystyle \frac{L}{2\alpha v_{min}})
+  \leq \frac{v_{max}^{1/2}}{\alpha v_{min}}  \| \yea \|_{\Y} \|z_{\epsilon} \|_{\Z})
 \]				  
 
 Il vient donc :
@@ -554,6 +569,232 @@ Il vient donc :
 \| \yea \|_{\Y}  \leq f(\alpha) \|z_{\epsilon} \|_{\Z}
 \]
 
-Avec $f(\alpha) = \displaystyle \frac{2v_{max}}{2\alpha v_{min -1}}$
+Avec $f(\alpha) = \displaystyle \frac{2v_{max}^{1/2}}{2\alpha v_{min} -L}$
+
+\vspace{0.3cm}
+\textbf{c.}
+
+Soit $y_{\alpha}$ solution de (7).
+
+Alors comme $z\in H^1(0,T)$ et $y\in L^2(0,L)$, 
+on a donc $\Psi y_{\alpha} \in H^1(0,T)$ par composition de l'intégrale d'une fonction de $L^2$
+et le la fonction $Y_0$ de $C^2(0,T)$.
+
+Donc $t \to Y_0'(t)y(Y_0(t))$ est également une fonction de $H^1(0,T)$
+et on a presque partout :
+
+\begin{equation}
+	\label{8}
+	 - Y_0'(t) y_{\alpha}(Y_0(t)) - \alpha(Y_0'(t) y_{\alpha}(Y_0(t)))' = z'(t)
+\end{equation}
+
+et $y_{\alpha}(L) = 0$.
+
+Réciproquement, soit $y_{\alpha}$ solution de (8), 
+on peut intégrer l'équation entre $t$ et $T$,
+et sachant $y_\alpha (L) =0$ :
+
+\[ 
+\begin{split}
+	\int_t^T [- Y_0'(s) y_{\alpha}(Y_0(s)) - \alpha (Y_0'(s) y_{\alpha}(Y_0(s)))' ] ds
+	& = \int_t^T (\int_{Y_0(s)}^L y_{\alpha}(x)dx)'ds
+	     - \alpha \int_t^T (Y_0'(s) y_{\alpha}(Y_0(s)))' ds \\
+	& = \Psi y_{\alpha} (T) - \Psi y_{\alpha} (t)
+	    - \alpha (Y_0'(T) y_{\alpha}(Y_0(T)))
+		+ \alpha (Y_0'(t) y_{\alpha}(Y_0(t))) \\
+    & = - \Psi y_{\alpha} (t) + \alpha (Y_0'(t) y_{\alpha}(Y_0(t)))
+\end{split}
+\]
+
+Donc, avec $z(T)=0$, on obtient $y_\alpha$ est solution de :
+
+\[ \Psi y_{\alpha} (t) - \alpha (Y_0'(t) y_{\alpha}(Y_0(t))) = z(t)\]
+
+On pose alors $z_{\alpha}'(t) = - Y_0'(t)y_{\alpha}(Y_0(t))$,
+et on observe que $z_{\alpha}'(T) =0$ et $z_{\alpha}(t) = - \int_{Y_0(t)}^L y_{\alpha}(x)dx$.
+
+On remplace dans~\eqref{8}
+$- Y_0'(t)y_{\alpha}(Y_0(t))$ par $z_{\alpha}'(t)$ :
+
+\[ z_\alpha'(t) - \alpha (-z_\alpha'(t))' = z'(t) \]
+
+On multiplie alors (8) par $z_{\alpha}'(t)$
+et il vient :
+
+\[ z_{\alpha}'(t)^2 + \alpha z_{\alpha}'(t) z_{\alpha}'' = z_{\alpha}'(t)z'(t) \]
+
+On intègre entre $0$ et $T$ :
+
+\[ \displaystyle  \int_0^T z_\alpha '(t)^2 dt - \alpha \frac{1}{2}z_\alpha '(0)^2
+          =  \int_0^T z_\alpha '(t)z'(t)dt \]
+
+Par le même raisonnement que la question précédente on calcule l'inégalité :
+
+\[
+\begin{split}
+\| y_{\alpha} \|_{\mathscr{Y}}^2 &= \int_0^L y_\alpha(x)^2dx \\
+	     & \leq \displaystyle \frac{1}{v_{min}} \int_0^T z'_{\alpha}(t)^2dt\\
+	     &\leq \displaystyle \frac{1}{v_{min}}
+				 ( \frac{\alpha}{2} z_\alpha '(0)^2 
+				 	+ \int_0^T z_\alpha '(t)z'(t)dt) \\
+		 & \leq \displaystyle \frac{1}{v_{min}}
+			(\frac{\alpha}{2}  (-Y_0'(0)) y_\alpha (0)
+			+ (\int_0^T z_\alpha'(t)^2 dt)^{1/2}
+			 (\int_0^Tz'(t)^2 dt)\,)^{1/2} ) \\
+		&\leq \displaystyle \frac{1}{v_{min}}
+			(\| z_\alpha'\|_{\Y} \| z \|_{H^1} ) \\
+		& \leq \displaystyle \frac{1}{v_{min}}
+			( v_{max}^{1/2} \| y_\alpha \|_{\Y} \| z \|_{H^1} ) 
+\end{split}
+\]
+
+Donc :
+
+\[ \| y_{\alpha} \|_{\mathscr{Y}} \leq \displaystyle C_0
+                                                     \| z \|_{H^1} \]
+
+avec $C_0= \displaystyle \frac{ v_{max}^{1/2} }{ v_{min}}$.
+
+
+\vspace{0.3cm}
+\textbf{d.}
+
+On soustrait à l'équation~\eqref{8} 
+l'égalité $\Psi y = z$ :
+
+\[
+\Psi (y_\alpha - y) - \alpha Y_0'(t)(y_\alpha - y)(Y_0(t)) = \alpha Y_0'(t) y(Y_0(t))
+\]
+
+On dérive puisque $y \in H^1(0,L)$ on obtient pour presque tout $t$ :
+
+ \[
+ - Y_0'(t)(y_\alpha - y)(Y_0(t)) - \alpha (Y_0'(t)(y_\alpha - y)(Y_0(t)))' = \alpha (Y_0'(t) y(Y_0(t)))'
+ \]
+ 
+ On obtient l'équivalence entre les deux solutions en imposant $(y_\alpha - y)(L)=0$
+ 
+ On multiplie par $z_1'(t) =  - Y_0'(t)(y_\alpha - y)(Y_0(t)) $ et il vient :
+ 
+ \[
+ z_1'(t)^2 + \alpha z_1'(t)z_1 ''(t) = \alpha z_1'(t)(Y_0'(t) y(Y_0(t)))'
+ \]
+
+Et par intégration :
+
+\[
+\int_0^T z_1'(t)^2dt - \alpha \displaystyle \frac{1}{2} z_1 '(0)^2 
+  = \int_0^T \alpha z_1'(t)(Y_0'(t) y(Y_0(t)))' dt
+\] 
+Soit 
+
+\[
+\int_0^T z_1'(t)^2dt - \alpha \displaystyle \frac{1}{2} z_1 '(0)^2 
+  = \int_0^T \alpha z_1'(t)(Y_0''(t) y(Y_0(t)) - Y_0'(t)^2 y'(Y_0(t))) dt
+\] 
+
+\[
+\begin{split}
+	\| y_\alpha - y \|_{\Y}^2 
+	     & \leq \displaystyle \frac{1}{v_{min}} \int_0^T z_1'(t)^2 dt \\
+		 & \leq \displaystyle \frac{1}{v_{min}}
+		        ( \alpha \displaystyle \frac{1}{2} z_1 '(0)^2 
+				+  \int_0^T \alpha z_1'(t)(w_{max}y(Y_0(t))
+				- Y_0'(t)^2 y'(Y_0(t))) )  dt) \\
+	   		 & \leq \displaystyle \frac{1}{v_{min}}
+	   		        ( \alpha \displaystyle \frac{1}{2} z_1 '(0)^2 
+	   				+ \alpha (\int_0^T  z_1'(t)^2 dt )^{1/2}
+					(\int_0^T (w_{max}y(Y_0(t))
+	   				- Y_0'(t)^2 y'(Y_0(t)))^2  dt)^{1/2} \\
+  		 & \leq \displaystyle \frac{1}{v_{min}}
+  		        ( \alpha \displaystyle \frac{1}{2} z_1 '(0)^2 
+  				+ \alpha (\int_0^T  z_1'(t)^2 dt )^{1/2}
+			(\int_0^T (w_{max}y(Y_0(t)))^2
+  				+ (Y_0'(t)^2 y'(Y_0(t)))^2  dt)^{1/2} \\
+		& \leq \displaystyle \frac{1}{v_{min}}
+				( \frac{ L^2\alpha}{2} (-Y_0(0))(y_\alpha(0) - y(0))
+			     + \alpha v_{max}^{1/2}\| y_\alpha - y \|_{\Y}
+				  [w_{max} \|y\|_{Y} + v_{max}^2 \| y' \|_{\Y}]  ) \\
+		& \leq \displaystyle \frac{1}{v_{min}}
+		       ( \frac{ L^2\alpha}{2} v_{max} y(0)
+			    + \alpha v_{max}^{1/2}\| y_\alpha - y \|_{\Y}^2
+				[w_{max} + v_{max}^2] \|y\|_{H^1}   )
+\end{split}
+\]		 
+
+Or,
+
+\[ 0 \leq y(0) = -\int_0^L y'(x)dx \leq  L^{1/2} \| y \|_{H^1} \]
+
+Donc :
+
+\[ \| y_\alpha - y \|_{\Y} \leq (C_1 + C_2 \alpha) \| y \|_{H^1} \]
+
+\textbf{e.}
+
+Pour $0< 1-\displaystyle \frac{L}{2\alpha v_{min}} $ :
+
+\[
+\begin{split}
+	\| \yea - y \|_{\Y} & \leq \| \yea - y_\alpha \|_{\Y} + \| y_\alpha - y \|_{\Y}\\ 	                                             & \leq f(\alpha) \| z_\epsilon \|_{\Z} 
+	                          + \| y_\alpha \|_{\Y} + (C_1 + \alpha C_2) \| y \|_{H^1}\\
+	                    & \leq f(\alpha) \| z_\epsilon \|_{\Z} + \| y_\alpha \|_{\Y} 
+						      + (C_1 + \alpha C_2) \| y \|_{H^1}\\
+	  	              & \leq f(\alpha) \| z_\epsilon - z \|_{\Z} 
+					         + (C_0 +1) \| z \|_{H^1} 
+	  						 + (C_1 + \alpha C_2) \| y \|_{H^1}
+\end{split}
+\]
+
+Soit :
+
+\[ \| \yea - y \|_{\Y} \leq f(\alpha) \epsilon + C_3 +C_4 \alpha \]
+
+On note que cette inégalité est valable pour $\alpha > \displaystyle \frac{L}{2 v_{min}}$.
+Une étude plus approffondie du comportement de $Y_0$ pourrait nous permettre de conclure sous quelle condition cette condition est effectivement vérifiée.
+Dans ce cas, le choix optimal ext $\alpha^2 = 0(\epsilon)$.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Etude du problème inverse, second cas : $c(t)$ connu, on mesure $\mu_1$}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+				
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Question 7. Résolution du problème inverse par filtre de Kalman}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+  
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Etude du problème inverse, second cas : $c(t)$ inconnu, on mesure $\mu_1$}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+				
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Question 8. 4D-Var}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 \end{document}

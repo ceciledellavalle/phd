@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.9.3)  15 FEB 2019 11:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.9.3)  21 FEB 2019 15:43
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1029,45 +1029,51 @@ st donc constante le long d'une courbe ca-rac-té-ris-tique et $\OML/cmm/m/it/10
 
 {/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 [2] [3] [4]
-Overfull \hbox (64.67856pt too wide) detected at line 500
+Overfull \hbox (64.67856pt too wide) detected at line 501
 []
  []
 
-[5] [6] (./20190123examDoumicMoireau.aux) ) 
+[5]
+Overfull \hbox (40.92145pt too wide) detected at line 607
+[]
+ []
+
+[6] [7] [8] [9] (./20190123examDoumicMoireau.aux) ) 
 Here is how much of TeX's memory you used:
- 18572 strings out of 492649
- 351978 string characters out of 6129623
- 435037 words of memory out of 5000000
- 22207 multiletter control sequences out of 15000+600000
+ 18577 strings out of 492649
+ 352031 string characters out of 6129623
+ 435045 words of memory out of 5000000
+ 22212 multiletter control sequences out of 15000+600000
  549134 words of font info for 84 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,18n,36p,10397b,458s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2018/texmf-dist/
-fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/texlive/2018/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2018/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2018/texmf-dist/font
-s/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2018/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2018/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2018/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmr7.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmsy7.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/ams
-fonts/symbols/msbm10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public
-/rsfs/rsfs10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/rsfs/rs
-fs7.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfbx100
-0.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfbx1200.
-pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pf
-b></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-</usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></
-usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></us
-r/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfsl1000.pfb>
-Output written on 20190123examDoumicMoireau.pdf (6 pages, 246282 bytes).
+{/usr/local/texlive/2018/tex
+mf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/texlive/2018/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2018/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2018/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2018/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2018/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2018/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2018/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2018/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2018/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/pu
+blic/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type
+1/public/rsfs/rsfs10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public
+/rsfs/rsfs7.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super
+/sfbx1000.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/s
+fbx1200.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfb
+x1440.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1
+000.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfrm120
+0.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1728.
+pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfsl1000.pf
+b>
+Output written on 20190123examDoumicMoireau.pdf (9 pages, 257734 bytes).
 PDF statistics:
- 108 PDF objects out of 1000 (max. 8388607)
- 78 compressed objects within 1 object stream
+ 119 PDF objects out of 1000 (max. 8388607)
+ 86 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
