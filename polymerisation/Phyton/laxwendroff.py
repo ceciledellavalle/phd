@@ -26,3 +26,11 @@ def LaxWendroffScheme(L,NX,T,NT,speed,state_0):
         state_lw[:,k+1] = np.dot(flow_lw,state_lw[:,k])
 
     return state_lw
+
+def FlowLaxWendroff(NX,cfl0):
+    flow_lw =\
+    (1-cfl0**2)*np.eye(NX,NX)\
+    - cfl0/2*(1-cfl0)*np.diag(np.ones(NX-1),1)\
+    + cfl0/2*(1+cfl0)*np.diag(np.ones(NX-1),-1)
+
+    return flow_lw

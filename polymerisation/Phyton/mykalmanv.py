@@ -23,8 +23,8 @@ from plotdynamic import PlotDymamicSolution
 b = 5.0  # Depolymerisation speed
 a = 1
 c0 = 1
-L = 20.0  # Domain size
-T = 5.0  # Integration time
+L = 3.0  # Domain size
+T = 0.50  # Integration time
 
 ### NUMERICAL PARAMETERS
 NT = 100  # Number of time steps
@@ -71,8 +71,7 @@ state_lw = LaxWendroffScheme(L,NX,T,NT,speed,state_init)
 anim_lw = PlotDymamicSolution(1.1*L,1.1*cmax,\
 np.linspace(0,L,NX),state_lw,
 NT,np.linspace(0,T,NT))
-plt.show()
-sys.exit()
+
 
 ### DATA GENERATION ###########################################################
 ### OBSERVER - MOMENT OPERATOR
@@ -85,43 +84,31 @@ observer = np.vstack((operator_moment_1, operator_moment_2))
 ###
 mu = np.dot(observer,state_lw)
 
-
 ### KALMAN FILTER ############################################################
 
 # Construction of the norm of the two spaces
 standart_deviation = 0.0001
-norm_state = (L/NX)*np.eye(NX)
-inv_norm_state = (NX/2)*np.eye(NX)
-norm_observation = 1/2*(T/NT)*(1/standart_deviation)**2*np.eye(2)
 inv_norm_observation = 2*(NT/T)*(standart_deviation)**2*np.eye(2)
-# Combine the norm in one list
-norm = [norm_state, inv_norm_state,\
-norm_observation, inv_norm_observation]
 
 ### STATE INIT A PRIORI
-state_apriori = Gaussienne(x,0.7*cmax,0.5*imax,0.8*sigma)
+state_apriori = Gaussienne(x,cmax,0.8*imax,sigma)
 
 ### KALMAN FILTER
-#state_k = KalmanAdaptedTimeScale(L,NX,T,NT,\
-#mu,speed,\
-#state_apriori,np.diag(np.ones(NX-1),1)),observer,norm)
-
 state_k =\
 KalmanLW(L,NX,T,NT,\
 mu,speed,\
 state_apriori,np.eye(NX),\
 observer,inv_norm_observation)
 
-anim_k = PlotDymamicSolution(1.1*L,1.1*cmax,\
-np.linspace(0,L,NX),state_k,
-NT,np.linspace(0,T,NT))
 
 #### PLOTTING ##################################################################################
 
 fig2, ax2 = plt.subplots()
 #ax1.plot(x, state_init, 'k--', label = 'Model estimation')
-ax2.plot(x, state_k[:,NT-1],'k:', label = 'Solution')
-legend = ax2.legend(loc='upper right', shadow=True, fontsize='x-large')
+ax2.plot(x, state_k[:,NT-1],'k:', label = 'Kalman')
+ax2.plot(x, state_init,'k-', label = 'Initial')
+ax2.plot(x, state_apriori,'r--', label = 'A priori')
+legend = ax2.legend(loc='upper left', shadow=True, fontsize='x-large')
 # Put a nicer background color on the legend.
 legend.get_frame().set_facecolor('C0')
 ax2.set(xlabel='time (s)', ylabel='convergence',

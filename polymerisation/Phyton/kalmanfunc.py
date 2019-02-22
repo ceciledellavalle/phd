@@ -7,6 +7,54 @@
 import numpy as np
 import math
 import sys
+### LOCAL FUNCTION
+from laxwendroff import FlowLaxWendroff
+
+###############################################################################
+## STEPS OF THE KALMAN FILTER
+###############################################################################
+
+### CORRECTION
+### ONE STEP KALMAN FILTER
+def KalmanCorrection(\
+NX,muk,obs_k,norm,\
+state_m,covop_m):
+
+    # Covariance computation +
+    interim_matrix = norm \
+    + obs_k.dot(covop_m)\
+    .dot(obs_k.transpose())
+    #
+    gain_k = covop_m\
+    .dot(obs_k.transpose())\
+    .dot(np.linalg.inv(interim_matrix))
+    #
+    covop_p = (np.eye(2*NX) - gain_k.dot(obs_k))\
+    .dot(covop_m)
+
+    # State correction computation +
+    state_p = state_m + gain_k\
+    .dot(muk-np.dot(obs_k,state_m))
+
+
+    return state_p, covop_p
+
+### PREDICTION
+### ONE STEP KALMAN FILTER
+def KalmanPrediction(\
+flow_k,\
+state_p,covop_p):
+
+    # Covariance computation -
+    covop_m = flow_k.dot(covop_p)\
+    .dot(flow_k.transpose())
+
+    # State prediction computation -
+    state_m = np.dot(flow_k,state_p)
+
+    return state_m, covop_m
+
+
 
 ###############################################################################
 ## KALMAN FILTER
@@ -23,9 +71,10 @@ def KalmanLW(L,NX,T,NT,mu,speed,state_0,flow_lw,observer,norm):
 
     # Construction of the observer (equal zero for the initial condition
     # taken as parameter)
-    observer_kalman = np.vstack((observer[:NX], np.zeros(NX), \
-    observer[NX+1:], np.zeros(NX)))\
+    observer_kalman = np.vstack((observer[0,:], np.zeros(NX), \
+    observer[1,:], np.zeros(NX)))\
     .reshape(2,2*(NX))
+
 
     # Initialisation of the covariance matrix
     covariance_operator_m = np.kron(np.ones((2,2)),np.eye(NX))
@@ -48,20 +97,26 @@ def KalmanLW(L,NX,T,NT,mu,speed,state_0,flow_lw,observer,norm):
         NX,mu[:,k],observer_kalman,norm,\
         state_m,covariance_operator_m)
 
+
         ### PREDICTION
         # Actualisation of the dynamic
         cfl = speed[k]*T/NT*NX/L
-        flow_kalman[0:NX,0:NX] = \
-        (1-cfl**2)*np.eye(NX,NX)\
-        - cfl/2*(1-cfl)*np.diag(np.ones(NX-1),1)\
-        + cfl/2*(1+cfl)*np.diag(np.ones(NX-1),-1)
-
+        flow_kalman[0:NX,0:NX] = FlowLaxWendroff(NX,cfl)
         state_m, covariance_operator_m = \
         KalmanPrediction(\
         flow_kalman,\
         state_p,covariance_operator_p)
 
     return state_kalman[NX:,:]
+
+
+
+
+
+
+
+
+
 
 #############################################################################
 ### KALMAN FILTER
@@ -73,7 +128,7 @@ def KalmanAdaptedTimeScale(L,NX,T,NT,mu,speed,state_0,flow,observer,norm):
     # Construction of the observer (equal zero for the initial condition
     # taken as parameter)
     observer_kalman = np.vstack((observer[:NX], np.zeros(NX), \
-    observer[NX+1:], np.zeros(NX)))\
+    observer[NX:], np.zeros(NX)))\
     .reshape(2,2*(NX))
     # interpolation index for observer
     index = 0
@@ -118,50 +173,7 @@ def KalmanAdaptedTimeScale(L,NX,T,NT,mu,speed,state_0,flow,observer,norm):
 
         return state_kalman[NX:,:]
 
-###############################################################################
-## STEPS OF THE KALMAN FILTER
-###############################################################################
 
-### CORRECTION
-### ONE STEP KALMAN FILTER
-def KalmanCorrection(\
-NX,muk,obs_k,norm,\
-state_m,covop_m):
-
-    # Covariance computation +
-    interim_matrix = norm \
-    + obs_k.dot(covop_m)\
-    .dot(obs_k.transpose())
-    #
-    gain_k = covop_m\
-    .dot(obs_k.transpose())\
-    .dot(np.linalg.inv(interim_matrix))
-    #
-    covop_p = (np.eye(2*NX) - gain_k.dot(obs_k))\
-    .dot(covop_m)\
-    .dot(np.transpose((np.eye(2*NX) - gain_k.dot(obs_k)))) \
-    + gain_k.dot(norm).dot(np.transpose(gain_k))
-
-    # State correction computation +
-    state_p = state_m + gain_k\
-    .dot(muk-np.dot(obs_k,state_m))
-
-    return state_p, covop_p
-
-### PREDICTION
-### ONE STEP KALMAN FILTER
-def KalmanPrediction(\
-flow_k,\
-state_p,covop_p):
-
-    # Covariance computation -
-    covop_m = flow_k.dot(covop_p)\
-    .dot(flow_k.transpose())
-
-    # State prediction computation -
-    state_m = np.dot(flow_k,state_p)
-
-    return state_m, covop_m
 
 ################################################################################
 ################################################################################
