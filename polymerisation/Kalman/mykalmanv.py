@@ -49,9 +49,9 @@ state_init = Gaussienne(x,cmax,imax,sigma)
 ### SOLUTION OF BDSCHEME
 state_bd = BeckerDoringScheme(L,NX,T,NT,a,b,c0,state_init)
 
-
-
-speed = SpeedComputation(L,NX,T,NT,a,b,c0,state_bd)
+### COMPUTATION OF SPEED ac(t)-b
+# Carefull : state_bd [0,:] = c(t)
+speed = SpeedComputation(L,NX,T,NT,a,b,c0,state_bd[1:,:])
 
 ### PLOTs
 # Create plots with pre-defined labels.

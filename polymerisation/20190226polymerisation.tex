@@ -921,7 +921,7 @@ Il existe une infinité de solution qui vérifie ces deux points. On peut par ex
 	
 	On vient de montrer qu'il existe au moins deux conditions initiales non identiques $f_0$ et $g_0$ telles que leurs moments d'ordre 0 et d'ordre 1 sont égaux. 
 	
-	\includegraphics[width=9cm]{f0g0.png}
+	\includegraphics[width=9cm]{OLD/f0g0.png}
 	
 
 \end{preuve}
@@ -1249,35 +1249,80 @@ On munit $\mathscr{X}$ de la semi-norme pour tout $n>0$:
 \subsection{Problème inverse : méthode de Tikhonov généralisée}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Con cherche à résoudre la question suivante : 
+On cherche à résoudre la question suivante : 
 peut-on estimer $y_0$ la condition initiale par la mesure du moment d'ordre 0 d'une solution du système~\eqref{eq:poldep} avec l'hypothèse $\mass \leq \dep$ ?
 Ce problème est mal posé d'ordre 1 pour la norme sur $L^2$ sur $\mathscr{Z}$.
 
-On définit l'opérateur $\Psi$ tel que :
+À l'ordre 0, pour $\mass \leq \dep$, l'opérateur $\Psi$ devient :
 
 \begin{equation}
-	\Psi y(t):= \int_{-\theta(t)}^L y(x)dx
+	\forall y \in \Y \; \; \Psi y (t):= \int_{-\theta(t)}^L y(x)dx
 \end{equation}
 
-Par la suite, on pose .
+Par la suite, on pose $\upsilon(t) = - \theta (t) $.
+Il vient alors :
+
+\begin{equation}
+	\label{def:psi0}
+	\forall y \in \Y \; \; \Psi y (t):= \int_{\upsilon(t)}^L y(x)dx
+\end{equation}
+
 On a alors $\upsilon \in C^2([0,\tau])$, $\upsilon(0)=0$ et de plus,
 par la propriété \ref{prop:v} on a pour $\mass \leq \dep$ la propriété suivante :
 \[ 0< v_{min} < \upsilon(t) < v_{max} \].
 
 On suppose que l'on mesure $z_{\epsilon}$ tel que :
 
-\[ z_{\epsilon}-z \|_{\Z} \leq \epsilon \]
+\[ \| z_{\epsilon}-z \|_{\Z} \leq \epsilon \]
 
 On s'intéresse au problème régularisé suivant, 
 par analogie à ce qui a été développé dans \cite{Perthame} :
 
-\[ \Psi \yea(t) - \alpha \upsilon'\yea(\upsilon(t)) = z_{\epsilon} \]
+\[ \Psi \yea(t) + \alpha \upsilon'\yea(\upsilon(t)) = z_{\epsilon} \]
 
-Et on définit :
+\begin{proposition}
+	Soit $L>0$ et $\tau> L/\dep>0$, $\dep$ et $\mass$ respectivement la vitesse de dépolymérisation et la masse totale, associée à l'équation~\eqref{eq:poldep}.
+	On définit les espaces $\Y = L^2([0,L])$, $\Z = L^2([0,\tau])$.
+	
+	Soit $\upsilon :t \to \int_0^L y(x,t) + (\dep-\mass) $ fonction de $C^2([0,\tau])$.
+	
+	On rappelle que d'après la proposition~\ref{prop:v}, 
+	on a $0< v_{min} \leq \upsilon \leq v_{max}$.
+	
+	
+	Soit $y_0$ la consition initiale pour l'équation~\eqref{eq:dep}
+	et $\Psi y_0$ définit par~\eqref{def:psi0}
+	Soit $z_{\epsilon}$ la mesure du moment d'ordre 0 tel que :
+	
+	\[ \|z_{\epsilon} - \Psi y_0 \|_{\Z} \leq \epsilon \]
+	
+	Alors $\yea$ unique solution de l'équation :
+	\begin{equation}
+		 \Psi \yea(t) + \alpha \upsilon'\yea(\upsilon(t)) = z_{\epsilon} 
+	\end{equation}
+	est une approximation de $y_0$, et cette approximation est optimale 
+	dans le sens où :
+	\[ \| \displaystyle \yea - y_0 \|_{\Y} \leq 
+	                 \frac{C_1}{\alpha} \epsilon 
+					 + C_5
+					 + C_4 \alpha \]
+					
+	
+\end{proposition}
+	
+	
+\begin{preuve}
+	
+	\vspace{0.5cm}
+	\underline{Montrons que $\displaystyle
+	          \| \yea \|_{\Y}  \leq \frac{C_1}{\alpha} \|z_{\epsilon} \|_{\Z}$ }
+	\vspace{0.5cm}
+	
+On définit :
 
 \[ \zea (t) = \int_{\upsilon(t)}^L \yea(t) = \Psi \yea \]
 
-On note à titre préliminaire :
+On note à titre liminaire :
 \[
 \begin{cases}
 	\zea(t) = \Psi \yea(t) \\
@@ -1289,15 +1334,15 @@ On note à titre préliminaire :
 Il vient ainsi :
 \[
 \begin{split}
-	\int_0^T (\upsilon'(t)\yea(\upsilon(t)))(\Psi\yea - \alpha \upsilon'(t)\yea(\upsilon(t)))dt
-	 & = \int_0^T (\upsilon'(t)\yea(\upsilon(t))) \Psi \yea(t)dt
-	 - \int_0^T \alpha (\upsilon'(t)\yea(\upsilon(t)))^2 dt \\
+	\int_0^T (\;\upsilon'(t)\yea(\upsilon(t))\;)(\Psi\yea + \alpha \upsilon'(t)\yea(\upsilon(t))\;)dt
+	 & = \int_0^T (\upsilon'(t)\yea(\upsilon(t))\;) \Psi \yea(t)dt
+	 + \int_0^T \alpha (\upsilon'(t)\yea(\upsilon(t))\;)^2 dt \\
 	 &= - \int_0^T \zea'(t) \zea(t)dt
-	 - \alpha \int_0^T \zea'(t)^2 dt\\
+	 + \alpha \int_0^T \zea'(t)^2 dt\\
 	 &= - \displaystyle \frac{1}{2}[\zea(t)^2]_0^T
-	 - \alpha \int_0^T \zea'(t)^2 dt\\
+	 + \alpha \int_0^T \zea'(t)^2 dt\\
 	 & = \displaystyle \frac{1}{2}\zea(0)^2 
-	 - \alpha \int_0^T \zea'(t)^2 dt
+	 + \alpha \int_0^T \zea'(t)^2 dt
 \end{split}
 \]
 
@@ -1308,12 +1353,14 @@ D'autre part :
 = - \int_0^T \zea'(t)z_{\epsilon}(t) dt
 \]
 
-Donc :
+On obtient donc l'égalité :
+
 \[
 \displaystyle \frac{1}{2}\zea(0)^2 
-	 - \alpha \int_0^T \zea'(t)^2 dt
+	 + \alpha \int_0^T \zea'(t)^2 dt
 	 = - \int_0^T \zea'(t)z_{\epsilon}(t) dt
 \]
+
 
 De plus, pour obtenir l'inégalité, 
 on cherche à exprimer $\zea'$ en fonction de $\yea$
@@ -1328,15 +1375,6 @@ et $ds = \upsilon'(t)dt$ :
 \end{split}
 \]
 
-Puis, on cherche à exprimer $\zea(0)$ en fonction de $\yea$ :
-
-\[
-\begin{split}
-	\zea(0)^2 &= (\int_0^L \yea(x)dx)^2 \\
-	          & \leq (\int_0^L 1^2dx)(\int_0^L \yea(x)^2 dx) \\
-			  & \leq L \| \yea \|_{\Y}^2
-\end{split}
-\]
 
 Donc :
 \[
@@ -1345,71 +1383,68 @@ Donc :
                   &\leq \displaystyle \frac{1}{v_{min}}
 				      \int_0^T \zea'(t)^2 dt \\ 
 				  &\leq \displaystyle \frac{1}{\alpha v_{min}}
-				      (\displaystyle \frac{1}{2}\zea(0)^2 
-				      + \int_0^T \zea'(t)z_{\epsilon}(t) dt)\\
+				      (-\displaystyle \frac{1}{2}\zea(0)^2 
+				      - \int_0^T \zea'(t)z_{\epsilon}(t) dt)\\
 					  &\leq \displaystyle \frac{1}{\alpha v_{min}}
-					      (\displaystyle \frac{1}{2}\zea(0)^2 
-					      + (\int_0^T \zea'(t)^2 dt)^{1/2}
-						   (\int_0^Tz_{\epsilon}(t)^2 dt)\,)^{1/2})\\
+					      (\int_0^T \zea'(t)^2 dt)^{1/2}
+						   (\int_0^Tz_{\epsilon}(t)^2 dt)\,)^{1/2}\\
 				  &\leq \displaystyle \frac{1}{\alpha v_{min}}
-				      (\frac{L}{2}  \| \yea \|_{\Y}^2
-				      +  v_{max}^{1/2} \| \yea \|_{\Y}
-					  \|z_{\epsilon} \|_{\Z})
+				     v_{max}^{1/2} \| \yea \|_{\Y}
+					  \|z_{\epsilon} \|_{\Z}
 \end{split}
 \]
 
-Soit, pour $0< 1-\displaystyle \frac{L}{2\alpha v_{min}} $  :
-
-\[
-\| \yea \|_{\Y}^2 (1-\displaystyle \frac{L}{2\alpha v_{min}})
-  \leq \frac{v_{max}^{1/2}}{\alpha v_{min}}  \| \yea \|_{\Y} \|z_{\epsilon} \|_{\Z})
-\]				  
 
 Il vient donc :
 \[
-\| \yea \|_{\Y}  \leq f(\alpha) \|z_{\epsilon} \|_{\Z}
+\displaystyle \| \yea \|_{\Y}  \leq \frac{C_1}{\alpha} \|z_{\epsilon} \|_{\Z}
 \]
 
-Avec $f(\alpha) = \displaystyle \frac{2v_{max}^{1/2}}{2\alpha v_{min} -L}$
+\vspace{0.5cm}
+\underline{Montrons que $ \displaystyle \| y_{\alpha} \|_{\mathscr{Y}} \leq  
+                                                C_2 \| z \|_{H^1} $}
+\vspace{0.5cm}
 
-\vspace{0.3cm}
-\textbf{c.}
+Soit $y_{\alpha}$ solution de :
 
-Soit $y_{\alpha}$ solution de (7).
+\[
+\Psi y_{\alpha} +\alpha \upsilon'(t) y_\alpha (\upsilon(t)) = z(t)
+\]
 
 Alors comme $z\in H^1(0,T)$ et $y\in L^2(0,L)$, 
 on a donc $\Psi y_{\alpha} \in H^1(0,T)$ par composition de l'intégrale d'une fonction de $L^2$
 et le la fonction $\upsilon$ de $C^2(0,T)$.
+
 
 Donc $t \to \upsilon'(t)y(\upsilon(t))$ est également une fonction de $H^1(0,T)$
 et on a presque partout :
 
 \begin{equation}
 	\label{8}
-	 - \upsilon'(t) y_{\alpha}(\upsilon(t)) - \alpha(\upsilon'(t) y_{\alpha}(\upsilon(t)))' = z'(t)
+	 - \upsilon'(t) y_{\alpha}(\upsilon(t)) + \alpha(\upsilon'(t) y_{\alpha}(\upsilon(t)))' = z'(t)
 \end{equation}
 
 et $y_{\alpha}(L) = 0$.
 
-Réciproquement, soit $y_{\alpha}$ solution de (8), 
+Réciproquement, soit $y_{\alpha}$ solution de~\eqref{eq:dep}, 
 on peut intégrer l'équation entre $t$ et $T$,
 et sachant $y_\alpha (L) =0$ :
 
 \[ 
 \begin{split}
-	\int_t^T [- \upsilon'(s) y_{\alpha}(\upsilon(s)) - \alpha (\upsilon'(s) y_{\alpha}(\upsilon(s)))' ] ds
+	\int_t^T [- \upsilon'(s) y_{\alpha}(\upsilon(s)) + \alpha (\upsilon'(s) y_{\alpha}(\upsilon(s)))' ] ds
 	& = \int_t^T (\int_{\upsilon(s)}^L y_{\alpha}(x)dx)'ds
-	     - \alpha \int_t^T (\upsilon'(s) y_{\alpha}(\upsilon(s)))' ds \\
+	     + \alpha \int_t^T (\upsilon'(s) y_{\alpha}(\upsilon(s)))' ds \\
 	& = \Psi y_{\alpha} (T) - \Psi y_{\alpha} (t)
-	    - \alpha (\upsilon'(T) y_{\alpha}(\upsilon(T)))
-		+ \alpha (\upsilon'(t) y_{\alpha}(\upsilon(t))) \\
-    & = - \Psi y_{\alpha} (t) + \alpha (\upsilon'(t) y_{\alpha}(\upsilon(t)))
+	    + \alpha (\upsilon'(T) y_{\alpha}(\upsilon(T)))
+		- \alpha (\upsilon'(t) y_{\alpha}(\upsilon(t))) \\
+    & = - \Psi y_{\alpha} (t) - \alpha (\upsilon'(t) y_{\alpha}(\upsilon(t)))
 \end{split}
 \]
 
 Donc, avec $z(T)=0$, on obtient $y_\alpha$ est solution de :
 
-\[ \Psi y_{\alpha} (t) - \alpha (\upsilon'(t) y_{\alpha}(\upsilon(t))) = z(t)\]
+\[ \Psi y_{\alpha} (t) + \alpha (\upsilon'(t) y_{\alpha}(\upsilon(t))) = z(t)\]
 
 On pose alors $z_{\alpha}'(t) = - \upsilon'(t)y_{\alpha}(\upsilon(t))$,
 et on observe que $z_{\alpha}'(T) =0$ et $z_{\alpha}(t) = - \int_{\upsilon(t)}^L y_{\alpha}(x)dx$.
@@ -1417,16 +1452,16 @@ et on observe que $z_{\alpha}'(T) =0$ et $z_{\alpha}(t) = - \int_{\upsilon(t)}^L
 On remplace dans~\eqref{8}
 $- \upsilon'(t)y_{\alpha}(\upsilon(t))$ par $z_{\alpha}'(t)$ :
 
-\[ z_\alpha'(t) - \alpha (-z_\alpha'(t))' = z'(t) \]
+\[ z_\alpha'(t) + \alpha (-z_\alpha'(t))' = z'(t) \]
 
 On multiplie alors (8) par $z_{\alpha}'(t)$
 et il vient :
 
-\[ z_{\alpha}'(t)^2 + \alpha z_{\alpha}'(t) z_{\alpha}'' = z_{\alpha}'(t)z'(t) \]
+\[ z_{\alpha}'(t)^2 - \alpha z_{\alpha}'(t) z_{\alpha}'' = z_{\alpha}'(t)z'(t) \]
 
 On intègre entre $0$ et $T$ :
 
-\[ \displaystyle  \int_0^T z_\alpha '(t)^2 dt - \alpha \frac{1}{2}z_\alpha '(0)^2
+\[ \displaystyle  \int_0^T z_\alpha '(t)^2 dt + \alpha \frac{1}{2}z_\alpha '(0)^2
           =  \int_0^T z_\alpha '(t)z'(t)dt \]
 
 Par le même raisonnement que la question précédente on calcule l'inégalité :
@@ -1436,12 +1471,11 @@ Par le même raisonnement que la question précédente on calcule l'inégalité 
 \| y_{\alpha} \|_{\mathscr{Y}}^2 &= \int_0^L y_\alpha(x)^2dx \\
 	     & \leq \displaystyle \frac{1}{v_{min}} \int_0^T z'_{\alpha}(t)^2dt\\
 	     &\leq \displaystyle \frac{1}{v_{min}}
-				 ( \frac{\alpha}{2} z_\alpha '(0)^2 
+				 (- \frac{\alpha}{2} z_\alpha '(0)^2 
 				 	+ \int_0^T z_\alpha '(t)z'(t)dt) \\
 		 & \leq \displaystyle \frac{1}{v_{min}}
-			(\frac{\alpha}{2}  (-\upsilon'(0)) y_\alpha (0)
-			+ (\int_0^T z_\alpha'(t)^2 dt)^{1/2}
-			 (\int_0^Tz'(t)^2 dt)\,)^{1/2} ) \\
+			(\int_0^T z_\alpha'(t)^2 dt)^{1/2}
+			 (\int_0^Tz'(t)^2 dt)\,)^{1/2}  \\
 		&\leq \displaystyle \frac{1}{v_{min}}
 			(\| z_\alpha'\|_{\Y} \| z \|_{H^1} ) \\
 		& \leq \displaystyle \frac{1}{v_{min}}
@@ -1451,26 +1485,27 @@ Par le même raisonnement que la question précédente on calcule l'inégalité 
 
 Donc :
 
-\[ \| y_{\alpha} \|_{\mathscr{Y}} \leq \displaystyle C_0
+\[ \| y_{\alpha} \|_{\mathscr{Y}} \leq \displaystyle C_2
                                                      \| z \|_{H^1} \]
 
-avec $C_0= \displaystyle \frac{ v_{max}^{1/2} }{ v_{min}}$.
+avec $C_2= \displaystyle \frac{ v_{max}^{1/2} }{ v_{min}}$.
 
 
-\vspace{0.3cm}
-\textbf{d.}
+\vspace{0.5cm}
+\underline{Montrons que $\| y_\alpha - y \|_{\Y} \leq C_3 \alpha \| y \|_{H^1}$.}
+\vspace{0.5cm}
 
 On soustrait à l'équation~\eqref{8} 
 l'égalité $\Psi y = z$ :
 
 \[
-\Psi (y_\alpha - y) - \alpha \upsilon'(t)(y_\alpha - y)(\upsilon(t)) = \alpha \upsilon'(t) y(\upsilon(t))
+\Psi (y_\alpha - y) + \alpha \upsilon'(t)(y_\alpha - y)(\upsilon(t)) = -\alpha \upsilon'(t) y(\upsilon(t))
 \]
 
 On dérive puisque $y \in H^1(0,L)$ on obtient pour presque tout $t$ :
 
  \[
- - \upsilon'(t)(y_\alpha - y)(\upsilon(t)) - \alpha (\upsilon'(t)(y_\alpha - y)(\upsilon(t)))' = \alpha (\upsilon'(t) y(\upsilon(t)))'
+ - \upsilon'(t)(y_\alpha - y)(\upsilon(t)) + \alpha (\upsilon'(t)(y_\alpha - y)(\upsilon(t)))' = -\alpha (\upsilon'(t) y(\upsilon(t)))'
  \]
  
  On obtient l'équivalence entre les deux solutions en imposant $(y_\alpha - y)(L)=0$
@@ -1478,20 +1513,20 @@ On dérive puisque $y \in H^1(0,L)$ on obtient pour presque tout $t$ :
  On multiplie par $z_1'(t) =  - \upsilon'(t)(y_\alpha - y)(\upsilon(t)) $ et il vient :
  
  \[
- z_1'(t)^2 + \alpha z_1'(t)z_1 ''(t) = \alpha z_1'(t)(\upsilon'(t) y(\upsilon(t)))'
+ z_1'(t)^2 - \alpha z_1'(t)z_1 ''(t) = -\alpha z_1'(t)(\upsilon'(t) y(\upsilon(t)))'
  \]
 
 Et par intégration :
 
 \[
-\int_0^T z_1'(t)^2dt - \alpha \displaystyle \frac{1}{2} z_1 '(0)^2 
-  = \int_0^T \alpha z_1'(t)(\upsilon'(t) y(\upsilon(t)))' dt
+\int_0^T z_1'(t)^2dt + \alpha \displaystyle \frac{1}{2} z_1 '(0)^2 
+  = -\int_0^T \alpha z_1'(t)(\upsilon'(t) y(\upsilon(t)))' dt
 \] 
 Soit 
 
 \[
-\int_0^T z_1'(t)^2dt - \alpha \displaystyle \frac{1}{2} z_1 '(0)^2 
-  = \int_0^T \alpha z_1'(t)(\upsilon''(t) y(\upsilon(t)) - \upsilon'(t)^2 y'(\upsilon(t))) dt
+\int_0^T z_1'(t)^2dt + \alpha \displaystyle \frac{1}{2} z_1 '(0)^2 
+  = -\int_0^T \alpha z_1'(t)(\upsilon''(t) y(\upsilon(t)) - \upsilon'(t)^2 y'(\upsilon(t))) dt
 \] 
 
 \[
@@ -1499,62 +1534,59 @@ Soit
 	\| y_\alpha - y \|_{\Y}^2 
 	     & \leq \displaystyle \frac{1}{v_{min}} \int_0^T z_1'(t)^2 dt \\
 		 & \leq \displaystyle \frac{1}{v_{min}}
-		        ( \alpha \displaystyle \frac{1}{2} z_1 '(0)^2 
-				+  \int_0^T \alpha z_1'(t)(w_{max}y(\upsilon(t))
+		        ( -\alpha \displaystyle \frac{1}{2} z_1 '(0)^2 
+				-  \int_0^T \alpha z_1'(t)(w_{max}y(\upsilon(t))
 				- \upsilon'(t)^2 y'(\upsilon(t))) )  dt) \\
 	   		 & \leq \displaystyle \frac{1}{v_{min}}
-	   		        ( \alpha \displaystyle \frac{1}{2} z_1 '(0)^2 
-	   				+ \alpha (\int_0^T  z_1'(t)^2 dt )^{1/2}
+	   		        \alpha (\int_0^T  z_1'(t)^2 dt )^{1/2}
 					(\int_0^T (w_{max}y(\upsilon(t))
 	   				- \upsilon'(t)^2 y'(\upsilon(t)))^2  dt)^{1/2} \\
-  		 & \leq \displaystyle \frac{1}{v_{min}}
-  		        ( \alpha \displaystyle \frac{1}{2} z_1 '(0)^2 
-  				+ \alpha (\int_0^T  z_1'(t)^2 dt )^{1/2}
+  		 & \leq \displaystyle \frac{\alpha}{v_{min}}
+  		        (\int_0^T  z_1'(t)^2 dt )^{1/2}
 			(\int_0^T (w_{max}y(\upsilon(t)))^2
   				+ (\upsilon'(t)^2 y'(\upsilon(t)))^2  dt)^{1/2} \\
 		& \leq \displaystyle \frac{1}{v_{min}}
-				( \frac{ L^2\alpha}{2} (-\upsilon(0))(y_\alpha(0) - y(0))
-			     + \alpha v_{max}^{1/2}\| y_\alpha - y \|_{\Y}
+				  \alpha v_{max}^{1/2}\| y_\alpha - y \|_{\Y}
 				  [w_{max} \|y\|_{Y} + v_{max}^2 \| y' \|_{\Y}]  ) \\
-		& \leq \displaystyle \frac{1}{v_{min}}
-		       ( \frac{ L^2\alpha}{2} v_{max} y(0)
-			    + \alpha v_{max}^{1/2}\| y_\alpha - y \|_{\Y}^2
-				[w_{max} + v_{max}^2] \|y\|_{H^1}   )
+		& \leq \displaystyle \frac{\alpha}{v_{min}}
+		      v_{max}^{1/2}\| y_\alpha - y \|_{\Y}
+				[w_{max} + v_{max}^2] \|y\|_{H^1}  
 \end{split}
 \]		 
 
-Or,
-
-\[ 0 \leq y(0) = -\int_0^L y'(x)dx \leq  L^{1/2} \| y \|_{H^1} \]
 
 Donc :
 
-\[ \| y_\alpha - y \|_{\Y} \leq (C_1 + C_2 \alpha) \| y \|_{H^1} \]
+\[ \| y_\alpha - y \|_{\Y} \leq  C_3 \alpha \| y \|_{H^1} \]
 
-\textbf{e.}
-
-Pour $0< 1-\displaystyle \frac{L}{2\alpha v_{min}} $ :
+\vspace{0.3cm}
+\underline{Conclusion}
 
 \[
 \begin{split}
-	\| \yea - y \|_{\Y} & \leq \| \yea - y_\alpha \|_{\Y} + \| y_\alpha - y \|_{\Y}\\ 	                                             & \leq f(\alpha) \| z_\epsilon \|_{\Z} 
-	                          + \| y_\alpha \|_{\Y} + (C_1 + \alpha C_2) \| y \|_{H^1}\\
-	                    & \leq f(\alpha) \| z_\epsilon \|_{\Z} + \| y_\alpha \|_{\Y} 
-						      + (C_1 + \alpha C_2) \| y \|_{H^1}\\
-	  	              & \leq f(\alpha) \| z_\epsilon - z \|_{\Z} 
-					         + (C_0 +1) \| z \|_{H^1} 
-	  						 + (C_1 + \alpha C_2) \| y \|_{H^1}
+	\| \yea - y \|_{\Y} & \leq \| \yea - y_\alpha \|_{\Y} + \| y_\alpha - y \|_{\Y}\\ 	                                             & \leq \frac{C_1}{\alpha}  \| z_\epsilon \|_{\Z} 
+	                          + \| y_\alpha \|_{\Y} + C_3\alpha \| y \|_{H^1}\\
+	                    & \leq \frac{C_1}{\alpha} \| z_\epsilon \|_{\Z} 
+						       + \| y_\alpha \|_{\Y} 
+						      + C_3\alpha  \| y \|_{H^1}\\
+	  	              & \leq \frac{C_1}{\alpha} \| z_\epsilon - z \|_{\Z} 
+					         + C_2 \| z \|_{H^1} 
+	  						 + C_3\alpha  \| y \|_{H^1}
 \end{split}
 \]
 
 Soit :
 
-\[ \| \yea - y \|_{\Y} \leq f(\alpha) \epsilon + C_3 +C_4 \alpha \]
+\[ \displaystyle
+\| \yea - y \|_{\Y} \leq \frac{C_1}{\alpha} \epsilon + C_5 +C_4 \alpha \]
 
-On note que cette inégalité est valable pour $\alpha > \displaystyle \frac{L}{2 v_{min}}$.
-Une étude plus approffondie du comportement de $\upsilon$ pourrait nous permettre de conclure sous quelle condition cette condition est effectivement vérifiée.
-Dans ce cas, le choix optimal ext $\alpha^2 = 0(\epsilon)$.
 
+
+\end{preuve}
+
+
+On peut donc choisir $\alpha$ de l'ordre de grandeur de $\epsilon$
+pour onbtenir une régularisation optimale.
 
 
 
@@ -1648,6 +1680,83 @@ C =  \left( \begin{array}{cc}
 	 \end{array} \right)
 \]
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Vitesse et mesures}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Afin de générer un vecteur vitesse cohérent avec notre problème, on se donne une condition initiale $y_0$ et $c_0$, puis le coefficient $b$ tel que $ \mass<b$.
+On résout le problème direct suivant par un schéma
+implicite décentré droute gauche. Ce schéma correspond exactement au schéma de Becker-Döring, tel que présenté dans \cite{SHariz}.
+
+A partir du vecteur $Y_i^n=y(x_i,t_n)$ généré par la simulation, on calcule un vecteur vitesse globale $v$ par la méthode d'intégration des trapèzes, telle que :
+
+\[ v_n = v(t_n) = \mass - \delta x (\frac{1}{2} \delta x Y_1^n 
+                         + \sum_{i=2}^{N_X-1} i \delta x Y_i^n 
+						 +\frac{1}{2} N_X \delta x Y_{N_X}^n
+						 -b \]
+						 
+On en déduit la fonction $\upsilon$ comme la somme cumulée du vecteur $v^n$ :
+
+\[ \upsilon_n = - \delta t \sum_{j=1}^n v_j \]
+
+Pour la suite, on interpole la fonction
+$\upsilon$ sur le maillage $(\delta x, 2 \delta x, ..., N_X \delta_x )$.
+						 
+La mesure du moment d'ordre 0 est également calculée par la méthode des trapèzes, 
+et on lui ajoute pour chaque pas de temps un bruit d'amplitude $\epsilon_n$ :
+
+\[ z_{\epsilon} = \delta x (\frac{1}{2} Y_1^n 
+                         + \sum_{i=2}^{N_X-1} Y_i^n 
+						 +\frac{1}{2} Y_{N_X}^n)
+				  + \epsilon_n \]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Méthode de Tikhonov généralisée}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+Connaissant une fonction $\upsilon \in C^2([0,T])$ et $z_\epsilon$ une mesure bruitée, généré comme présenté dans la section précédente, on cherche à résoudre :
+
+\[ \Psi \yea(t) + \alpha \upsilon'\yea(\upsilon(t)) = z_{\epsilon} \]
+
+On utilise la méthode du gradient, afin de minimiser la fonctionnelle :
+
+\begin{equation}
+	\label{eq:falpha}
+	 J(y) = \frac{1}{2} \| \Psi y + \alpha \upsilon' y(\upsilon(t)) - z_{\epsilon} \|_{\Z}^2
+	      = \frac{1}{2}\| \Phi y - z_\epsilon \|_{\Z}^2
+\end{equation}
+
+Dans un premier temps, la fonction $\Psi$ est discrétisée par la méthode des trapèzes, 
+et on peut ainsi transformer $\Psi$ en une matrice $(N_X \times N_T)$. Pour la partie régularisante, on calcule la composée de la fonction $\upsilon$ et de $y$. 
+Puisque $\upsilon$ est interpolée sur le maillage on a la relation $Y^{\upsilon_n} = y(\upsilon(t_n))$.
+
+On calcule ensuite le gradient de $J$ :
+
+\begin{equation}
+	\label{eq:gradfalpha}
+\nabla J(y) \cdot \delta y = \langle \Phi^* (\Phi(y) - z_{\epsilon}), 
+                             \delta y \rangle_{\Z}
+\end{equation}
+
+Puisque l'application $\Phi$ est linéaire, on peut l'écrire sous forme d'une matrice dont on détermine les coefficients $\Phi_{ij}$ explicitement.
+
+Ppour mener la simulation on choisit $\alpha = O(\epsilon) = 11 \%$ 
+et on obtient les résultats suivant :
+
+\includegraphics[width=9cm]{OLD/speed.png}
+\includegraphics[width=9cm]{OLD/noise.png}
+\includegraphics[width=9cm]{OLD/y0noise11.png}
+
+
+
+
+
+		  
+
+ 
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Filtre de Kalman}
@@ -1656,9 +1765,9 @@ C =  \left( \begin{array}{cc}
 Grâce aux notations introduites ci-dessus, on peut définir le critère discret $J$ que l'on souhaite discrétiser :
 \[
 \begin{split}
-    J(\zeta,N_T) &= \frac{1}{2}\alpha \parallel \zeta \parallel _{N_{\diamond},\mathscr{Y}}^2 + \frac{1}{2}\gamma \sum_{j=0}^{NTT} \delta t_j \parallel z_j - CS_j(y_{\diamond}+\zeta) \parallel_{M_j,\mathscr{Z}}^2 \\
-	                 &= \frac{1}{2}\alpha \zeta ^T N_{\diamond} \zeta + \frac{1}{2}\gamma \sum_{j=0}^{NTT} \delta t_j (z_j - CS_j(y_{\diamond}+\zeta)^T M_j (z - CS_j(y_{\diamond}+\zeta))\\
-					 &=  \frac{1}{2}\alpha \zeta ^T N_{\diamond} \zeta + \frac{1}{2}\gamma \delta t \sum_{j=0}^{NTT} (C S_j\zeta)^T M_jCS_j\zeta
+    J(\zeta,N_T) &= \frac{1}{2}\alpha \parallel \zeta \parallel _{N_{\diamond},\mathscr{Y}}^2 + \frac{1}{2}\gamma \sum_{j=0}^{N_T} \delta t_j \parallel z_j - CS_j(y_{\diamond}+\zeta) \parallel_{M_j,\mathscr{Z}}^2 \\
+	                 &= \frac{1}{2}\alpha \zeta ^T N_{\diamond} \zeta + \frac{1}{2}\gamma \sum_{j=0}^{N_T} \delta t_j (z_j - CS_j(y_{\diamond}+\zeta)^T M_j (z - CS_j(y_{\diamond}+\zeta))\\
+					 &=  \frac{1}{2}\alpha \zeta ^T N_{\diamond} \zeta + \frac{1}{2}\gamma \delta t \sum_{j=0}^{N_T} (C S_j\zeta)^T M_jCS_j\zeta
 			            -2(z_j-CS_jy_{\diamond})^TM_jCS_j \zeta + cste\\
 					 &= 1/2 \zeta^T A_{N_T} \zeta - b_{N_T}^T\zeta
 \end{split}

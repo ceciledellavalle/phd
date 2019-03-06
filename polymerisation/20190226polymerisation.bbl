@@ -1,0 +1,32 @@
+\begin{thebibliography}{1}
+
+\bibitem{AArmiento}
+Aurora Armiento Marie Doumic Philippe Moireau~Human Rezaei.
+\newblock Estimation from moments measurements for amyloid depolymerisation.
+\newblock {\em Journal of Theoretical Biology}, December 2015.
+
+\bibitem{JMCoron}
+Jean~Michel Coron.
+\newblock {\em Control and Nonlinearity}, volume 136.
+\newblock Mathematical Surveys and Monographs, 2007.
+
+\bibitem{LBrivadis}
+Lucas Brivadis.
+\newblock {\em Algorithme d’estimation pour une EDP hyperbolique décrivant
+  un procédé de cristallisation}.
+\newblock Ecole Centrale Lyon.
+
+\bibitem{Perthame}
+Jorge~Zubelli Benoit~Perthame.
+\newblock On the inverse problem for a size-structured population model.
+\newblock {\em AMS Class}, November 2006.
+
+\bibitem{SHariz}
+Sara~Cecile Hariz.
+\newblock {\em Une version modifi{\'e}e du mod{\`e}le de Lifshitz-Slyosov :
+  Existence et unicit{\'e} de la solution, simulation num{\'e}rique.}
+\newblock PhD thesis, Universit{\'e} de Nice-Sophia Antipolis, D{\'e}partement
+  de Math{\'e}matiques, Laboratoire J.A> Dieudonn{\'e} UMR CNRS N6621, June
+  1999.
+
+\end{thebibliography}

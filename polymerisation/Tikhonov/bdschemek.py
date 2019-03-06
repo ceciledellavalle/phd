@@ -80,13 +80,13 @@ def BeckerDoringScheme(L,NX,T,NT,a,b,c0,state_init):
 def SpeedComputation(L,NX,T,NT,a,b,c0,state0):
     ### OBSERVER - MOMENT OPERATOR
     # First moment
-    observer_1= L/NX*np.linspace(L/NX, L, NX)
+    observer_1= L/NX*np.linspace(L/NX, L-L/NX, NX-1)
 
     ### MOMENT 1rst and 2nd order
-    mu1 = np.dot(observer_1,state0)
+    mu1 = np.dot(observer_1,state0[1:,:])
 
     ### SPEED Computation
-    masse_rho = c0 + m_1[0]
+    masse_rho = c0 + mu1[0]
     speed0 = a*(masse_rho-mu1)\
     -b*np.ones(NT)
 
