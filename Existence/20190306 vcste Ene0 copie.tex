@@ -73,6 +73,7 @@
 \newcommand{\mass}{\mathrm{M}}
 \newcommand{\Y}{\mathscr{Y}}
 \newcommand{\Ak}{A_{\kappa}}
+\newcommand{\yk}{y_{\kappa}}
 
 \usepackage{geometry}
 \geometry{hmargin=3cm,vmargin=2.5cm}
@@ -137,8 +138,9 @@ du générateur infinitésimal de semi-groupe, on pose :
  
   
  \begin{proposition}
-  	Soit $b \in C^1([0,\tau])$, tel que $\dot(b)>0$
-	(on rappelle que $\forall t>0, \;  \dep (t) = |v(t)|$), 
+  	Soit $b \in C^1([0,\tau])$, convexe, tel que $\; \dot{b}>0$
+	(on rappelle que $\forall t>0, \;  \dep (t) = |v(t)|$). 
+	
 	On munit $\Y = L^2([0,L]\times \mathbb{R})$ de la norme :
   
     \[\| y\|_{\mathscr{Y}}^2 = \int_0^L u^2 + \epsilon m^2 \]
@@ -256,10 +258,6 @@ On peut donc réécrire cette forme bilinéaire avec l'opérateur $\Ak(t)$ :
  \[ \forall (y_1,y_2) \in D(\Ak (t)), \; 
  a_\kappa(t,y_1,y_2) \equiv - \langle A(t) y_1,y_2\rangle_{\mathscr{Y}} \]
  
-avec :
-
-\[D(\Ak(t) = \{ (u,m) \in H_R^1([0,L])\times \mathbb{R} | \; \;
-                  \partial_xu(0) + \kappa^{-1} u(0) = \kappa^{-1} \sqrt{\dep}m) \} \]
 
 et :
  
@@ -292,9 +290,60 @@ et :
   u(L,t)=0 & \forall t \in [0,\tau]
  \end{cases}
  \end{equation}
+ 
+ QUESTION :
+
+ Comment retrouve-t-on l'équation :
+ 
+ \[  \partial_xu(0) + \kappa^{-1} u(0) = \kappa^{-1} \sqrt{\dep}m \] ?
+ 
+ 
+ Dans le domaine $D(\Ak (t))$ ?
+ 
+ \[D(\Ak(t) = \{ (u,m) \in H_R^1([0,L])\times \mathbb{R} | \; \;
+                   \partial_xu(0) + \kappa^{-1} u(0) = \kappa^{-1} \sqrt{\dep}m \} \]
 
 \vspace{0.3cm}
 \underline{Etape 2 : Convergence de de la solution pénalisée}
+
+Soit $y$ solution du problème $\dot{y}=A(t)y$ 
+et $\yk$ solution de $\dot{\yk} = \Ak(t) \yk$.
+On pose $\tilde{y}= y-\yk $. 
+
+Calculons la quantité $\Ak(t) y$ :
+
+\[
+\Ak(t) y =  
+\left(\begin{array}{c}
+ \epsilon \partial_{xx} u +\dep (t)\partial_xu )\\
+- \displaystyle \frac{\dot{\dep}(t)}{\dep(t)}m 
++ \kappa^{-1}\sqrt{\dep}(u(0)-\sqrt{\dep}m)
+ \end{array}\right) 
+ =
+ \left(\begin{array}{c}
+ 0 \\
+ - \displaystyle \frac{\dot{\dep}(t)}{\dep(t)}m 
+  \end{array}\right) 
+\]
+
+Donc $\tilde{y}$ vérifie l'équation :
+
+\[ \dot{\tilde{y}} = \Ak(t) \tilde{y} 
+                  + \left(\begin{array}{c}
+                         0 \\
+                         - \displaystyle \frac{\dot{\dep}(t)}{\dep(t)} m 
+                       \end{array}\right)
+\]
+
+
+QUESTION :
+
+Comment assurer que $\tilde{y} \rightarrow 0$ ?
+
+Comment gérer le fait que $y$ n'appartient pas à $D(\Ak (t))$ avec la définition qui fait intervenir $m$ ?
+
+Il me semble qu'on ne fait pas intervenir le fait que $\yk$ vérifie $\partial_xu(0) + \kappa^{-1} u(0) = \kappa^{-1} \sqrt{\dep}m$ ?
+
 
 
 \vspace{0.3cm}
@@ -309,11 +358,8 @@ et :
 
 La coercivité de $a_\kappa$ est donc encore liée au signe de la dérivée de $\dot{b}$.
 
-\newpage
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Approche par modification de la condition de domaine}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                            
 
 
 \newpage

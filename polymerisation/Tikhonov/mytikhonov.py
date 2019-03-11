@@ -29,8 +29,7 @@ T = 10.0  # Integration time
 NT = 150  # Number of time steps
 NX = 100   # Initial number of grid points
 
-### TIKHONOV PARAMETER
-noise = 0.001
+
 
 ### BECKER DORING ###########################################################
 
@@ -65,12 +64,12 @@ upsilon = np.minimum(upsilon, NX-1)
 
 
 ### PLOTs
-fig0, ax0 = plt.subplots()
-ax0.plot(np.linspace(0,T,NT), T/NT*NX/L*speed, 'b--', label='speed')
-#ax0.plot(np.linspace(0,L,NX), state_init, 'r--', label='speed')
-legend = ax0.legend(loc='lower right', shadow=True, fontsize='x-large')
-ax0.set(xlabel='time (s)', ylabel='cfl',
-       title='Becker Döring - total speed equivalency')
+# fig0, ax0 = plt.subplots()
+# ax0.plot(np.linspace(0,T,NT), T/NT*NX/L*speed, 'b--', label='speed')
+# #ax0.plot(np.linspace(0,L,NX), state_init, 'r--', label='speed')
+# legend = ax0.legend(loc='lower right', shadow=True, fontsize='x-large')
+# ax0.set(xlabel='time (s)', ylabel='cfl',
+#        title='Becker Döring - total speed equivalency')
 
 # anim_bd = PlotDymamicSolution(1.1*L,1.1*cmax,\
 # np.linspace(0,L,NX),state_bd,
@@ -94,10 +93,7 @@ observer0 = L/NX*np.ones(NX)
 observer0[0] = observer0[0]/2
 observer0[NX-1] = observer0[NX-1]/2
 
-moment0 = observer0.dot(state) + noise*np.random.rand(NT)
-print("level of noise {}".format(\
-np.linalg.norm(moment0-observer0.dot(state))
-/np.linalg.norm(observer0.dot(state))))
+moment0 = observer0.dot(state)
 
 # anim = PlotDymamicSolution(1.1*L,1.1*cmax,\
 # np.linspace(0,L,NX),state,
@@ -107,19 +103,18 @@ np.linalg.norm(moment0-observer0.dot(state))
 ## TIKHONOV
 ################################################################################
 
-
 ### REGULARISATION ALPHA
-alpha = 0.004
-phi = np.zeros((NX,NT))
-for i in range(0,NX):
-    for j in range(0,NT):
-        nl = int(upsilon[j])
-        ### OPERATOR PSI
-        phi[nl:,j]=L/NX*np.ones(NX-nl)
-        ### REGULARIZA TION
-        if i == nl:
-            phi[i,j] += -alpha*speed[j]
-
+def Phi0(alpha,L,NX,T,NT,upsilon,speed):
+    phi = np.zeros((NX,NT))
+    for i in range(0,NX):
+        for j in range(0,NT):
+            nl = int(upsilon[j])
+            ### OPERATOR PSI
+            phi[nl:,j]=L/NX*np.ones(NX-nl)
+            ### REGULARIZA TION
+            if i == nl:
+                phi[i,j] += -alpha*speed[j]
+    return phi
 
 ### DEFINITION OF ROSEN
 def Rosen(y,matrix0,\
@@ -144,66 +139,14 @@ T,NT,L,NX,moment0):
     # Scalar product
     return T/NT*grad
 
+def Error(y1,y2):
+    e = L/NX*np.linalg.norm(y1-y2,2)
+    return e
+
 
 ##############################################################################
-### GRADIENT TESTING #######)##################################################
-#Initialisation
-npoint = 50
-beta_liste = np.exp(np.linspace(0.0,-20.0,npoint))
-gradJ0 = np.zeros(npoint)
-gradJ1 = np.zeros(npoint)
-epsilon = np.zeros(npoint)
-zeta = np.random.rand(NX)
-#For decreasing beta
-for j, beta in enumerate(beta_liste):
-    zeta_1 = np.random.rand(NX)
-    norm_zeta_1 = (L/NX)*np.linalg.norm(zeta_1)
-    zeta_1 = zeta_1/norm_zeta_1
-    # Compute difference
-    gradJ0[j] = Rosen(zeta+beta*zeta_1,\
-    phi.T,T,NT,L,NX,moment0)\
-    - Rosen(zeta,\
-    phi.T,T,NT,L,NX,moment0)
-    gradJ0[j] = gradJ0[j]/beta
-    # Compute grad
-    gradJ1v = Rosen_der(zeta,\
-    phi.T,T,NT,L,NX,moment0)
-    gradJ1[j] = gradJ1v.dot(zeta_1)
-    # Compute the error between difference and grad
-    epsilon[j] = abs(gradJ0[j]-gradJ1[j])
-
-### PLOTS !!
-print(epsilon)
-# plt.loglog()
-# plt.xlabel('beta')
-# plt.plot(beta_liste,gradJ0, label ="difference")
-# plt.plot(beta_liste,gradJ1, label = "gradient")
-# plt.legend()
-
-##############################################################################
-##############################################################################
-
-
-
-
-### CONTROL OF ROSEN SOLUTION
-# Create plots with pre-defined labels.
-# moment0_sim = matrix_psi.dot(state_init)
-# fig1, ax1 = plt.subplots()
-# ax1.plot(np.linspace(0,T,NT), moment0, 'b--', label='C state')
-# ax1.plot(np.linspace(0,T,NT), moment0_sim, 'b-', label='Psi y')
-# legend = ax1.legend(loc='lower right', shadow=True, fontsize='x-large')
-# ax1.set(xlabel='time (s)', ylabel='moment',\
-#          title='Evolution of the 0 order moment')
-
-
-
 ##############################################################################
 ### MINIMISATION
-# state_apriori = Gaussienne(x,0.9*cmax,1.1*imax,sigma)
-# res = minimize(Rosen, state_apriori, args=(m_psi,m_reg,upsilon,moment0),\
-#  method='Nelder-Mead', tol=1e-6)
-
 def Box(y,a,b):
     y[y<a]=a
     y[y>b]=b
@@ -211,26 +154,79 @@ def Box(y,a,b):
 
 def Soft(y,alpha):
     f = [0 if abs(x)<alpha else x+ math.copysign(alpha,x) for x in y]
-    print
     return f
 
-pas_grad = 2/np.linalg.norm(phi)**2
 
-################
-y = np.zeros(NX)
-for iter in range(0,1000):
-    y -=pas_grad*Rosen_der(y,\
-    phi.T,T,NT,L,NX,moment0)
-    y =Box(y,0,1)
+##############################################################################
+##############################################################################
+# ERROR REGARDING EPSILON
+
+Npoint= 10
+
+epsilon = np.zeros(Npoint)
+alpha = np.zeros(Npoint)
+error = np.zeros(Npoint)
+i = 0
+for lnoise in np.logspace(-6,6,Npoint, endpoint=False):
+    noise = lnoise*np.random.rand(NT)
+    ze = moment0 + noise
+    epsilon[i] = T/NT*np.linalg.norm(noise,2)
+    alpha[i] = epsilon[i]
+    y = np.zeros(NX)
+    phi = Phi0(alpha[i],L,NX,T,NT,upsilon,speed)
+    pas_grad = 2/np.linalg.norm(phi)**2
+    for iter in range(0,1000):
+        y -=pas_grad*Rosen_der(y,\
+        phi.T,T,NT,L,NX,moment0)
+    error[i] = Error(y, state_init)
+    # iteration on alpha and epsilon
+    i+=1
 
 fig1, ax1 = plt.subplots()
-ax1.plot(np.linspace(0,L,NX), y, 'b-', label='gradient descent')
-ax1.plot(np.linspace(0,L,NX), state_init, 'r--', label='initial state')
-legend = ax1.legend(loc='upper left', shadow=True, fontsize='x-large')
-ax1.set(xlabel='taille (mm)', ylabel='concentration',
-       title='Reconstruction of initial condition under noisy moment (noise 11%)')
+ax1.loglog(epsilon, error, 'r+')
+ax1.set(xlabel='epsilon', ylabel='erreur',
+       title='Error for alpha optimal')
+
+
+##############################################################################
+##############################################################################
+# ERROR REGARDING ALPHA
+
+
+Npoint= 11
+lnoise = 0.001
+noise = lnoise*np.random.rand(NT)
+ze = moment0 + noise
+epsilon = T/NT*np.linalg.norm(noise)
+
+alpha = np.logspace(-4,10,Npoint, endpoint=False)
+error = np.zeros(Npoint)
+i = 0
+for a in alpha:
+    y = np.zeros(NX)
+    phi = Phi0(a,L,NX,T,NT,upsilon,speed)
+    pas_grad = 2/np.linalg.norm(phi)**2
+    for iter in range(0,1000):
+        y -=pas_grad*Rosen_der(y,\
+        phi.T,T,NT,L,NX,moment0)
+    error[i] = Error(y, state_init)
+    # iteration on alpha and epsilon
+    i+=1
+
+fig1, ax1 = plt.subplots()
+ax1.loglog(alpha, error, 'g+')
+ax1.set(xlabel='alpha', ylabel='erreur',
+       title='Error for different value of alpha')
+
 
 ################################################################################
 ################################################################################
 ################################################################################
 plt.show()
+
+# fig1, ax1 = plt.subplots()
+# ax1.plot(np.linspace(0,L,NX), y, 'b-', label='gradient descent')
+# ax1.plot(np.linspace(0,L,NX), state_init, 'r--', label='initial state')
+# legend = ax1.legend(loc='upper left', shadow=True, fontsize='x-large')
+# ax1.set(xlabel='taille (mm)', ylabel='concentration',
+#        title='Reconstruction of initial condition under noisy moment (noise 11%)')

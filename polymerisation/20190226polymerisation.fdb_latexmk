@@ -1,12 +1,12 @@
 # Fdb version 3
-["bibtex 20190226polymerisation"] 1551799224 "20190226polymerisation.aux" "20190226polymerisation.bbl" "20190226polymerisation" 1551799226
+["bibtex 20190226polymerisation"] 1551799224 "20190226polymerisation.aux" "20190226polymerisation.bbl" "20190226polymerisation" 1552050288
   "/usr/local/texlive/2018/texmf-dist/bibtex/bst/base/unsrt.bst" 1480098433 18030 1376b4b231b50c66211e47e42eda2875 ""
-  "20190118biblio.bib" 1551694134 4461 97875c7cdc66121a7facbd5b0b7611d1 ""
-  "20190226polymerisation.aux" 1551799225 7392 8e3e8630a8e740032366c5e5ba3808fc ""
+  "20190118biblio.bib" 1551886447 4461 97875c7cdc66121a7facbd5b0b7611d1 ""
+  "20190226polymerisation.aux" 1551886447 7392 8e3e8630a8e740032366c5e5ba3808fc ""
   (generated)
   "20190226polymerisation.bbl"
   "20190226polymerisation.blg"
-["pdflatex"] 1551799224 "20190226polymerisation.tex" "20190226polymerisation.pdf" "20190226polymerisation" 1551799226
+["pdflatex"] 1551799224 "20190226polymerisation.tex" "20190226polymerisation.pdf" "20190226polymerisation" 1552050288
   "/usr/local/texlive/2018/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1480098666 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2018/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/local/texlive/2018/texmf-dist/fonts/tfm/jknappen/ec/ecbi1000.tfm" 1480098696 3072 e6fe53b666f9cbd66cb135c6fdea66d3 ""
@@ -155,14 +155,14 @@
   "/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1523934492 2717033 f61a5287d9c22a39a74f1979fe3f905c ""
   "/usr/local/texlive/2018/texmf-var/web2c/pdftex/pdflatex.fmt" 1535976761 4220279 df77d1f511ee553172aeda50a49446c3 ""
   "/usr/local/texlive/2018/texmf.cnf" 1523934483 577 0b39adfd7c93507ff20c9c14c2f1a33f ""
-  "20190226polymerisation.aux" 1551799225 7392 8e3e8630a8e740032366c5e5ba3808fc ""
-  "20190226polymerisation.bbl" 1551799224 1110 8549a27092852ce588795638a4f5b3ba "bibtex 20190226polymerisation"
-  "20190226polymerisation.tex" 1551799222 72659 10f0525968910863b21ff9e379eb9040 ""
-  "OLD/f0g0.png" 1548683192 62326 c8daacf87d90fa8dee51d990039986ae ""
-  "OLD/noise.png" 1551693082 53007 5847d114c174d36ac4e2a381b26e0026 ""
-  "OLD/speed.png" 1551693566 58074 78e45add0e306dd8fd9743d7b28068f2 ""
-  "OLD/y0noise11.png" 1551693461 102729 392d891f10edd5cb036b2d6bc737a039 ""
+  "20190226polymerisation.aux" 1551886447 7392 8e3e8630a8e740032366c5e5ba3808fc ""
+  "20190226polymerisation.bbl" 1551886447 1110 8549a27092852ce588795638a4f5b3ba "bibtex 20190226polymerisation"
+  "20190226polymerisation.tex" 1551886447 72659 10f0525968910863b21ff9e379eb9040 ""
+  "OLD/f0g0.png" 1551886447 62326 c8daacf87d90fa8dee51d990039986ae ""
+  "OLD/noise.png" 1551886447 53007 5847d114c174d36ac4e2a381b26e0026 ""
+  "OLD/speed.png" 1551886447 58074 78e45add0e306dd8fd9743d7b28068f2 ""
+  "OLD/y0noise11.png" 1551886447 102729 392d891f10edd5cb036b2d6bc737a039 ""
   (generated)
+  "20190226polymerisation.log"
   "20190226polymerisation.pdf"
   "20190226polymerisation.aux"
-  "20190226polymerisation.log"
