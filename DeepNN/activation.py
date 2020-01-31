@@ -12,6 +12,13 @@ class ActivationLayer(Layer):
         self.output = self.activation(self.input)
         return self.output
 
+    # used for the gradient descent step only
+    def initial_point(self,x,y):
+        pass
+    # increment the value x_k
+    def result_onestep_point(self, input_data):
+        return input_data
+
     # Returns input_error=dE/dX for a given output_error=dE/dY.
     # learning_rate is not used because there is no "learnable" parameters.
     def backward_propagation(self, output_error, learning_rate):
