@@ -16,7 +16,7 @@ class ExplicitLayer(Layer):
     # returns the gradient descent according to the operator
     def forward_propagation(self, input_data):
         self.input = input_data
-        self.output = self.x - self.rho*(np.dot(self.op.T,self.op.dot(self.x) - self.y))-self.rho*input_data
+        self.output = self.x - self.rho*(np.dot(self.op.T,self.op.dot(self.x) - self.y))-input_data
         self.x = self.output
         return self.output
     
@@ -27,4 +27,5 @@ class ExplicitLayer(Layer):
     # Returns input_error=dE/dX for a given output_error=dE/dY.
     # learning_rate is not used because there is no "learnable" parameters.
     def backward_propagation(self, output_error, learning_rate):
-        return - self.rho*output_error
+        input_error = self.x - self.rho*np.dot(self.op.T,self.op.dot(self.x))-output_error
+        return input_error

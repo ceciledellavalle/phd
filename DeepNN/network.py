@@ -1,3 +1,4 @@
+import sys
 
 class Network:
     def __init__(self):
@@ -33,7 +34,7 @@ class Network:
         return result
 
     # train the network
-    def fit(self, x_train, y_train, epochs, learning_rate):
+    def fit(self, x_train, y_train, obs_data, epochs, learning_rate):
         # sample dimension first
         samples = len(x_train)
 
@@ -44,18 +45,22 @@ class Network:
             for j in range(samples):
                 # forward propagation
                 output = x_train[j]
+                outputk = x_train[j]
+                obs = obs_data[j]
                 for layer in self.layers:
+                    layer.initial_point(outputk,obs)
                     output = layer.forward_propagation(output)
-
+                    outputk = layer.result_onestep_point(outputk)
                 # compute loss (for display purpose only)
                 err += self.loss(y_train[j], output)
-
                 # backward propagation
                 error = self.loss_prime(y_train[j], output)
+                errork = 0*error
                 for layer in reversed(self.layers):
+                    layer.initial_point(errork,0)
                     error = layer.backward_propagation(error, learning_rate)
-
+                    errork = layer.result_onestep_point(error)
             # calculate average error on all samples
             err /= samples
-            # print('epoch %d/%d   error=%f' % (i+1, epochs, err))
+            print('epoch %d/%d   error=%f' % (i+1, epochs, err))
             i+=1
