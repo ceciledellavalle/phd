@@ -37,7 +37,6 @@ class Network:
     def fit(self, x_train, y_train, obs_data, epochs, learning_rate):
         # sample dimension first
         samples = len(x_train)
-
         # training loop
         i = 0
         while i < epochs:
