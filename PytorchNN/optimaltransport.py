@@ -57,7 +57,7 @@ def sinkhorn_loss(x, y, epsilon, n, niter):
 
     for i in range(niter):
         u1 = u  # useful to check the update
-        u = epsilon * (torch.log(mu) - lse(M(u, v)).squeeze()) + u
+        u = epsilon * (torch.log(mu) - lse(M(u, v)).squeeze()) + u 
         v = epsilon * (torch.log(nu) - lse(M(u, v).t()).squeeze()) + v
         # accelerated unbalanced iterations
         # u = ave( u, lam * ( epsilon * ( torch.log(mu) - lse(M(u,v)).squeeze()   ) + u ) )
