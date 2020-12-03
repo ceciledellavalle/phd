@@ -17,7 +17,7 @@ def sinkhorn_loss(x, y, epsilon=0.01, niter=100):
     """
 
     # Definition of the cost matrix :
-    batch,c,nx = x.shape
+    batch,c,nl = x.shape
     t = np.linspace(0,1,nl)
     [Y,X] = np.meshgrid(t,t)
     C_np = (X-Y)**2
