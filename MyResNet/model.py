@@ -22,40 +22,15 @@ from torch.nn.modules.loss import _Loss
 from math import ceil
 import os
 # Local import
-from proxsolver import cardan
-from loss_ot import sinkhorn_loss
-from myfunc import MyMatmul
-
-
-class WASS_loss(_Loss):
-    """
-    Defines the Wasserstein training loss.
-    Attributes
-    ----------
-        ssiwass (method): function computing the Wasserstein distance
-    """
-    def __init__(self): 
-        super(WASS_loss, self).__init__()
-        self.wass = sinkhorn_loss()
- 
-    def forward(self, input, target):
-        """
-        Computes the training loss.
-        Parameters
-        ----------
-      	    input  (torch.FloatTensor): restored signal, size batch*c*nx
-            target (torch.FloatTensor): ground-truth signal, size batch*c*nx
-        Returns
-        -------
-       	    (torch.FloatTensor): SSIM loss, size 1 
-        """
-        return self.wass(input,target)
+from MyResNet.loss_ot import sinkhorn_loss
+from MyResNet.cardan import cardan
+from MyResNet.myfunc import MyMatmul
     
 
 
 # One layer
 # Parameters of the network
-class Block(torch.nn.Module):
+class MyLayer(torch.nn.Module):
     """
     One layer in iRestNet.
     Attributes
@@ -68,7 +43,7 @@ class Block(torch.nn.Module):
         TtT  (MyConv1d): 1-D convolution operator corresponding to TtT
         mass (scalar):  maximal integral value
     """
-    def __init__(self,tensor_list,mass,U):
+    def __init__(self,tensor_list,mass,vector):
         """
         Parameters
         ----------
@@ -76,16 +51,17 @@ class Block(torch.nn.Module):
         mass            (float): maximum of moment of order 1
         U          (Floattensor): size ??
         """
-        super(Block, self).__init__()
-        self.cnn_mu    = Cnn_param()
-        self.cnn_reg   = Cnn_param()
+        super(MyLayer, self).__init__()
+        nx = vector.size(0)
+        self.cnn_mu    = Cnn_param(nx)
+        self.cnn_reg   = Cnn_param(nx)
         self.soft      = nn.Softplus()
         self.gamma     = nn.Parameter(torch.FloatTensor([1]))
         #
         self.DtD      = MyMatmul(tensor_list[0])
         self.TtT      = MyMatmul(tensor_list[1])
         self.mass     = mass
-        self.U        = U
+        self.vector   = vector
 
     def Grad(self, reg, x, x_b):
         """
@@ -99,7 +75,7 @@ class Block(torch.nn.Module):
         -------
        	    (torch.FloatTensor): gradient of the smooth term in the cost function, size batch*c*nx
         """
-        DtDx      = self.DtDv(x)
+        DtDx      = self.DtD(x)
         TtTx      = self.TtT(x)
         return  TtTx - x_b + reg * DtDx
 
@@ -121,6 +97,7 @@ class Block(torch.nn.Module):
         gamma    = self.soft(self.gamma)
         reg      = self.cnn_reg(x)
         x_tilde    = x - gamma*self.Grad(reg, x, x_b)
+        #
         if save_gamma_mu_lambda!='no':
             #write the value of the stepsize in a file
             file = open(os.path.join(save_gamma_mu_lambda,'gamma.txt'), "a")
@@ -134,10 +111,11 @@ class Block(torch.nn.Module):
             file = open(os.path.join(save_gamma_mu_lambda,'lambda.txt'), "a")
             file.write('\n'+'%.3e'%reg.data.cpu())
             file.close()
-        return cardan.apply(gamma*mu,x_tilde,self.mass, self.U)
+        #
+        return cardan.apply(gamma*mu,x_tilde,self.mass, self.vector)
 
     
-class myModel(torch.nn.Module):
+class MyModel(torch.nn.Module):
     """
     iRestNet model.
     Attributes
@@ -145,16 +123,16 @@ class myModel(torch.nn.Module):
         Layers (torch.nn.ModuleList object): list of iRestNet layers
         nL                            (int): number of layers
     """
-    def __init__(self,tensor_list,mass,U,nL):
-        super(myModel, self).__init__()
+    def __init__(self,tensor_list,mass,vector,nx,nL=10):
+        super(MyModel, self).__init__()
         self.Layers   = nn.ModuleList()
         self.nL       = nL
         #
         for i in range(nL):
-            self.Layers.append(Block(tensor_list,mass,U))
+            self.Layers.append(MyLayer(tensor_list,mass,vector))
         
 
-    def forward(self,x,x_b,save_gamma_mu_lambda='no'):
+    def forward(self,x_0,x_b,save_gamma_mu_lambda='no'):
         """
         Computes the output of the layer.
         Parameters
@@ -168,6 +146,7 @@ class myModel(torch.nn.Module):
         -------
        	    (torch.FloatTensor): the output of the network, size n*c*h*w
         """
+        x = x_0.clone()
         for i in range(0,len(self.Layers)):
                 x = self.Layers[i](x,x_b,save_gamma_mu_lambda)
         return x
@@ -184,11 +163,13 @@ class Cnn_param(nn.Module):
         avg       (torch.nn.AVgPool2d): average layer
         soft       (torch.nn.Softplus): Softplus activation function
     """
-    def __init__(self):
+    def __init__(self,nx):
+        # from size nx to size 1
         super(Cnn_param, self).__init__()
         self.conv2  = nn.Conv1d(1, 1, 5,padding=2)
         self.conv3  = nn.Conv1d(1, 1, 5,padding=2)
-        self.lin    = nn.Linear(16*1, 1)
+        self.lin2   = nn.Linear(nx,256)
+        self.lin3   = nn.Linear(16*1, 1)
         self.avg    = nn.AvgPool1d(4, 4)
         self.soft   = nn.Softplus()
 
@@ -197,14 +178,39 @@ class Cnn_param(nn.Module):
         Computes the barrier parameter.
         Parameters
         ----------
-      	    x (torch.FloatTensor): images, size n*c*h*w 
+      	    x (torch.FloatTensor): images, size n*c*nx 
         Returns
         -------
        	    (torch.FloatTensor): barrier parameter, size n*1*1*1
         """
+        x = self.soft(self.lin2(x))
         x = self.soft(self.avg(self.conv2(x)))
         x = self.soft(self.avg(self.conv3(x)))
         x = x.view(x.size(1), -1)
-        x = self.soft(self.lin(x))
-        x = x.view(x.size(0),-1,1,1)
+        x = self.soft(self.lin3(x))
+        x = x.view(x.size(0),-1,1)
         return x
+
+class WASS_loss(_Loss):
+    """
+    Defines the Wasserstein training loss.
+    Attributes
+    ----------
+        ssiwass (method): function computing the Wasserstein distance
+    """
+    def __init__(self): 
+        super(WASS_loss, self).__init__()
+        self.wass = sinkhorn_loss
+ 
+    def forward(self, input, target):
+        """
+        Computes the training loss.
+        Parameters
+        ----------
+      	    input  (torch.FloatTensor): restored signal, size batch*c*nx
+            target (torch.FloatTensor): ground-truth signal, size batch*c*nx
+        Returns
+        -------
+       	    (torch.FloatTensor): SSIM loss, size 1 
+        """
+        return self.wass(input,target)

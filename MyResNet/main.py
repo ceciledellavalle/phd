@@ -65,7 +65,7 @@ class MyRestNet_class(nn.Module):
         self.size_train   = len([n for n in os.listdir(os.path.join(self.path_train,'train'))])
         self.size_val     = len([n for n in os.listdir(os.path.join(self.path_train,'val'))])
         
-    def train(self,):
+    def train(self):
         """
         Trains iRestNet.
         Parameters

@@ -17,11 +17,11 @@ def sinkhorn_loss(x, y, epsilon=0.01, niter=100):
     """
 
     # Definition of the cost matrix :
-    batch,c,nl = x.shape
-    t = np.linspace(0,1,nl)
+    batch,c,nx = x.shape
+    t = np.linspace(0,1,nx)
     [Y,X] = np.meshgrid(t,t)
     C_np = (X-Y)**2
-    C = Variable(torch.from_numpy(C_np), requires_grad=False)
+    C = Variable(torch.FloatTensor(C_np), requires_grad=False)
 
     # The initial measures (histogram or marginal weigths)
     a = 1.*x
