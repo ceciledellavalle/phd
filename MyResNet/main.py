@@ -1,4 +1,4 @@
-
+#global import
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
@@ -7,6 +7,11 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
 import sys
+#local import
+from MyResNet.myfunc import Physics
+from MyResNet.myfunc import MyMatmul
+from MyResNet.model import MyModel
+
         
 class MyRestNet_class(nn.Module):
     """
@@ -17,8 +22,9 @@ class MyRestNet_class(nn.Module):
         path_test              (str): path to the folder containing the test sets
         path_train             (str): path to the training set folder 
     """
-    def __init__(self, test_conditions, folders, mode='test', 
-                 lr_i=[1e-2,5], nb_epochs=[40,40,600], nb_blocks=20, batch_size=[10,10,1], loss_type='OT'):
+    def __init__(self, condition, folders, mode='test', 
+                 lr_i=[1e-2,5], nb_epochs=[40,40,600], nb_blocks=20, 
+                 batch_size=[10,10,1], loss_type='MSE'):
         """
         Parameters
         ----------
@@ -33,10 +39,14 @@ class MyRestNet_class(nn.Module):
         """
         super(iRestNet_class, self).__init__()   
         # physical data
-        self.a = condition[0]   
-        self.p = condition[1]    
-        self.tensor_list = #to compute 
-        self.mass = mass
+        self.a  = condition[0]   
+        self.p  = condition[1]   
+        self.nx = condition[2]
+        self.tensor_list = Physics(a,p,nx)#to compute 
+        self.Tt          = MyMatmul(self.tensor_list[1].T)
+        #
+        self.mass = 1
+        self.U    = troch.FloatTensor(np.ones(self.nx))
         # unpack information about saving folder
         self.path_test, self.path_train, self.path_save = folders
         # training information
@@ -53,7 +63,7 @@ class MyRestNet_class(nn.Module):
             elif self.loss_type=='MSE':
                 self.loss_fun = torch.nn.MSELoss(size_average=True)
         #
-        self.model = myModel(mass,self.tensor_list,self.nb_blocks)
+        self.model = MyModel(self.tensor_list,self.mass,self.U,self.nb_blocks)
 
     
     def CreateLoader(self):
@@ -74,10 +84,10 @@ class MyRestNet_class(nn.Module):
         """      
         # trains the first layer
         # to store results
-        loss_epochs       =  np.zeros(self.nb_epochs[0])
+        loss_epochs  =  np.zeros(self.nb_epochs[0])
         loss_train   =  np.zeros((2,2,self.nb_epochs[0]))
         loss_val     =  np.zeros((2,2,self.nb_epochs[0]))
-        loss_min_val      =  float('Inf')
+        loss_min_val =  float('Inf')
         self.CreateLoader()
         # defines the optimizer
         lr_i        = self.lr_i
@@ -94,10 +104,11 @@ class MyRestNet_class(nn.Module):
                 optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad,self.parameters()), lr=lr_i)
             # goes through all minibatches
             for i,minibatch in enumerate(self.train_loader,0):
-                [names, x_true, x_blurred] = minibatch    # get the minibatch
+                [x_true, x_blurred] = minibatch    # get the minibatch
                 x_true    = Variable(x_true.type(self.dtype),requires_grad=False)
                 x_init    = Variable(x_blurred.type(self.dtype),requires_grad=False)
-                Ttx_init  = self.####TODO.detach()        # do not compute gradient
+                # ATTENTION : on ne calcule pas le gradient en fonction de la deuxième sortie (à réfléchir)
+                Ttx_init  = Tt(x_init).detach()     # do not compute gradient
                 x_pred    = self.model(x_init,Ttx_init,self.mode) 
                     
                 # Computes and prints loss
@@ -115,41 +126,31 @@ class MyRestNet_class(nn.Module):
 
             # saves images and model state  
              if epoch%20==0:
-                utils.save_image(x_pred.data,os.path.join(
-                    folder,'training',str(epoch)+'_restored_images.png'),normalize=True)
-            torch.save(self.last_layer.state_dict(),os.path.join(folder,'trained_post-processing.pt'))
-            torch.save(self.model.state_dict(),os.path.join(folder,'trained_model.pt'))
+                ### SAVE stat
+                # torch.save(self.model.state_dict(),os.path.join(folder,'trained_model.pt'))
+                pass
 
             # tests on validation set
             self.model.eval()      # evaluation mode
-            psnr_ssim = np.zeros((2,2))
-            nb_im            = 0
             loss_current_val = 0
             for minibatch in self.val_loader:
-                [names, x_true, x_blurred] = minibatch            # gets the minibatch
-                x_true       = Variable(x_true.type(self.dtype),requires_grad=False)
-                x_blurred    = Variable(x_blurred.type(self.dtype),requires_grad=False)
-                Ttx_init = self.Ht(x_blurred).detach()        # does not compute gradient
-                x_pred = self.model(x_blurred,Ttx_init,self.mode) 
+                [x_true, x_blurred] = minibatch            # gets the minibatch
+                x_true    = Variable(x_true.type(self.dtype),requires_grad=False)
+                x_blurred = Variable(x_blurred.type(self.dtype),requires_grad=False)
+                Ttx_init  = self.Tt(x_blurred).detach()        # does not compute gradient
+                x_pred    = self.model(x_blurred,Ttx_init,self.mode) 
                     
-            # computes loss on validation set
-            loss_current_val += torch.Tensor.item(self.loss_fun(x_pred, x_true))
-                    
-                #for statistics
-                psnr_ssim += compute_PSNR_SSIM(x_true, x_blurred, x_pred, self.size_val) # compute PSNR an SSIM
-            if loss_min_val>loss_current_val:
-                torch.save(self.last_layer.state_dict(),os.path.join(folder,'trained_post-processing_MinLossOnVal.pt'))
-                torch.save(self.model.state_dict(),os.path.join(folder,'trained_model_MinLossOnVal.pt'))
-                loss_min_val = loss_current_val
-            psnr_ssim_val[:,:,epoch] = psnr_ssim
+                # computes loss on validation set
+                loss_current_val += torch.Tensor.item(self.loss_fun(x_pred, x_true))
+
             # prints statistics
-            self.PrintStatistics(psnr_ssim_train[:,:,epoch], psnr_ssim_val[:,:,epoch], epoch, loss_epochs[epoch],lr)
-            self.SaveLoss_PSNR_SSIM(epoch, loss_epochs, psnr_ssim_train, psnr_ssim_val,self.mode)
+            self.PrintStatistics(epoch, loss_epochs[epoch],lr)
+            self.SaveLoss(epoch, loss_epochs, self.mode)
         #==========================================================================================================
         # training is finished
         print('-----------------------------------------------------------------')
         print('Training is done.')
-        self.SaveLoss_PSNR_SSIM(epoch,loss_epochs, psnr_ssim_train, psnr_ssim_val, self.mode)
+        self.SaveLoss(epoch,loss_epochs,self.mode)
         print('-----------------------------------------------------------------')
 
     

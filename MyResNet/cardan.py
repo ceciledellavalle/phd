@@ -54,9 +54,9 @@ class cardan(torch.autograd.Function):
             z2 = torch.sqrt(delta)
             w  = (z1+z2).sign() * torch.pow((z1+z2).abs(),1/3)
             v  = (z1-z2).sign() * torch.pow((z1-z2).abs(),1/3) 
-            x1 = u+v   
+            x1 = w + v   
             x2 = -(w + v)/2 ; #real part of the complex solution
-            x3 = -(w+ v)/2 ; #real part of the complex solution
+            x3 = -(w + v)/2 ; #real part of the complex solution
         #########################################################################
         #when delta is 0
         elif delta==0:
