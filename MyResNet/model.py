@@ -66,7 +66,7 @@ class Block(torch.nn.Module):
         Computes the gradient of the smooth term in the objective function (data fidelity + regularization).
         Parameters
         ----------
-      	    reg        (torch.FloatTensor): regularization parameter, size batch*1*1*1
+      	    reg        (torch.FloatTensor): regularization parameter, size batch*1
             x            (torch.nn.Tensor): images, size batch*c*nx
             x_b          (torch.nn.Tensor):result of Ht applied to the degraded images, size batch*c*nx
         Returns
@@ -94,7 +94,7 @@ class Block(torch.nn.Module):
         mu       = self.cnn_mu(x)  
         gamma    = self.soft(self.gamma)
         reg      = self.cnn_reg(x)
-        x_tilde    = x - gamma*self.Grad(reg, x, x_b)
+        x_tilde  = x - gamma*self.Grad(reg, x, x_b)
         if save_gamma_mu_lambda!='no':
             #write the value of the stepsize in a file
             file = open(os.path.join(save_gamma_mu_lambda,'gamma.txt'), "a")
@@ -133,8 +133,8 @@ class MyModel(torch.nn.Module):
         Computes the output of the layer.
         Parameters
         ----------
-      	    x            (torch.nn.FloatTensor): previous iterate, size n*c*h*w
-            x_b          (torch.nn.FloatTensor): initial signal, size n*c*h*w
+      	    x            (torch.nn.FloatTensor): previous iterate, size n*nx
+            x_b          (torch.nn.FloatTensor): initial signal, size n*nx
             mode                          (str): 'train' or 'test'
             save_gamma_mu_lambda          (str): indicates if the user wants to save the values of the estimated hyperparameters, 
                                                  path to the folder to save the hyperparameters values or 'no'  (default is 'no')
@@ -180,7 +180,7 @@ class Cnn_param(nn.Module):
         x = self.lin2(x_in)
         x = self.soft(self.avg(self.conv2(x)))
         x = self.soft(self.avg(self.conv3(x)))
-        x = x.view(x.size(1), -1)
+        x = x.view(x.size(0), -1)
         x = self.soft(self.lin3(x))
-        x = x.view(x.size(0),-1,1)
+        x = x.view(x.size(0),1,1)
         return x
