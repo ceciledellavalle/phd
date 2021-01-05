@@ -1,25 +1,115 @@
 """
-iRestNet model classes.
+Classes and Functions used in the model.
 Classes
 -------
-    MyMatmul : 
+    MyMatmul : Multiplication with a kernel (for single or batch)
+    Physics       : 
 
-@author: Marie-Caroline Corbineau
-@date: 03/10/2019
+Functions
+-------
+    Sinkhorn_loss :
+
+@author: Cecile Della Valle
+@date: 03/01/2021
 """
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+# General import
 import torch.nn as nn
 import torch
 import numpy as np
 from torch.autograd import Variable
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
 
 #
-def Physics(a,p,nx):
-    D  = 1/nx**2*(np.diag(np.ones(nx)) - np.diag(np.ones(nx-1),-1) - np.diag(np.ones(nx-1),1))# matrice de dérivation
-    T  = 1/nx*np.tri(nx, nx, 0, dtype=int) # matrice de convolution
-    DtD = torch.FloatTensor(np.transpose(D).dot(D))
-    TtT = torch.FloatTensor(np.transpose(T).dot(T))
-    tensor_list = [DtD,TtT]
-    return tensor_list
+
+#
+class Physics:
+    """
+    Define the physical parameters of the ill-posed problem.
+    Attributes
+    ----------
+        nx         (int): size of initial signal
+        m          (int): size of eigenvectors span
+        a          (int): oder of ill-posedness 
+        p          (int): order of regularisation
+        basis (np.array): transformation between signal and eigenvectors basis
+    """
+    def __init__(self,nx,m=200,a=1,p=1):
+        # Physical parameters
+        self.m  = m
+        self.a  = a
+        self.p  = p
+        # Eigenvalues
+        self.eigm= (np.linspace(0,m-1,m)+1/2)*np.pi
+        # Basis transformation
+        eig_m = self.eigm.reshape(-1,1)
+        v1     = ((2*np.linspace(0,nx-1,nx)+1)/2/nx).reshape(1,-1)
+        v2     = (np.ones(nx)/2/nx).reshape(1,-1)
+        base   = np.zeros((m,nx))
+        base   = 2*np.sqrt(2)*np.cos(v1*eig_m)*np.sin(v2*eig_m)/eig_m
+        self.basis = base
+        
+    def BaseChange(self,x):
+        """
+        Change basis from signal to eigenvectors span.
+        Parameters
+        ----------
+            x (np.array): signal of size nxcxnx
+        Returns
+        -------
+            (np.array): of size nxcxm
+        """
+        return np.matmul(x,(self.basis).T)
+    
+    def BaseChangeInv(self,x):
+        """
+        Change basis from eigenvectors span to signal.
+        Parameters
+        ----------
+            x (np.array): signal of size nxcxm
+        Returns
+        -------
+            (np.array): of size nxcxnx
+        """
+        return np.matmul(x,(self.basis))
+    
+    def Operators(self):
+       """
+       Given a ill-posed problem of order a and a regularization of order p
+       for a 1D signal of nx points,
+       the fonction computes the tensor of the linear transformation Trsf
+       and the tensor used in the algorithm.
+       Returns
+       -------
+           (torch.FloatTensor): 
+           (list)             :
+    
+       """
+       # T  = 1/nx*np.tri(nx, nx, 0, dtype=int).T # matrice de convolution
+       Top = np.diag(1/self.eigm**self.a)
+       # D  = 2*np.diag(np.ones(nx)) - np.diag(np.ones(nx-1),-1) - np.diag(np.ones(nx-1),1)# matrice de dérivation
+       Dop = np.diag(self.eigm**self.p)
+       # Convert to o Tensor
+       Trsf = torch.FloatTensor(Top)
+       DtD = torch.FloatTensor(np.transpose(Dop).dot(Dop))
+       TtT = torch.FloatTensor(np.transpose(Top).dot(Top))
+       tensor_list = [DtD,TtT]
+       return Trsf, tensor_list
+      
+    def Compute(self,x):
+        """
+        Compute the transformation by the Abek integral operator
+        in the basis of eigenvectors.
+        Parameters
+        ----------
+            x (np.array): signal of size nxcxm
+        Returns
+        -------
+            (np.array): of size nxcxm
+        """
+        Top = np.diag(1/self.eigm**self.a)
+        return np.matmul(x,Top)
 
 #
 class MyMatmul(nn.Module):
@@ -28,16 +118,12 @@ class MyMatmul(nn.Module):
     Attributes
     ----------
         kernel (torch.FloatTensor): size nx*nx filter
-        mode                 (str): 'single' or 'batch'
-        stride               (int): dilation factor
-        padding                   : instance of CircularPadding or torch.nn.ReplicationPad2d
     """
     def __init__(self, kernel):
         """
         Parameters
         ----------
             kernel (torch.FloatTensor): convolution filter
-            mode                 (str): indicates if the input is a single image of a batch of images
         """
         super(MyMatmul, self).__init__()
         self.kernel   = nn.Parameter(kernel.T,requires_grad=False)   
@@ -47,21 +133,29 @@ class MyMatmul(nn.Module):
         Performs convolution.
         Parameters
         ----------
-            x (torch.FloatTensor): image(s), size n*c*nx
+            x (torch.FloatTensor): 1D-signal, size n*c*nx
         Returns
         -------
-            (torch.FloatTensor): result of the convolution, size n*c*h*w if mode='single', 
-                                 size c*h*w if mode='batch'
+            (torch.FloatTensor): result of the convolution, size n*c*nx
         """
         return torch.matmul(x.data,self.kernel)
 
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
 #
 def Sinkhorn_loss(x, y, epsilon=0.01, niter=100):
     """
     Given two emprical measures defined on a uniform grid xi = yi = i/nl 
     (they are thue often refered to as "histograms"),
     outputs an approximation of the OT cost with regularization parameter epsilon
-    niter is the max. number of steps in sinkhorn loop
+    niter is the max number of steps in sinkhorn loop
+    Parameters
+    ----------
+        x (torch.FloatTensor): 1D-signal, size n*c*nx
+        y (torch.FloatTensor): 1D-signal, size n*c*nx
+    Returns
+    -------
+        (torch.FloatTensor): the Wasserstein distance, size n*c
     """
 
     # Definition of the cost matrix :

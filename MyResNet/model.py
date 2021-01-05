@@ -1,19 +1,20 @@
-
 """
-iRestNet model classes.
+RestNet model classes.
 Classes
 -------
-    WASS_loss  : 
-    Cnn_bar    : predicts the barrier parameter
-    IPIter     : computes the proximal interior point iteration
+    WASS_loss  : Wasserstein distance loss
     Block      : one layer in iRestNet
     myModel    : iRestNet model
+    Cnn_bar    : predicts the barrier parameter
 
-@author: Marie-Caroline Corbineau
-@date: 03/10/2019
+@author: Cecile Della Valle
+@date: 03/01/2021
 """
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
 # General import
 from torch.autograd import Variable
+from torch.nn.modules.loss import _Loss
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
@@ -22,15 +23,39 @@ from math import ceil
 import os
 # Local import
 from MyResNet.myfunc import MyMatmul
-from MyResNet.cardan import cardan
+from MyResNet.proxop.hypercube import cardan
+from MyResNet.myfunc import Sinkhorn_loss
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-
+class WASS_loss(_Loss):
+    """
+    Defines the Wasserstein training loss.
+    Attributes
+    ----------
+        ssiwass (method): function computing the Wasserstein distance
+    """
+    def __init__(self): 
+        super(WASS_loss, self).__init__()
+        self.wass = sinkhorn_loss()
+ 
+    def forward(self, input, target):
+        """
+        Computes the training loss.
+        Parameters
+        ----------
+      	    input  (torch.FloatTensor): restored signal, size batch*c*nx
+            target (torch.FloatTensor): ground-truth signal, size batch*c*nx
+        Returns
+        -------
+       	    (torch.FloatTensor): SSIM loss, size 1 
+        """
+        return self.wass(input,target)
 
 # One layer
 # Parameters of the network
 class Block(torch.nn.Module):
     """
-    One layer in iRestNet.
+    One layer in myRestNet.
     Attributes
     ----------
         cnn_bar                           (Cnn_bar): computes the barrier parameter
@@ -41,25 +66,26 @@ class Block(torch.nn.Module):
         TtT  (MyConv1d): 1-D convolution operator corresponding to TtT
         mass (scalar):  maximal integral value
     """
-    def __init__(self,tensor_list,mass,U):
+    def __init__(self,tensor_list,mass,u):
         """
         Parameters
         ----------
         tensor_list     (list) : 
         mass            (float): maximum of moment of order 1
-        U          (Floattensor): size ??
+        U          (Floattensor): size cxnx
+        Warning ---> do not converge with bad initialization
         """
         super(Block, self).__init__()
-        nx             = U.shape[0]
+        nx             = u.shape[0]
         self.cnn_mu    = Cnn_param(nx)
-        self.cnn_reg   = Cnn_param(nx)
+        self.reg       = torch.FloatTensor([0.0]) #nn.Parameter(torch.FloatTensor([0.0]))
         self.soft      = nn.Softplus()
-        self.gamma     = nn.Parameter(torch.FloatTensor([1]))
+        self.gamma     = nn.Parameter(torch.FloatTensor([1.0]))
         #
         self.DtD      = MyMatmul(tensor_list[0])
         self.TtT      = MyMatmul(tensor_list[1])
         self.mass     = mass
-        self.U        = U
+        self.u        = u
 
     def Grad(self, reg, x, x_b):
         """
@@ -83,8 +109,8 @@ class Block(torch.nn.Module):
         Parameters
         ----------
       	    x            (torch.nn.FloatTensor): previous iterate, size n*c*h*w
-            x_b          (torch.nn.FloatTensor):, size n*c*h*w
-           
+            x_b          (torch.nn.FloatTensor): size n*c*nx
+            mode_training                (bool): True if training mode, False else
             save_gamma_mu_lambda          (str): indicates if the user wants to save the values of the estimated hyperparameters, 
                                                  path to the folder to save the hyperparameters values or 'no' 
         Returns
@@ -93,8 +119,9 @@ class Block(torch.nn.Module):
         """
         mu       = self.cnn_mu(x)  
         gamma    = self.soft(self.gamma)
-        reg      = self.cnn_reg(x)
+        reg      = self.soft(self.reg)
         x_tilde  = x - gamma*self.Grad(reg, x, x_b)
+        #
         if save_gamma_mu_lambda!='no':
             #write the value of the stepsize in a file
             file = open(os.path.join(save_gamma_mu_lambda,'gamma.txt'), "a")
@@ -108,7 +135,7 @@ class Block(torch.nn.Module):
             file = open(os.path.join(save_gamma_mu_lambda,'lambda.txt'), "a")
             file.write('\n'+'%.3e'%reg.data.cpu())
             file.close()
-        return cardan.apply(gamma*mu,x_tilde,self.mass, self.U)
+        return cardan.apply(gamma*mu,x_tilde,self.training)# for moment (self.mass, self.U)
 
     
 class MyModel(torch.nn.Module):
@@ -119,13 +146,13 @@ class MyModel(torch.nn.Module):
         Layers (torch.nn.ModuleList object): list of iRestNet layers
         nL                            (int): number of layers
     """
-    def __init__(self,tensor_list,mass,U,nL):
+    def __init__(self,tensor_list,mass,u,nL):
         super(MyModel, self).__init__()
         self.Layers   = nn.ModuleList()
         self.nL       = nL
         #
         for _ in range(nL):
-            self.Layers.append(Block(tensor_list,mass,U))
+            self.Layers.append(Block(tensor_list,mass,u))
         
 
     def forward(self,x,x_b,save_gamma_mu_lambda='no'):
@@ -135,7 +162,6 @@ class MyModel(torch.nn.Module):
         ----------
       	    x            (torch.nn.FloatTensor): previous iterate, size n*nx
             x_b          (torch.nn.FloatTensor): initial signal, size n*nx
-            mode                          (str): 'train' or 'test'
             save_gamma_mu_lambda          (str): indicates if the user wants to save the values of the estimated hyperparameters, 
                                                  path to the folder to save the hyperparameters values or 'no'  (default is 'no')
         Returns
