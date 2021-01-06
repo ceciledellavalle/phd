@@ -2,6 +2,7 @@
 RestNet model classes.
 Classes
 -------
+    WASS_loss  : Wasserstein distance loss
     Block      : one layer in iRestNet
     myModel    : iRestNet model
     Cnn_bar    : predicts the barrier parameter
@@ -25,7 +26,30 @@ from MyResNet.myfunc import MyMatmul
 from MyResNet.proxop.hypercube import cardan
 from MyResNet.myfunc import Sinkhorn_loss
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+    
+class WASS_loss(_Loss):
+    """
+    Defines the Wasserstein training loss.
+    Attributes
+    ----------
+        ssiwass (method): function computing the Wasserstein distance
+    """
+    def __init__(self): 
+        super(WASS_loss, self).__init__()
+        self.wass = sinkhorn_loss()
+ 
+    def forward(self, input, target):
+        """
+        Computes the training loss.
+        Parameters
+        ----------
+      	    input  (torch.FloatTensor): restored signal, size batch*c*nx
+            target (torch.FloatTensor): ground-truth signal, size batch*c*nx
+        Returns
+        -------
+       	    (torch.FloatTensor): SSIM loss, size 1 
+        """
+        return self.wass(input,target)
 
 # One layer
 # Parameters of the network

@@ -3,11 +3,8 @@ Classes and Functions used in the model.
 Classes
 -------
     MyMatmul : Multiplication with a kernel (for single or batch)
-    Physics       : 
+    Physics  : 
 
-Functions
--------
-    Sinkhorn_loss :
 
 @author: Cecile Della Valle
 @date: 03/01/2021
@@ -27,30 +24,49 @@ from torch.autograd import Variable
 class Physics:
     """
     Define the physical parameters of the ill-posed problem.
+    Alert : nx must be >> than m.
     Attributes
     ----------
-        nx         (int): size of initial signal
+        nx         (int): size of initial signal 
         m          (int): size of eigenvectors span
         a          (int): oder of ill-posedness 
         p          (int): order of regularisation
         basis (np.array): transformation between signal and eigenvectors basis
     """
     def __init__(self,nx,m=200,a=1,p=1):
+        """
+        Alert : nx must be >> than m.
+        """
         # Physical parameters
-        self.m  = m
-        self.a  = a
-        self.p  = p
+        self.nx   = nx
+        self.m    = m
+        self.a    = a
+        self.p    = p
         # Eigenvalues
-        self.eigm= (np.linspace(0,m-1,m)+1/2)*np.pi
+        self.eigm = (np.linspace(0,m-1,m)+1/2)*np.pi
         # Basis transformation
-        eig_m = self.eigm.reshape(-1,1)
-        v1     = ((2*np.linspace(0,nx-1,nx)+1)/2/nx).reshape(1,-1)
-        v2     = (np.ones(nx)/2/nx).reshape(1,-1)
-        base   = np.zeros((m,nx))
-        base   = 2*np.sqrt(2)*np.cos(v1*eig_m)*np.sin(v2*eig_m)/eig_m
+        base       = np.zeros((self.m,self.nx))        
+        h          = 1/(self.nx-1)
+        eig_m      = self.eigm.reshape(-1,1)
+        v1         = ((2*np.linspace(0,self.nx-1,self.nx)+1)*h/2).reshape(1,-1)
+        v2         = (np.ones(self.nx)/2*h).reshape(1,-1)
+        base       = 2*np.sqrt(2)/eig_m*np.cos(v1*eig_m)*np.sin(v2*eig_m)
+        base[:,0]  = np.sqrt(2)/self.eigm*np.sin(h/2*self.eigm) # e_0
+        base[:,-1] = 2*np.sqrt(2)/self.eigm*np.cos((1-h/4)*self.eigm)*np.sin(h/2*self.eigm)# e_nx
         self.basis = base
+        # Operator T
+        # step 0 : Abel operator integral
+        # the image of the cos(t) basis is projected in a sin(t) basis
+        Tdiag      = np.diag(1/self.eigm**self.a)
+        # step 1 : From sin(t) basis to cos(t) basis
+        eig_m      = self.eigm.reshape(-1,1)
+        base_sin   = np.zeros((self.m,self.nx))
+        base_sin   = 2*np.sqrt(2)/eig_m*np.sin(v1*eig_m)*np.sin(v2*eig_m)
+        base_f     = np.matmul(self.basis,base_sin.T)
+        # step 2 : Combinaison of Top and base change
+        self.Top = np.matmul(base_f,Tdiag)*self.nx
         
-    def BaseChange(self,x):
+    def BasisChange(self,x):
         """
         Change basis from signal to eigenvectors span.
         Parameters
@@ -62,7 +78,7 @@ class Physics:
         """
         return np.matmul(x,(self.basis).T)
     
-    def BaseChangeInv(self,x):
+    def BasisChangeInv(self,x):
         """
         Change basis from eigenvectors span to signal.
         Parameters
@@ -72,7 +88,7 @@ class Physics:
         -------
             (np.array): of size nxcxnx
         """
-        return np.matmul(x,(self.basis))
+        return np.matmul(x,self.basis*self.nx)
     
     def Operators(self):
        """
@@ -87,19 +103,18 @@ class Physics:
     
        """
        # T  = 1/nx*np.tri(nx, nx, 0, dtype=int).T # matrice de convolution
-       Top = np.diag(1/self.eigm**self.a)
+       Top = np.diag(1/self.eigm**(self.a))
        # D  = 2*np.diag(np.ones(nx)) - np.diag(np.ones(nx-1),-1) - np.diag(np.ones(nx-1),1)# matrice de dérivation
-       Dop = np.diag(self.eigm**self.p)
+       Dop = np.diag(self.eigm**(self.p))
        # Convert to o Tensor
-       Trsf = torch.FloatTensor(Top)
-       DtD = torch.FloatTensor(np.transpose(Dop).dot(Dop))
-       TtT = torch.FloatTensor(np.transpose(Top).dot(Top))
+       DtD = torch.FloatTensor(Dop*Dop)
+       TtT = torch.FloatTensor(Top*Top)
        tensor_list = [DtD,TtT]
-       return Trsf, tensor_list
+       return tensor_list
       
     def Compute(self,x):
         """
-        Compute the transformation by the Abek integral operator
+        Compute the transformation by the Abel integral operator
         in the basis of eigenvectors.
         Parameters
         ----------
@@ -108,8 +123,22 @@ class Physics:
         -------
             (np.array): of size nxcxm
         """
-        Top = np.diag(1/self.eigm**self.a)
-        return np.matmul(x,Top)
+        return np.matmul(x,self.Top.T)
+    
+    def ComputeAdjoint(self,x):
+        """
+        Compute the transformation by the adjoint operator of Abel integral
+        in the basis of eigenvectors.
+        Parameters
+        ----------
+            x (np.array): signal of size nxcxm
+        Returns
+        -------
+            (np.array): of size nxcxm
+        """
+        # We use the property of adjoint in discrete Hilbert space
+        # < phi_n,T* phi_m > = < T phi_n, phi_m > 
+        return np.matmul(x,self.Top)
 
 #
 class MyMatmul(nn.Module):
@@ -139,82 +168,4 @@ class MyMatmul(nn.Module):
             (torch.FloatTensor): result of the convolution, size n*c*nx
         """
         return torch.matmul(x.data,self.kernel)
-
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
-#
-def Sinkhorn_loss(x, y, epsilon=0.01, niter=100):
-    """
-    Given two emprical measures defined on a uniform grid xi = yi = i/nl 
-    (they are thue often refered to as "histograms"),
-    outputs an approximation of the OT cost with regularization parameter epsilon
-    niter is the max number of steps in sinkhorn loop
-    Parameters
-    ----------
-        x (torch.FloatTensor): 1D-signal, size n*c*nx
-        y (torch.FloatTensor): 1D-signal, size n*c*nx
-    Returns
-    -------
-        (torch.FloatTensor): the Wasserstein distance, size n*c
-    """
-
-    # Definition of the cost matrix :
-    _,_,nx = x.shape
-    t = np.linspace(0,1,nx)
-    [Y,X] = np.meshgrid(t,t)
-    C_np = (X-Y)**2
-    C = Variable(torch.FloatTensor(C_np), requires_grad=False)
-
-    # The initial measures (histogram or marginal weigths)
-    a = 1.*x
-    b = Variable(1.*y, requires_grad=False)
-
-    # Parameters of the Sinkhorn algorithm.
-    tau = -.8  # nesterov-like acceleration
-    thresh = 10**(-1)  # stopping criterion
-
-    # Elementary operations 
-    # .....................................................................
-    def ave(u, u1):
-        "Over-relaxation to accelerate the convergence of the fixed-point algorithm." 
-        "It consists in replacing the update by a linear combination of the new and previous iterate. "
-        return tau * u + (1 - tau) * u1
-
-    def M(u, v):
-        "Modified cost for logarithmic updates"
-        "$M_{ij} = (-c_{ij} + u_i + v_j) / \epsilon$"
-        return (-C + u.unsqueeze(1) + v.unsqueeze(0)) / epsilon
-
-    def lse(A):
-        "log-sum-exp"
-        return torch.log(torch.exp(A).sum(1, keepdim=True) + 1e-6)  # add 10^-6 to prevent NaN
-
-    # Actual Sinkhorn loop 
-    # ......................................................................
-    f, g = 0. * a, 0. * a
-    actual_nits = 0 
-    err = 0.
-
-    for i in range(niter):
-        f1 = f  # used to check the update error
-        # Stable update u <- eps ( log a_i - log sum exp (-c_{ij} + f_i + g_j)/eps + f_i
-        f = epsilon * (torch.log(a) - lse(M(f, g)).squeeze()) + f 
-        # Stable update g <- eps ( log a_i - log sum exp (-c_{ij} + f_i + g_j)/eps + g_j
-        g = epsilon * (torch.log(b) - lse(M(f,g).transpose(-2, -1)).squeeze()) + g
-        # Error check
-        err = (f - f1).abs().sum()
-        actual_nits += 1
-        if (err < thresh).data.numpy():
-            break
-            
-    
-    # Cost computatiom
-    # ......................................................................
-    F, G = f, g
-    # Transport plan P_{ij} = a_i b_j exp (- C_{ij}+f_i+g_j )/\epsilon
-    P = torch.exp(torch.log(a.unsqueeze(1))+ torch.log(b.unsqueeze(0)) + M(F, G))  
-    # Sinkhorn cost
-    cost = torch.sum(P * C)  
-
-    return cost
 
