@@ -33,7 +33,7 @@ class Physics:
         p          (int): order of regularisation
         basis (np.array): transformation between signal and eigenvectors basis
     """
-    def __init__(self,nx,m=200,a=1,p=1):
+    def __init__(self,nx=1000,m=20,a=1,p=1):
         """
         Alert : nx must be >> than m.
         """
@@ -51,8 +51,6 @@ class Physics:
         v1         = ((2*np.linspace(0,self.nx-1,self.nx)+1)*h/2).reshape(1,-1)
         v2         = (np.ones(self.nx)/2*h).reshape(1,-1)
         base       = 2*np.sqrt(2)/eig_m*np.cos(v1*eig_m)*np.sin(v2*eig_m)
-        base[:,0]  = np.sqrt(2)/self.eigm*np.sin(h/2*self.eigm) # e_0
-        base[:,-1] = 2*np.sqrt(2)/self.eigm*np.cos((1-h/4)*self.eigm)*np.sin(h/2*self.eigm)# e_nx
         self.basis = base
         # Operator T
         # step 0 : Abel operator integral
@@ -62,9 +60,8 @@ class Physics:
         eig_m      = self.eigm.reshape(-1,1)
         base_sin   = np.zeros((self.m,self.nx))
         base_sin   = 2*np.sqrt(2)/eig_m*np.sin(v1*eig_m)*np.sin(v2*eig_m)
-        base_f     = np.matmul(self.basis,base_sin.T)
         # step 2 : Combinaison of Top and base change
-        self.Top = np.matmul(base_f,Tdiag)*self.nx
+        self.Top = np.matmul(base_sin.T,Tdiag)
         
     def BasisChange(self,x):
         """
@@ -103,35 +100,41 @@ class Physics:
     
        """
        # T  = 1/nx*np.tri(nx, nx, 0, dtype=int).T # matrice de convolution
-       Top = np.diag(1/self.eigm**(self.a))
+       Top      = np.diag(1/self.eigm**(self.a))
        # D  = 2*np.diag(np.ones(nx)) - np.diag(np.ones(nx-1),-1) - np.diag(np.ones(nx-1),1)# matrice de dérivation
-       Dop = np.diag(self.eigm**(self.p))
+       Dop      = np.diag(self.eigm**(self.p))
+       # matrix P of basis change from cos -> elt
+       cosToelt = torch.FloatTensor(self.basis.T*self.nx)
+       eltTocos = torch.FloatTensor(self.basis)
        # Convert to o Tensor
-       DtD = torch.FloatTensor(Dop*Dop)
-       TtT = torch.FloatTensor(Top*Top)
-       tensor_list = [DtD,TtT]
-       return tensor_list
+       DtD      = torch.FloatTensor(Dop*Dop)
+       TtT      = torch.FloatTensor(Top*Top)
+       #
+       return [DtD,TtT,cosToelt,eltTocos]
       
     def Compute(self,x):
         """
         Compute the transformation by the Abel integral operator
-        in the basis of eigenvectors.
+        in the basis of finite element.
         Parameters
         ----------
-            x (np.array): signal of size nxcxm
+            x (np.array): signal of size nxcxnx
         Returns
         -------
-            (np.array): of size nxcxm
+            (np.array): of size nxcxnx
         """
-        return np.matmul(x,self.Top.T)
+        # Change basis from nx (finite element) to m (cos)
+        x_cos = self.BasisChange(x)
+        # Return Tx in finite element basis
+        return np.matmul(x_cos,self.Top.T*self.nx)
     
     def ComputeAdjoint(self,x):
         """
         Compute the transformation by the adjoint operator of Abel integral
-        in the basis of eigenvectors.
+        from the basis of finite element to eigenvectors.
         Parameters
         ----------
-            x (np.array): signal of size nxcxm
+            x (np.array): signal of size nxcxnx
         Returns
         -------
             (np.array): of size nxcxm

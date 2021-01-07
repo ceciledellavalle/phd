@@ -23,7 +23,6 @@ import os
 # Local import
 from MyResNet.myfunc import MyMatmul
 from MyResNet.proxop.hypercube import cardan
-from MyResNet.myfunc import Sinkhorn_loss
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -42,26 +41,25 @@ class Block(torch.nn.Module):
         TtT  (MyConv1d): 1-D convolution operator corresponding to TtT
         mass (scalar):  maximal integral value
     """
-    def __init__(self,tensor_list,mass,u):
+    def __init__(self,simu):
         """
         Parameters
         ----------
-        tensor_list     (list) : 
-        mass            (float): maximum of moment of order 1
-        U          (Floattensor): size cxnx
+        simu     
         Warning ---> do not converge with bad initialization
         """
         super(Block, self).__init__()
-        nx             = u.shape[0]
-        self.cnn_mu    = Cnn_param(nx)
-        self.reg       = torch.FloatTensor([0.0]) #nn.Parameter(torch.FloatTensor([0.0]))
-        self.soft      = nn.Softplus()
-        self.gamma     = nn.Parameter(torch.FloatTensor([1.0]))
+        nx            = simu.nx
+        self.cnn_mu   = Cnn_param(nx)
+        self.reg      = torch.FloatTensor([0.0]) #nn.Parameter(torch.FloatTensor([0.0]))
+        self.soft     = nn.Softplus()
+        self.gamma    = nn.Parameter(torch.FloatTensor([1.0]))
         #
-        self.DtD      = MyMatmul(tensor_list[0])
-        self.TtT      = MyMatmul(tensor_list[1])
-        self.mass     = mass
-        self.u        = u
+        liste_op      = simu.Operators()
+        self.tDD      = MyMatmul(liste_op[0])
+        self.tTT      = MyMatmul(liste_op[1])
+        self.Peig     = MyMatmul(liste_op[2])
+        self.Pelt     = MyMatmul(liste_op[3])
 
     def Grad(self, reg, x, x_b):
         """
@@ -75,8 +73,8 @@ class Block(torch.nn.Module):
         -------
        	    (torch.FloatTensor): gradient of the smooth term in the cost function, size batch*c*nx
         """
-        DtDx      = self.DtD(x)
-        TtTx      = self.TtT(x)
+        DtDx      = self.tDD(x)
+        TtTx      = self.tTT(x)
         return  TtTx - x_b + reg * DtDx
 
     def forward(self,x,x_b,save_gamma_mu_lambda='no'):
@@ -93,11 +91,11 @@ class Block(torch.nn.Module):
         -------
        	    (torch.FloatTensor): next iterate, output of the layer, n*c*h*w
         """
-        mu       = self.cnn_mu(x)  
+        # set parameters
+        mu       = self.cnn_mu(self.Peig(x))  
         gamma    = self.soft(self.gamma)
         reg      = self.soft(self.reg)
-        x_tilde  = x - gamma*self.Grad(reg, x, x_b)
-        #
+        #save parameters
         if save_gamma_mu_lambda!='no':
             #write the value of the stepsize in a file
             file = open(os.path.join(save_gamma_mu_lambda,'gamma.txt'), "a")
@@ -111,7 +109,15 @@ class Block(torch.nn.Module):
             file = open(os.path.join(save_gamma_mu_lambda,'lambda.txt'), "a")
             file.write('\n'+'%.3e'%reg.data.cpu())
             file.close()
-        return cardan.apply(gamma*mu,x_tilde,self.training)# for moment (self.mass, self.U)
+        #
+        # compute x_tilde
+        x_tilde  = x - gamma*self.Grad(reg, x, x_b)
+        # project in finite element basis
+        x_tilde  = self.Peig(x_tilde)
+        # proximal operator
+        x        = cardan.apply(gamma*mu,x_tilde,self.training)
+        # back to eigenvector cos basis
+        return self.Pelt(x)
 
     
 class MyModel(torch.nn.Module):
@@ -122,13 +128,13 @@ class MyModel(torch.nn.Module):
         Layers (torch.nn.ModuleList object): list of iRestNet layers
         nL                            (int): number of layers
     """
-    def __init__(self,tensor_list,mass,u,nL):
+    def __init__(self,simu,nL=50):
         super(MyModel, self).__init__()
         self.Layers   = nn.ModuleList()
         self.nL       = nL
         #
         for _ in range(nL):
-            self.Layers.append(Block(tensor_list,mass,u))
+            self.Layers.append(Block(simu))
         
 
     def forward(self,x,x_b,save_gamma_mu_lambda='no'):
