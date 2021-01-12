@@ -25,7 +25,7 @@ from PIL import Image
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
 
 
-def CreateDataSet(test,path, noise=0.1, save='yes'):
+def CreateDataSet(test,path,noise=0.1,nsample=50,save='yes'):
     # Recuperation des donnees
     nx            = test.nx
     # Initialisation
@@ -42,8 +42,8 @@ def CreateDataSet(test,path, noise=0.1, save='yes'):
     # path : './MyResNet/Datasets/Images/'
     for folder, subfolders, filenames in os.walk(path+'/'+'Images/BSD500/'): 
         for img in filenames: 
-            item   = folder+img
-            img_cv = cv.imread(item,cv.IMREAD_COLOR)
+            item       = folder+img
+            img_cv     = cv.imread(item,cv.IMREAD_COLOR)
             for i,col in enumerate(color):
                 # Etape 1 : obtenir l'histogramme lisse des couleurs images
                 histr  = cv.calcHist([img_cv],[i],None,[256],[0,256]).squeeze()
@@ -55,9 +55,13 @@ def CreateDataSet(test,path, noise=0.1, save='yes'):
                 f      = interp1d(x,y)
                 yp     = f(xp)
                 # normalisation
-                x_true = yp/np.linalg.norm(yp)
+                ncrop        = nx//20
+                yp[:ncrop]   = yp[ncrop]
+                yp[nx-ncrop:]= 0
+                yp[yp<0]    = 0
+                x_true       = yp/np.amax(yp)
                 # reshaping in channelxm
-                x_true = x_true.reshape(1,-1)
+                x_true       = x_true.reshape(1,-1)
                 # save
                 save_lisse.append(x_true.squeeze())
                 # Etape 2 : passage dans la base de T^*T
@@ -89,7 +93,8 @@ def CreateDataSet(test,path, noise=0.1, save='yes'):
     x_tensor = torch.FloatTensor(liste_l_trsf) # signal in cos basis
     y_tensor = torch.FloatTensor(liste_tT_trsf)# blurred and noisy signal in element basis
     #
-    dataset = TensorDataset(x_tensor, y_tensor)
+    print(x_tensor.shape)
+    dataset = TensorDataset(y_tensor[:nsample], x_tensor[:nsample])
     l       = len(dataset)
     ratio   = 2*l//3
     train_dataset, val_dataset = random_split(dataset, [ratio, l-ratio])
@@ -105,15 +110,15 @@ def LoadDataSet(folder,nsample=50):
     for the training and validation sets.
     To reuse a data set.
     """
-    dfx     = pd.read_csv(folder+'/'+'data_lisse_trsf.csv', sep=',',header=None)
-    dfy     = pd.read_csv(folder+'/'+'data_blurred.csv', sep=',',header=None)
-    _,m     = dfx.shape
-    _,nx    = dfy.shape
+    dfl     = pd.read_csv(folder+'/'+'data_lisse_trsf.csv', sep=',',header=None)
+    dfb    = pd.read_csv(folder+'/'+'data_tTblurred.csv', sep=',',header=None)
+    _,m     = dfl.shape
+    _,nx    = dfb.shape
     #
-    x_tensor = torch.FloatTensor(dfx.values[:nsample]).view(-1,1,m)
-    y_tensor = torch.FloatTensor(dfy.values[:nsample]).view(-1,1,nx)
+    x_tensor = torch.FloatTensor(dfl.values[:nsample]).view(-1,1,m)
+    y_tensor = torch.FloatTensor(dfb.values[:nsample]).view(-1,1,nx)
     #
-    dataset = TensorDataset(x_tensor, y_tensor)
+    dataset = TensorDataset(y_tensor, x_tensor)
     l = len(dataset)
     ratio = 2*l//3
     train_dataset, val_dataset = random_split(dataset, [ratio, l-ratio])

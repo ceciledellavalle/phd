@@ -104,13 +104,13 @@ class Physics:
        # D  = 2*np.diag(np.ones(nx)) - np.diag(np.ones(nx-1),-1) - np.diag(np.ones(nx-1),1)# matrice de dérivation
        Dop      = np.diag(self.eigm**(self.p))
        # matrix P of basis change from cos -> elt
-       cosToelt = torch.FloatTensor(self.basis.T*self.nx)
-       eltTocos = torch.FloatTensor(self.basis)
+       eltTocos = self.basis
+       cosToelt = self.basis.T*self.nx
        # Convert to o Tensor
-       DtD      = torch.FloatTensor(Dop*Dop)
-       TtT      = torch.FloatTensor(Top*Top)
+       tDD      = Dop*Dop
+       tTT      = Top*Top
        #
-       return [DtD,TtT,cosToelt,eltTocos]
+       return [tDD,tTT,eltTocos,cosToelt]
       
     def Compute(self,x):
         """
@@ -158,7 +158,8 @@ class MyMatmul(nn.Module):
             kernel (torch.FloatTensor): convolution filter
         """
         super(MyMatmul, self).__init__()
-        self.kernel   = nn.Parameter(kernel.T,requires_grad=False)   
+        kernel_nn     = torch.FloatTensor(kernel)
+        self.kernel   = nn.Parameter(kernel_nn.T,requires_grad=False)   
             
     def forward(self, x): 
         """
