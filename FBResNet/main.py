@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 from FBResNet.myfunc import Physics
 from FBResNet.myfunc import MyMatmul
 from FBResNet.model import MyModel
+from FBResNet.bartlett import Test_cuda
 
         
 class FBRestNet(nn.Module):
@@ -69,6 +70,10 @@ class FBRestNet(nn.Module):
             train_loader
             val_loader
         """
+        #
+        Test_cuda
+        self.device   =
+        self.dtype    = 
         # Recuperation des donnees
         nx            = self.physics.nx
         noise         = self.noise
