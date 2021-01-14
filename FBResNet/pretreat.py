@@ -40,7 +40,7 @@ def CreateDataSet(test,path,noise=0.1,nsample=50,save='yes'):
     save_tT_trsf  = []
     # Upload Data
     # path : './MyResNet/Datasets/Images/'
-    for folder, subfolders, filenames in os.walk(path+'/'+'Images/BSD500/'): 
+    for folder, subfolders, filenames in os.walk(path+'/'+'Images/Set1/'): 
         for img in filenames: 
             item       = folder+img
             img_cv     = cv.imread(item,cv.IMREAD_COLOR)
@@ -93,7 +93,6 @@ def CreateDataSet(test,path,noise=0.1,nsample=50,save='yes'):
     x_tensor = torch.FloatTensor(liste_l_trsf) # signal in cos basis
     y_tensor = torch.FloatTensor(liste_tT_trsf)# blurred and noisy signal in element basis
     #
-    print(x_tensor.shape)
     dataset = TensorDataset(y_tensor[:nsample], x_tensor[:nsample])
     l       = len(dataset)
     ratio   = 2*l//3

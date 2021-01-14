@@ -15,8 +15,8 @@ import torch.nn as nn
 import numpy as np
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
 
-    # Lifschitz : Lifschitz constant of the network
-    def Lifschitz(self):
+    # Lifschitz : Lifschitz constant of the network for the semi-norm
+    def SemiLifschitz(self):
         """
         Given a ill-posed problem of order a and a regularization of order p
         for a 1D signal of nx points,
@@ -59,9 +59,7 @@ import numpy as np
                     eig_ip[:i,p]   = eig_ip[i+1,p]*eig_ref[i,p]
                     eig_t_ip[i,p]  = eig_t_ip[i+1,p]+gamma*np.prod(eig_ref[i+1:,p])
             # Step 2.1 : compute ai
-            aip = eig_ip[i,:]**2 + eig_t_ip[i,:]**2 +1 \
-                    + np.sqrt(( eig_ip[i,:]**2 + eig_t_ip[i,:]**2+1)**2 \
-                    -  4* eig_ip[i,:]**2)
+            aip = eig_ip[i,:]**2 + eig_t_ip[i,:]**2
             ai[i] = 1/2*np.amax(aip)
             # Step 2.2 : compute theta
             if i<0 :

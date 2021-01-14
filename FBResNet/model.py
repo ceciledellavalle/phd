@@ -21,8 +21,8 @@ import torch
 from math import ceil
 import os
 # Local import
-from MyResNet.myfunc import MyMatmul
-from MyResNet.proxop.hypercube import cardan
+from FBResNet.myfunc import MyMatmul
+from FBResNet.proxop.hypercube import cardan
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -48,10 +48,17 @@ class Block(torch.nn.Module):
         exp         (Physic object) : contains the experimental parameters   
         """
         super(Block, self).__init__()
-        self.cnn_mu   = Cnn_param(exp.m)#self.param.nx)
-        self.reg      = nn.Parameter(torch.FloatTensor([0.00]))
-        self.soft     = nn.ReLU()
+        #
+        self.nx       = exp.nx
+        self.m        = exp.m
+        # if m is big enough, we cut high frequencies that correspond to noise
+        # else m is inferior to nx the projection in cos basis functions as a regularisation
+        if exp.m>=exp.nx/100: 
+            self.cnn_reg = Cnn_reg(exp)
+        self.reg      = torch.FloatTensor([0.0])
         self.gamma    = nn.Parameter(torch.FloatTensor([0.5]))
+        self.cnn_mu   = Cnn_bar(exp.nx)
+        self.soft     = nn.Softplus(100)
         #
         liste_op      = exp.Operators()
         self.tDD      = MyMatmul(liste_op[0])
@@ -59,7 +66,7 @@ class Block(torch.nn.Module):
         self.Peig     = MyMatmul(liste_op[2]) # eltTocos
         self.Pelt     = MyMatmul(liste_op[3]) # cosToelt
 
-    def Grad(self, reg, x, x_b):
+    def Grad(self,reg,x,x_b):
         """
         Computes the gradient of the smooth term in the objective function (data fidelity + regularization).
         Parameters
@@ -90,17 +97,25 @@ class Block(torch.nn.Module):
        	    (torch.FloatTensor): next iterate, output of the layer, n*c*h*w
         """
         # set parameters
-        mu       = self.cnn_mu(x)#self.Pelt(x))  
+        # Barrier parameter
+        mu       = self.cnn_mu(self.Pelt(x)) 
+        # Gradient descent parameter 
         gamma    = self.soft(self.gamma)
-        reg      = self.soft(self.reg)
+        # Regularisation parameter
+        if self.m>=self.nx/100: 
+            reg      = self.cnn_reg(x_b)
+            self.reg = reg.clone().detach() # register for lipschitz cste
+        else :
+            reg      = self.reg
         # compute x_tilde
-        x_tilde  = x - gamma*self.Grad(reg, x, x_b)
+        x_tilde = x - gamma*self.Grad(reg, x, x_b)
         # project in finite element basis
-        x_tilde  = self.Pelt(x_tilde)
-        # # proximal operator
-        #x        = cardan.apply(gamma*mu,x_tilde,self.training)
+        x_tilde = self.Pelt(x_tilde)
+        # proximal operator
+        x_tilde = cardan.apply(gamma*mu,x_tilde,self.training)
         # back to eigenvector cos basis
-        return self.Peig(x_tilde)
+        x_tilde = self.Peig(x_tilde)
+        return x_tilde 
 
     
 class MyModel(torch.nn.Module):
@@ -122,7 +137,7 @@ class MyModel(torch.nn.Module):
             self.Layers.append(Block(exp))
         
 
-    def forward(self,x,x_b,save_theta='no'):
+    def forward(self,x,x_b):
         """
         Computes the output of the layer.
         Parameters
@@ -138,7 +153,7 @@ class MyModel(torch.nn.Module):
         return x
     
     # Lifschitz : Lifschitz constant of the network
-    def Lifschitz(self):
+    def Lifschitz(self,opt="semi"):
         """
         Given a ill-posed problem of order a and a regularization of order p
         for a 1D signal of nx points,
@@ -147,6 +162,8 @@ class MyModel(torch.nn.Module):
         Parameters
         ----------
             model (MyModel): model of the neural network
+            opt      (str) : "semi" to consider the semi-norm on the output
+                             (or "total" to include the norm on the bias)
         Returns
         -------
             (float): Lifschitz constant theta of the neural network
@@ -165,36 +182,96 @@ class MyModel(torch.nn.Module):
         eig_T = 1/self.param.eigm**(2*self.param.a)
         eig_D = self.param.eigm**(2*self.param.p)
         # Step 2 : on parcourt les layers du reseau
-        for i in range(nL-1,-1,-1):
-            # Acces to the parameters of each layers
-            gamma = model.Layers[i].gamma.numpy()
-            reg   = model.Layers[i].reg.numpy()
-            mu    = 1
-            # Computes the ref eigenvals
-            eig_ref[i,:]    = 1 - gamma*(eig_T+reg*eig_D)
-            # Step 2.0 Computes beta_i,p
-            for p in range(0,m):
-                if i==nL-1:
-                    eig_ip[:i,p]   = eig_ref[i,p]
-                    eig_t_ip[i,p]  = gamma
-                else:
-                    eig_ip[:i,p]   = eig_ip[i+1,p]*eig_ref[i,p]
-                    eig_t_ip[i,p]  = eig_t_ip[i+1,p]+gamma*np.prod(eig_ref[i+1:,p])
-            # Step 2.1 : compute ai
-            aip = eig_ip[i,:]**2 + eig_t_ip[i,:]**2 +1 \
-                    + np.sqrt(( eig_ip[i,:]**2 + eig_t_ip[i,:]**2+1)**2 \
-                    -  4* eig_ip[i,:]**2)
-            ai[i] = 1/2*np.amax(aip)
-            # Step 2.2 : compute theta
-            if i<0 :
-                theta = theta*np.sqrt(ai[i])+1
-            else :
-                theta *= np.sqrt(ai[i])
+        with torch.no_grad():
+            for i in range(nL-1,-1,-1):
+                # Acces to the parameters of each layers
+                gamma = self.Layers[i].gamma.detach().numpy()
+                reg   = self.Layers[i].reg.detach().numpy()
+                mu    = 1
+                # Computes the ref eigenvals
+                eig_ref[i,:] = 1 - gamma*(eig_T+reg*eig_D)
+                # Step 2.0 Computes beta_i,p
+                for p in range(0,m):
+                    if i==nL-1:
+                        eig_ip[i,p]   = eig_ref[i,p]
+                        eig_t_ip[i,p] = gamma
+                    else:
+                        eig_ip[i,p]   = eig_ip[i+1,p]*eig_ref[i,p]
+                        eig_t_ip[i,p] = eig_t_ip[i+1,p]+gamma*np.prod(eig_ref[i+1:,p])
+                # Step 2.1 : compute ai
+                if opt == "semi":
+                     aip = eig_ip[i,:]**2 + eig_t_ip[i,:]**2
+                if opt == "init":
+                     aip = eig_ip[i,:]**2
+                else :
+                    aip  = eig_ip[i,:]**2 + eig_t_ip[i,:]**2 +1 \
+                         + np.sqrt(( eig_ip[i,:]**2 + eig_t_ip[i,:]**2+1)**2 \
+                         -  4* eig_ip[i,:]**2)
+                ai[i] = 1/2*np.amax(aip)
+                print("ai = ",np.sqrt(ai[i]))
+            # Step 3 : compute theta
+            print("calcul de theta")
+            theta     = np.zeros(nL)
+            theta[0]  = 1
+            for i in range(0,nL):
+                theta[i] = np.sum(theta*np.sqrt(ai))
+                print(theta[i])
         # Step 3 : return
-        return theta/2**(nL-1)
+        return theta[-1]/(2**(nL-1))
+        
 
-# Cnn_bar: to computing the barrier parameter
-class Cnn_param(nn.Module):
+# Cnn_reg: to compute the regularisation parameter
+class Cnn_reg(nn.Module):
+    """
+    Predicts the regularisation parameter.
+    Attributes
+    ----------
+        a    (torch.FloatTensor): 
+        p    (torch.FloatTensor):
+       cste  (torch.FloatTensor):
+       m                   (int):
+       nx                  (int):
+        
+    """
+    def __init__(self,exp):
+        super(Cnn_reg, self).__init__()
+        self.a    = nn.Parameter(torch.FloatTensor([exp.a]),requires_grad=False)
+        self.p    = nn.Parameter(torch.FloatTensor([exp.p]),requires_grad=False)
+        self.Eig  = nn.Parameter(torch.FloatTensor(np.diag(exp.eigm)),requires_grad=False)
+        #
+        self.soft = nn.Softplus(100)
+        self.inv  = MyMatmul(self.Eig**(2*self.a))
+        #
+        self.cste = nn.Parameter(torch.FloatTensor([0.001]),requires_grad=True)
+        # numpy
+        self.nx   = exp.nx
+        self.m    = exp.m
+         
+    def forward(self,x_in):
+        """
+        Computes the barrier parameter.
+        Parameters
+        ----------
+      	    x (torch.FloatTensor): images, size n*c*h*w 
+        Returns
+        -------
+       	    (torch.FloatTensor): barrier parameter, size n*1*1*1
+        """
+        size             = x_in.size()
+        x_out            = x_in.clone().detach() 
+        x_out            = self.inv(x_out)
+        x_fil            = x_out.clone().detach()
+        nflt             = ceil(0.9/(1-1/100)*(self.m-self.nx/100))
+        x_fil[:,:,nflt:] = torch.zeros((1,1,self.m-nflt))
+        #
+        delta            = torch.linalg.norm(x_out-x_fil)# estimation de l' erreur
+        #
+        cste             = self.soft(self.cste)
+        x                = cste*delta**(2*(self.a+self.p)/(self.a+2))
+        return x
+    
+# Cnn_bar: to compute the barrier parameter
+class Cnn_bar(nn.Module):
     """
     Predicts the barrier parameter.
     Attributes
@@ -205,13 +282,13 @@ class Cnn_param(nn.Module):
         soft       (torch.nn.Softplus): Softplus activation function
     """
     def __init__(self,nx):
-        super(Cnn_param, self).__init__()
+        super(Cnn_bar, self).__init__()
         self.lin2   = nn.Linear(nx, 256)
         self.conv2  = nn.Conv1d(1, 1, 5,padding=2)
         self.conv3  = nn.Conv1d(1, 1, 5,padding=2)
         self.lin3   = nn.Linear(16*1, 1)
         self.avg    = nn.AvgPool1d(4, 4)
-        self.soft   = nn.Softplus()
+        self.soft   = nn.Softplus(100)
 
     def forward(self, x_in):
         """

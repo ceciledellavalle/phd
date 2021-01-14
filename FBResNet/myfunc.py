@@ -171,5 +171,6 @@ class MyMatmul(nn.Module):
         -------
             (torch.FloatTensor): result of the convolution, size n*c*nx
         """
-        return torch.matmul(x.data,self.kernel)
+        x_tilde = torch.matmul(x,self.kernel)
+        return x_tilde
 
