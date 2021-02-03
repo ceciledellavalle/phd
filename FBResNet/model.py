@@ -5,6 +5,7 @@ Classes
     Block      : one layer in iRestNet
     myModel    : iRestNet model
     Cnn_bar    : predicts the barrier parameter
+    Cnn_reg    : predicts the regularisation parameter
 
 @author: Cecile Della Valle
 @date: 03/01/2021

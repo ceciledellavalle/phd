@@ -136,4 +136,11 @@ def LoadDataSet(folder,nsample=50):
     val_loader   = DataLoader(val_dataset, batch_size=1, shuffle=False)
     return train_loader, val_loader
     
-            
+### EXPORT DATA
+def Export_Data(xdata,ydata,folder,name):
+    Npoint = np.size(xdata)
+    with open(folder+'/'+name+'.txt', 'w') as f:
+        f.writelines('xdata ydata \n')
+        for i in range(Npoint):
+            web_browsers = ['{0}'.format(xdata[i]),' ','{0} \n'.format(ydata[i])]
+            f.writelines(web_browsers)
