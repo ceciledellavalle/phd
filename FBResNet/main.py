@@ -20,6 +20,7 @@ from FBResNet.myfunc import Physics
 from FBResNet.myfunc import MyMatmul
 from FBResNet.model import MyModel
 from FBResNet.bartlett import Test_cuda
+from FBResNet.posttreat import Export_Data
 
         
 class FBRestNet(nn.Module):
@@ -31,7 +32,10 @@ class FBRestNet(nn.Module):
         path_test              (str): path to the folder containing the test sets
         path_train             (str): path to the training set folder 
     """
-    def __init__(self, experimentation=Physics(2000,20,1,1), nb_blocks=20, noise = 0.1,\
+#========================================================================================================
+#========================================================================================================
+    def __init__(self, experimentation=Physics(2000,50,1,1), constraint = 'cube',\
+                 nb_blocks=20, noise = 0.1,\
                  folder = './', im_set="Set1",batch_size=[50,5],\
                  lr=1e-3, nb_epochs=[10,1]):
         """
@@ -43,6 +47,7 @@ class FBRestNet(nn.Module):
         # physical information
         self.physics    = experimentation
         self.noise      = noise
+        self.constr     = constraint
         # training information
         self.lr_i       = lr
         self.nb_epochs  = nb_epochs[0]
@@ -58,8 +63,9 @@ class FBRestNet(nn.Module):
         # requires regularisation
         self.regul      = (noise>0)&(self.physics.m>20)
         # model creation
-        self.model      = MyModel(self.physics,noisy=self.regul,nL=self.nb_blocks)
-
+        self.model      = MyModel(self.physics,noisy=self.regul,nL=self.nb_blocks,constr=self.constr)
+#========================================================================================================
+#========================================================================================================
     def LoadParam(self):
         """
         Load the parameters of a trained model (in Trainings)
@@ -67,7 +73,8 @@ class FBRestNet(nn.Module):
         path_model = self.path + 'Trainings/param{}_{}_{}_{}.pt'.format(\
             self.physics.nx,self.physics.m,self.physics.a,self.physics.p)
         self.model.load_state_dict(torch.load(path_model))
-    
+#========================================================================================================
+#========================================================================================================    
     def CreateDataSet(self,save='yes'):
         """
         Creates the dataset from an image basis, rescale, compute transformation and noise.
@@ -85,21 +92,22 @@ class FBRestNet(nn.Module):
         # self.device   =
         # self.dtype    =
         # Recuperation des donnees
-        nx            = self.physics.nx
-        m             = self.physics.m
-        noise         = self.noise
-        nsample       = self.nsamples
-        im_set        = self.im_set
+        nx             = self.physics.nx
+        m              = self.physics.m
+        noise          = self.noise
+        nsample        = self.nsamples
+        im_set         = self.im_set
         # Initialisation
-        color         = ('b','g','r')
+        color          = ('b','g','r')
         #
-        liste_l_trsf  = []
-        liste_tT_trsf = []
+        liste_l_trsf   = []
+        liste_tT_trsf  = []
         #
-        save_lisse    = []
-        save_l_trsf   = []
-        save_blurred  = []
-        save_tT_trsf  = []
+        save_lisse     = []
+        save_l_trsf    = []
+        save_blurred   = []
+        save_blurred_n = []
+        save_tT_trsf   = []
         # Upload Data
         # path : './MyResNet/Datasets/Images/'
         for folder, subfolders, filenames in os.walk(self.path+'Datasets/Images/'+im_set+'/'): 
@@ -118,43 +126,53 @@ class FBRestNet(nn.Module):
                     yp     = f(xp)
                     # normalisation
                     ncrop         = nx//20
-                    yp[:ncrop]    = 0
+                    yp[:ncrop]    = yp[ncrop-1]
                     yp[nx-ncrop:] = 0
                     yp[yp<0]      = 0
-                    x_true        = yp/np.amax(yp)
+                    yp            = yp/np.amax(yp)
                     # filtering high frequencies
-                    filtre = Physics(nx,25)
-                    x_true = filtre.BasisChangeInv(filtre.BasisChange(x_true))
+                    fmax          = m//2
+                    filtre        = Physics(nx,fmax)
+                    yp            = filtre.BasisChange(yp)
+                    # 
+                    x_true        = filtre.BasisChangeInv(yp)
+                    x_true[x_true<0] = 0
+                    if self.constr == 'cube':
+                        x_true = x_true/np.amax(x_true)
+                        yp     = filtre.BasisChange(x_true)
+                    if self.constr == 'slab':
+                        x_true = np.sqrt(nx)*x_true/np.linalg.norm(x_true)
+                        yp     = filtre.BasisChange(x_true)
                     # reshaping in channelxm
-                    x_true        = x_true.reshape(1,-1)
+                    x_true  = x_true.reshape(1,-1)
                     # save
                     save_lisse.append(x_true.squeeze())
                     # Etape 2 : passage dans la base de T^*T
-                    x_true_trsf = self.physics.BasisChange(x_true)
+                    x_true_trsf = yp.reshape(1,-1)
                     # save
                     liste_l_trsf.append(x_true_trsf)
                     save_l_trsf.append( x_true_trsf.squeeze())
                     #  Etape 3 : obtenir les images bruitees par l' operateur d' ordre a
-                    # transform and add noise
-                    x_blurred   = self.physics.Compute(x_true) 
-                    # Etape 4 : compute adjoint in the cos basis
-                    tTx_blurred = self.physics.ComputeAdjoint(x_blurred)
-                    # Etape 5 : Bruitage 
-                    noise_vect      = np.zeros(m)
-                    noise_vect[26:] = np.random.randn(m-26)
-                    tTx_blurred    += noise*noise_vect/np.linalg.norm(noise_vect)
+                    # transform
+                    x_blurred  = self.physics.Compute(x_true) 
+                    # Etape 4 : Bruitage 
+                    noise = 0.01*np.random.randn(nx)
+                    x_b   = self.physics.ComputeAdjoint(x_blurred+noise)
+                    x_b   = x_b.reshape(1,-1)
                     # save
                     save_blurred.append(x_blurred.squeeze())
-                    
+                    save_blurred_n.append(x_blurred_n.squeeze())
                     # and save
-                    liste_tT_trsf.append(tTx_blurred)
-                    save_tT_trsf.append(tTx_blurred.squeeze())
+                    liste_tT_trsf.append(x_b)
+                    save_tT_trsf.append(x_b.squeeze())
         # Export data in .csv
         if save =='yes':
-            np.savetxt(self.path+'Datasets/Signals/data_lisse.csv',      save_lisse,   delimiter=', ', fmt='%12.8f')
-            np.savetxt(self.path+'Datasets/Signals/data_lisse_trsf.csv', save_l_trsf,  delimiter=', ', fmt='%12.8f')
-            np.savetxt(self.path+'Datasets/Signals/data_blurred.csv',    save_blurred, delimiter=', ', fmt='%12.8f')
-            np.savetxt(self.path+'Datasets/Signals/data_tTblurred.csv',  save_tT_trsf, delimiter=', ', fmt='%12.8f')
+            seq = 'a{}_'.format(self.physics.a) + self.constr
+            np.savetxt(self.path+'Datasets/Signals/data_l_'+seq+'.csv',      save_lisse,   delimiter=', ', fmt='%12.8f')
+            np.savetxt(self.path+'Datasets/Signals/data_l_trsf'+seq+'.csv', save_l_trsf,  delimiter=', ', fmt='%12.8f')
+            np.savetxt(self.path+'Datasets/Signals/data_b_'+seq+'.csv',    save_blurred, delimiter=', ', fmt='%12.8f')
+            np.savetxt(self.path+'Datasets/Signals/data_bn_'+seq+'.csv',  save_blurred_n, delimiter=', ', fmt='%12.8f')
+            np.savetxt(self.path+'Datasets/Signals/data_tTb_'+seq+'.csv',  save_tT_trsf, delimiter=', ', fmt='%12.8f')
         # Tensor completion
         x_tensor = torch.FloatTensor(liste_l_trsf) # signal in cos basis
         y_tensor = torch.FloatTensor(liste_tT_trsf)# blurred and noisy signal in element basis
@@ -168,7 +186,8 @@ class FBRestNet(nn.Module):
         val_loader   = DataLoader(val_dataset, batch_size=1, shuffle=False)
         #
         return train_loader, val_loader
-
+#========================================================================================================
+#========================================================================================================
     def LoadDataSet():
         """
         Dreates the appropriate loader for the training and validation sets
@@ -177,8 +196,9 @@ class FBRestNet(nn.Module):
         #
         nsample = self.nsample
         #
-        dfl     = pd.read_csv(self.path+'Datasets/Signals/data_lisse_trsf.csv', sep=',',header=None)
-        dfb    = pd.read_csv(folder+'Datasets/Signals/data_tTblurred.csv', sep=',',header=None)
+        seq = 'a{}_'.format(self.physics.a) + self.constr
+        dfl     = pd.read_csv(self.path+'Datasets/Signals/data_l_trsf'+seq+'.csv', sep=',',header=None)
+        dfb    = pd.read_csv(folder+'Datasets/Signals/data_tTb_'+seq+'.csv', sep=',',header=None)
         _,m     = dfl.shape
         _,nx    = dfb.shape
         #
@@ -194,7 +214,8 @@ class FBRestNet(nn.Module):
         val_loader   = DataLoader(val_dataset, batch_size=1, shuffle=False)
         #
         return train_loader, val_loader
-    
+#========================================================================================================
+#========================================================================================================    
     def train(self,train_set,val_set,test_lipschitz=True,save_model=False):
         """
         Trains iRestNet.
@@ -207,7 +228,7 @@ class FBRestNet(nn.Module):
         lip_cste     =  np.zeros(nb_val)
         # defines the optimizer
         lr_i        = self.lr_i
-        optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad,self.model.parameters()),lr=self.lr_i)     #========================================================================================================
+        optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad,self.model.parameters()),lr=self.lr_i)     
         # trains for several epochs
         for epoch in range(0,self.nb_epochs): 
             # sets training mode
@@ -224,8 +245,9 @@ class FBRestNet(nn.Module):
                 x_true    = Variable(x,requires_grad=False) 
                 # definition of the initialisation tensor
                 x_init   = torch.zeros(x_bias.size())
-                tDD       = MyMatmul(self.physics.Operators()[0])
-                x_init[:,:,:25] = tDD(y)[:,:,:25]
+                inv      = np.diag(self.physics.eigm**(2*self.physics.a))
+                tTTinv   = MyMatmul(inv)
+                x_init[:,:,:25] = tTTinv(y)[:,:,:25] # filtration of high frequences
                 x_init   = Variable(x_init,requires_grad=False)
                 # prediction
                 x_pred    = self.model(x_init,x_bias) 
@@ -252,8 +274,9 @@ class FBRestNet(nn.Module):
                         x_bias  = Variable(y,requires_grad=False)
                         # definition of the initialisation tensor
                         x_init   = torch.zeros(x_bias.size())
-                        tDD       = MyMatmul(self.physics.Operators()[0])
-                        x_init[:,:,:25] = tDD(y)[:,:,:25]
+                        inv      = np.diag(self.physics.eigm**(2*self.physics.a))
+                        tTTinv   = MyMatmul(inv)
+                        x_init[:,:,:30] = tTTinv(y)[:,:,:30] # filtration of high frequences
                         x_init   = Variable(x_init,requires_grad=False)
                         # prediction
                         x_pred  = self.model(x_init,x_bias).detach()
@@ -267,7 +290,7 @@ class FBRestNet(nn.Module):
                 lip_cste[epoch//self.freq_val] = self.model.Lipschitz()
                 
             
-        #==========================================================================================================
+        #=======================
         # training is finished
         print('-----------------------------------------------------------------')
         print('Training is done.')
@@ -283,12 +306,18 @@ class FBRestNet(nn.Module):
         plt.show()
         #
         print("Final Lipschitz constant = ",lip_cste[-1])
-        
+        # Export lip curve
+        Export_Data(np.linspace(0,nb_val-1,nb_val),\
+                    lip_cste,
+                    self.path+'Redaction/data',\
+                    'lip{}_{}_{}_{}.pt'.format(\
+                    self.physics.nx,self.physics.m,self.physics.a,self.physics.p))
         # Save model
         if save_model:
             torch.save(self.model.state_dict(), self.path+'Trainings/param{}_{}_{}_{}.pt'.format(\
             self.physics.nx,self.physics.m,self.physics.a,self.physics.p))
-    
+#========================================================================================================
+#========================================================================================================    
     def test(self,data_set):    
         """
         Parameters
@@ -298,6 +327,7 @@ class FBRestNet(nn.Module):
         # initial
         l_x_true = []
         l_x_pred = []
+        l_x_init = []
         l_loss   = []
         torch_zeros = Variable(torch.zeros(1,1,self.physics.m),requires_grad=False)
         # gies through the minibatch
@@ -309,8 +339,9 @@ class FBRestNet(nn.Module):
                 x_bias = Variable(y,requires_grad=False)
                 # definition of the initialisation tensor
                 x_init   = torch.zeros(x_bias.size())
-                tDD       = MyMatmul(self.physics.Operators()[0])
-                x_init[:,:,:25] = tDD(y)[:,:,:25]
+                inv      = np.diag(self.physics.eigm**(2*self.physics.a))
+                tTTinv   = MyMatmul(inv)
+                x_init[:,:,:30] = tTTinv(y)[:,:,:30] # filtration of high frequences
                 x_init   = Variable(x_init,requires_grad=False)
                 # prediction
                 x_pred    = self.model(x_init,x_bias)
@@ -318,22 +349,69 @@ class FBRestNet(nn.Module):
                 loss   = torch.Tensor.item(self.loss_fn(x_pred, x_true))
                 norm   = torch.Tensor.item(self.loss_fn(torch_zeros, x_true))
                 #
+                l_x_init.append(x_init.numpy())
                 l_x_true.append(x_true.numpy())
                 l_x_pred.append(x_pred.numpy())
                 l_loss.append(loss/norm)
         # Plots
         xtc = l_x_true[0][0,0]
         xpc = l_x_pred[0][0,0]
+        xic = l_x_init[0][0,0]
         xt  = self.physics.BasisChangeInv(xtc)
         xp  = self.physics.BasisChangeInv(xpc)
+        xi  = self.physics.BasisChangeInv(xic)
         fig, (ax1, ax2) = plt.subplots(1, 2)
         ax1.plot(xtc,label = 'true')
         ax1.plot(xpc,label = 'pred')
+        ax1.plot(xic,label = 'init')
         ax1.legend()
         ax2.plot(np.linspace(0,1,self.physics.nx),xt,label = 'true')
         ax2.plot(np.linspace(0,1,self.physics.nx),xp,label = 'pred')
+        ax2.plot(np.linspace(0,1,self.physics.nx),xi,label = 'init')
         ax2.set_title("Comparaison")
         ax2.legend()
         plt.show()
-        
+        #
         print("Erreur relative : ",l_loss[0])
+        # return 
+        return l_x_init, l_x_true, l_x_pred
+#========================================================================================================
+#======================================================================================================== 
+    def test_gauss(self):
+        # Gaussienne 
+        nx    = self.physics.nx
+        m     = self.physics.m
+        t     = np.linspace(0,1,nx)
+        gauss = np.exp(-(t-0.5)**2/(0.1)**(2))
+        if self.constr == 'cube':
+            gauss = gauss/np.amax(gauss)
+        if self.constr == 'slab':
+            gauss = np.sqrt(nx)*gauss/np.linalg.norm(gauss)
+        # export
+        Export_Data(t,gauss,'./Redaction/data','gauss')
+        #
+        noise = 0.01*np.random.randn(nx)
+        x_b   = self.physics.ComputeAdjoint(self.physics.Compute(gauss)+noise)
+        # passage float tensor
+        x_bias    = Variable(torch.FloatTensor(x_b.reshape(1,1,-1)),requires_grad=False)
+        # definition of the initialisation tensor
+        x_init   = torch.zeros(x_bias.shape)
+        tTTinv   = MyMatmul(np.diag(self.physics.eigm**(2*self.physics.a)))
+        print(x_init.shape)
+        print(x_bias.shape)
+        print(tTTinv(x_bias).shape)
+        x_init[:,:,:30] = tTTinv(x_bias)[:,:,:30] # filtration of high frequences
+        x_init   = Variable(x_init.reshape(1,1,-1),requires_grad=False)
+        # prediction
+        x_pred   = self.model(x_init,x_bias)
+        xpc      = x_pred.detach().numpy()[0,0,:]
+        xp       = self.physics.BasisChangeInv(xpc)
+        print(t.shape)
+        # export
+        Export_Data(t,xp,'./Redaction/data','gauss_pred_a{}_'.format(self.physics.a)+self.constr)
+        # plot
+        plt.plot(t,gauss)
+        plt.plot(t,xp)
+        #
+        print("x/xb =",np.linalg.norm(x_b)/(1/np.sqrt(nx)*np.linalg.norm(gauss)))
+        

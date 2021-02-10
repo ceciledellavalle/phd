@@ -5,10 +5,10 @@ import numpy as np
 import torch
 import sys
 
-class cardan(torch.autograd.Function):  
+class cardan_slab(torch.autograd.Function):  
 
     @staticmethod
-    def forward(ctx,gamma_mu,xtilde,mass,u,device="cpu",mode_training=True):
+    def forward(ctx,gamma_mu,xtilde,mode_training=True):
         """
 	    Finds the solution of the cubic equation involved in the computation of the proximity operator of the 
         logarithmic barrier of the hyperslab constraints (xmin< u^Tx <xmax) using the Cardano formula: x^3+ax^2+bx+c=0 
@@ -26,17 +26,18 @@ class cardan(torch.autograd.Function):
            sol (torch.FloatTensor): proximity operator of gamma_mu*barrier at xtilde, size n 
         """
         # Device CPU/GPU
-        if device == "cuda":
-            dtype = torch.cuda.FloatTensor
-        else :
-            dtype = torch.FloatTensor
+        # if device == "cuda":
+        #     dtype = torch.cuda.FloatTensor
+        # else :
+        dtype = torch.FloatTensor
         #initialize variables
         batch,_,nx        = xtilde.size()
         x1,x2,x3          = torch.zeros(batch,1,1).type(dtype),torch.zeros(batch,1,1).type(dtype),torch.zeros(batch,1,1).type(dtype)   
         crit,crit_compare = torch.zeros(batch,1,nx).type(dtype),torch.zeros(batch,1,nx).type(dtype)
         sol               = torch.zeros(batch,1,nx).type(dtype)
         xmin              = 0
-        xmax              = mass
+        xmax              = 1
+        u                 = torch.ones(batch,1,nx).type(dtype)
         uTx               = torch.matmul(xtilde,u).view(batch,1,1)
         torch_one         = torch.ones(batch,1,nx).type(dtype)
         #set coefficients
@@ -159,14 +160,8 @@ class cardan(torch.autograd.Function):
         -------
            grad_input_gamma_mu (torch.FloatTensor): gradient of the prox wrt gamma_m 
            grad_input_u (torch.FloatTensor): gradient of the prox wrt x
-           None: no gradient wrt the image range
-           None: no gradient wrt the mode
+           None: no gradient wrt the mode (training, testing)
         """
-        # Device CPU/GPU
-        if device == "cuda":
-            dtype = torch.cuda.FloatTensor
-        else :
-            dtype = torch.FloatTensor
         xmin           = 0
         xmax           = 1
         grad_output    = grad_output_var.data
@@ -199,4 +194,4 @@ class cardan(torch.autograd.Function):
         grad_input_gamma_mu = Variable(grad_input_gamma_mu.type(dtype),requires_grad=True)
         grad_input_u        = Variable(grad_input_u.type(dtype),requires_grad=True)
         
-        return grad_input_gamma_mu, grad_input_u, None, None
+        return grad_input_gamma_mu, grad_input_u, None

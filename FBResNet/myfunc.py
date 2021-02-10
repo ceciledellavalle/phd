@@ -118,10 +118,10 @@ class Physics:
         in the basis of finite element.
         Parameters
         ----------
-            x (np.array): signal of size nxcxnx
+            x (np.array): signal of size n x c x nl
         Returns
         -------
-            (np.array): of size nxcxnx
+            (np.array): of size n x c x nl
         """
         # Change basis from nx (finite element) to m (cos)
         x_cos = self.BasisChange(x)
@@ -134,10 +134,10 @@ class Physics:
         from the basis of finite element to eigenvectors.
         Parameters
         ----------
-            x (np.array): signal of size nxcxnx
+            x (np.array): signal of size n x c x nl
         Returns
         -------
-            (np.array): of size nxcxm
+            (np.array): of size n x c x m
         """
         # We use the property of adjoint in discrete Hilbert space
         # < phi_n,T* phi_m > = < T phi_n, phi_m > 

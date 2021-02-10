@@ -24,6 +24,7 @@ import os
 # Local import
 from FBResNet.myfunc import MyMatmul
 from FBResNet.proxop.hypercube import cardan
+from FBResNet.proxop.hyperslab import cardan_slab
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -42,7 +43,7 @@ class Block(torch.nn.Module):
         TtT  (MyConv1d): 1-D convolution operator corresponding to TtT
         mass (scalar):  maximal integral value
     """
-    def __init__(self,exp,noisy=False):
+    def __init__(self,exp,noisy=False,constr='cube'):
         """
         Parameters
         ----------
@@ -53,15 +54,17 @@ class Block(torch.nn.Module):
         self.eigmax   = exp.eigm[-1]
         self.nx       = exp.nx
         self.m        = exp.m
+        self.p        = exp.p
         # if m is big enough, we cut high frequencies that correspond to noise
         # else m is inferior to nx the projection in cos basis functions as a regularisation
         self.cond     = noisy
+        self.constr   = constr
         if self.cond: 
-            #self.cnn_reg = Cnn_reg(exp)
-            self.reg     = nn.Parameter(torch.FloatTensor([-3]))
+            self.cnn_reg = Cnn_reg(exp)
+            #self.reg     = nn.Parameter(torch.FloatTensor([-3]))
         else:
             self.reg  = nn.Parameter(torch.FloatTensor([0.0]),requires_grad=False)
-        self.gamma    = nn.Parameter(torch.FloatTensor([-7]))
+        self.gamma    = nn.Parameter(torch.FloatTensor([0.0]))
         self.cnn_mu   = Cnn_bar(self.nx)
         self.soft     = nn.Softplus()
         #
@@ -72,6 +75,7 @@ class Block(torch.nn.Module):
         self.Pelt     = MyMatmul(liste_op[3]) # cosToelt
         # save gamma and reg for Lipschitz computation
         self.gamma_reg = [0,0]
+        self.mu        = [0]
 
     def Grad(self,reg,x,x_b):
         """
@@ -107,20 +111,25 @@ class Block(torch.nn.Module):
         # Barrier parameter
         mu       = self.cnn_mu(self.Pelt(x))
         # Gradient descent parameter 
-        gamma    = self.soft(self.gamma)
+        gamma    = self.eigmax**(-2*self.p)*self.soft(self.gamma)
         # Regularisation parameter
         if self.cond: 
-            reg  = self.soft(self.reg)#self.cnn_reg(x_b)/self.eigmax**2
+            reg  = self.cnn_reg(x_b)
         else :
-            reg = self.reg
+            reg  = self.reg
         # save
         self.gamma_reg = [gamma.detach().numpy(),reg.detach().numpy()]
+        self.mu        = mu.detach().numpy()
         # compute x_tilde
         x_tilde = x - gamma*self.Grad(reg, x, x_b)
         # project in finite element basis
         x_tilde = self.Pelt(x_tilde)
-        # proximal operator
-        x_tilde = cardan.apply(gamma*mu,x_tilde,self.training)
+        if self.constr == 'cube':
+            # proximal operator
+            x_tilde = cardan.apply(gamma*mu,x_tilde,self.training)
+        if self.constr == 'slab':
+            # proximal operator
+            x_tilde = cardan_slab.apply(gamma*mu,x_tilde,self.training)
         # back to eigenvector cos basis
         x_tilde = self.Peig(x_tilde)
         return x_tilde 
@@ -135,15 +144,16 @@ class MyModel(torch.nn.Module):
         nL                            (int): number of layers
         param               (Physic object): contains the experimental parameters
     """
-    def __init__(self,exp,noisy=False,nL=20):
+    def __init__(self,exp,noisy=False,nL=20,constr='cube'):
         super(MyModel, self).__init__()
         self.Layers   = nn.ModuleList()
         self.nL       = nL
         self.noisy    = noisy
         self.param    = exp
+        self.constr   = constr
         #
         for _ in range(nL):
-            self.Layers.append(Block(self.param,self.noisy))
+            self.Layers.append(Block(self.param,self.noisy,constr))
         
     # Module Forward
     def forward(self,x,x_b):
@@ -170,9 +180,11 @@ class MyModel(torch.nn.Module):
         and the tensor used in the algorithm.
         Parameters
         ----------
-            model (MyModel): model of the neural network
-            opt      (str) : "semi" to consider the semi-norm on the output
+            opt1   (str) : "semi" to consider the semi-norm on the output
                              (or "total" to include the norm on the bias)
+            opt2   (str) : "entree11" if x_b =T*yd is fed for the input x0 
+                             and the bias xb
+                            (or "entree01" if x0 is random)
         Returns
         -------
             (float): Lifschitz constant theta of the neural network
@@ -258,11 +270,12 @@ class Cnn_reg(nn.Module):
         self.a    = nn.Parameter(torch.FloatTensor([exp.a]),requires_grad=False)
         self.p    = nn.Parameter(torch.FloatTensor([exp.p]),requires_grad=False)
         self.eig  = nn.Parameter(torch.FloatTensor(np.diag(exp.eigm)),requires_grad=False)
+        self.eigm = exp.eigm[-1]
         #
         self.soft = nn.Softplus()
         self.inv  = MyMatmul(self.eig**(2*self.a))
         #
-        self.lin1 = nn.Linear(1, 1)
+        self.lin1 = nn.Linear(1, 1, False)
         # numpy
         self.m    = exp.m
          
@@ -280,14 +293,17 @@ class Cnn_reg(nn.Module):
         x_out            = x_in.clone().detach() 
         x_out            = self.inv(x_out)
         x_fil            = x_out.clone().detach()
-        nflt             = 25
+        nflt             = self.m//2
         x_fil[:,:,nflt:] = torch.zeros((1,1,self.m-nflt))
         #
-        x                = torch.sum((x_out-x_fil)**2,2)# estimation de l' erreur
-        x                = x.view(x.size(0), -1)
-        x                = self.soft(self.lin1(x))
+        delta            = torch.sqrt(torch.sum((x_out-x_fil)**2,2))# estimation de l' erreur
+        delta            = delta.view(delta.size(0), -1)
+        rho              = torch.sqrt(torch.sum((x_fil)**2,2))# estimation de la norme
+        rho              = rho.view(rho.size(0), -1)
+        #
+        x                = (delta/rho)**(2*(self.a+self.p)/(self.a+2))
+        x                = 0.1*self.soft(self.lin1(x))
         x                = x.view(x.size(0),1,1)
-        x                = 0.1*x**(2*(self.a+self.p)/(self.a+2))
         return x
     
 # Cnn_bar: to compute the barrier parameter
