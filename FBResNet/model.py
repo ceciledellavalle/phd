@@ -15,6 +15,7 @@ Classes
 # General import
 from torch.autograd import Variable
 from torch.nn.modules.loss import _Loss
+import matplotlib.pyplot as plt
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
@@ -61,7 +62,6 @@ class Block(torch.nn.Module):
         self.constr   = constr
         if self.cond: 
             self.cnn_reg = Cnn_reg(exp)
-            #self.reg     = nn.Parameter(torch.FloatTensor([-3]))
         else:
             self.reg  = nn.Parameter(torch.FloatTensor([0.0]),requires_grad=False)
         self.gamma    = nn.Parameter(torch.FloatTensor([0.0]))
@@ -110,28 +110,28 @@ class Block(torch.nn.Module):
         # set parameters
         # Barrier parameter
         mu       = self.cnn_mu(self.Pelt(x))
-        # Gradient descent parameter 
-        gamma    = self.eigmax**(-2*self.p)*self.soft(self.gamma)
         # Regularisation parameter
         if self.cond: 
             reg  = self.cnn_reg(x_b)
         else :
             reg  = self.reg
-        # save
-        self.gamma_reg = [gamma.detach().numpy(),reg.detach().numpy()]
-        self.mu        = mu.detach().numpy()
+        # Gradient descent parameter 
+        gamma    = self.eigmax**(-2*self.p)/reg*self.soft(self.gamma)
         # compute x_tilde
         x_tilde = x - gamma*self.Grad(reg, x, x_b)
         # project in finite element basis
         x_tilde = self.Pelt(x_tilde)
+        # proximity operator
         if self.constr == 'cube':
-            # proximal operator
-            x_tilde = cardan.apply(gamma*mu,x_tilde,self.training)
+            x_tilde = cardan.apply(gamma*mu/10**6,x_tilde,self.training)
         if self.constr == 'slab':
-            # proximal operator
             x_tilde = cardan_slab.apply(gamma*mu,x_tilde,self.training)
         # back to eigenvector cos basis
         x_tilde = self.Peig(x_tilde)
+        #
+        # save
+        self.gamma_reg = [gamma.detach().numpy(),reg.detach().numpy()]
+        self.mu        = mu.detach().numpy()
         return x_tilde 
 
     
@@ -153,7 +153,7 @@ class MyModel(torch.nn.Module):
         self.constr   = constr
         #
         for _ in range(nL):
-            self.Layers.append(Block(self.param,self.noisy,constr))
+            self.Layers.append(Block(self.param,self.noisy,self.constr))
         
     # Module Forward
     def forward(self,x,x_b):
@@ -198,7 +198,6 @@ class MyModel(torch.nn.Module):
         eig_ip   = np.zeros((nL,m))
         eig_t_ip = np.zeros((nL,m))
         ai       = np.zeros(nL)
-        theta    = 1.0
         # Step 1 : vectors of eigenvals of T^*T and D^*D
         eig_T = 1/self.param.eigm**(2*self.param.a)
         eig_D = self.param.eigm**(2*self.param.p)
@@ -342,5 +341,4 @@ class Cnn_bar(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.soft(self.lin3(x))
         x = x.view(x.size(0),1,1)
-        x = x/10**6
         return x

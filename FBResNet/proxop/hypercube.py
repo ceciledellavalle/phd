@@ -120,7 +120,7 @@ class cardan(torch.autograd.Function):
         # the solution of the cubic equation is not very well estimated -> test xtilde
         #denom       = (sol-xmin)*(sol-xmax)-2*gamma_mu -(sol-xtilde)*(xmin+xmax-2*sol)
         xtilde_ok                 = (xtilde>xmin)&(xtilde<xmax)
-        crit_compare[~xtilde_ok] = np.inf
+        crit_compare[~xtilde_ok]  = np.inf
         crit_compare[xtilde_ok]   = -(torch.log(xmax-xtilde[xtilde_ok])+torch.log(xtilde[xtilde_ok]-xmin))
         crit_compare              = gamma_mu*crit_compare
         sol[crit_compare<crit]    = xtilde[crit_compare<crit]
@@ -151,7 +151,7 @@ class cardan(torch.autograd.Function):
         grad_output    = grad_output_var.data
         gamma_mu,u,x   = ctx.saved_tensors
         denom          = (x-xmin)*(x-xmax)-2*gamma_mu -(x-u)*(xmin+xmax-2*x)
-        
+        #
         idx                 = denom.abs()>1e-7
         denom[~idx]        = denom[~idx]+1
         grad_input_gamma_mu = (2*x-(xmin+xmax))/denom
@@ -162,7 +162,7 @@ class cardan(torch.autograd.Function):
         grad_input_gamma_mu[~idx] = 0*grad_input_gamma_mu[~idx]+1e5*torch.sign(2*x[~idx]-(xmin+xmax))
         grad_input_u[~idx]        = 0*grad_input_u[~idx]+1
         
-        grad_input_gamma_mu = (grad_input_gamma_mu*grad_output).sum(1).sum(1).unsqueeze(1).unsqueeze(2)
+        grad_input_gamma_mu = grad_input_gamma_mu*grad_output#.sum(1).sum(1).unsqueeze(1).unsqueeze(2)
         grad_input_u        = grad_input_u*grad_output
         
         # safety check for numerical instabilities

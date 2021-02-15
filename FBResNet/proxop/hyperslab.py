@@ -31,23 +31,25 @@ class cardan_slab(torch.autograd.Function):
         # else :
         dtype = torch.FloatTensor
         #initialize variables
-        batch,_,nx        = xtilde.size()
-        x1,x2,x3          = torch.zeros(batch,1,1).type(dtype),torch.zeros(batch,1,1).type(dtype),torch.zeros(batch,1,1).type(dtype)   
-        crit,crit_compare = torch.zeros(batch,1,nx).type(dtype),torch.zeros(batch,1,nx).type(dtype)
-        sol               = torch.zeros(batch,1,nx).type(dtype)
+        n,_,nx            = xtilde.size()
+        x1,x2,x3          = torch.zeros(n,1,1).type(dtype),torch.zeros(n,1,1).type(dtype),torch.zeros(n,1,1).type(dtype)   
+        crit,crit_compare = torch.zeros(n,1,1).type(dtype),torch.zeros(n,1,1).type(dtype)
+        sol               = torch.zeros(n,1,nx).type(dtype)
+        kappa             = torch.zeros(n,1,1).type(dtype)
         xmin              = 0
         xmax              = 1
-        u                 = torch.ones(batch,1,nx).type(dtype)
-        uTx               = torch.matmul(xtilde,u).view(batch,1,1)
-        torch_one         = torch.ones(batch,1,nx).type(dtype)
+        u                 = 1/nx**2*torch.linspace(1,nx,nx)
+        norm_u            = torch.norm(u)**2
+        uTx               = torch.matmul(xtilde,u).view(n,1,1)
+        torch_u           = u.view(1,1,-1)+torch.zeros(n,1,nx).type(dtype)#broadcast
+        torch_one         = torch.ones(n,1,1).type(dtype)
         #set coefficients
         a     = -(xmin+xmax+uTx)
-        b     = xmin*xmax + uTx*(xmin+xmax) - 2*gamma_mu*torch.norm(u)**2
-        c     = gamma_mu*(xmin+xmax) - uTx*xmin*xmax
+        b     = xmin*xmax + uTx*(xmin+xmax) - 2*gamma_mu*norm_u
+        c     = gamma_mu*(xmin+xmax)*norm_u - uTx*xmin*xmax
         p     = b - (a**2)/3
         q     = c - a*b/3 + 2*(a**3)/27
-        delta = (p/3)**3 + (q/2)**2  
-
+        delta = (p/3)**3 + (q/2)**2
         #three cases depending on the sign of delta
         #########################################################################
         #when delta is positive
@@ -89,66 +91,83 @@ class cardan_slab(torch.autograd.Function):
             x2[x2!=x2]=2*xmax
         if (x3!=x3).any():
             x3[x3!=x3]=2*xmax
-        sol  = xtilde + (x1 - uTx)/torch.norm(u)**2*u
+        #########################################################################
+        #
+        sol   = xtilde + (x1 - uTx)/norm_u*torch_u
+        kappa = x1
         #########################################################################
         #take x1
         p1         = sol
-        uTp1       = torch.matmul(p1,u).view(batch,1,1) + torch.zeros(batch,1,nx)
+        uTp1       = torch.matmul(p1,u).view(n,1,1)
         ind        = (uTp1>xmin)&(uTp1<xmax)
         crit[~ind] = np.inf
         crit[ind]  = -(torch.log(uTp1[ind]-xmin)+torch.log(xmax-uTp1[ind]))
-        crit       = 0.5*torch.norm(p1-xtilde)**2+gamma_mu*crit 
+        crit       = 0.5*torch.norm(p1-xtilde,dim=2).view(n,1,1)**2+gamma_mu*crit 
         #########################################################################
         #test x2
-        p2                  = xtilde + (x2 - uTx)/torch.norm(u)**2*u
-        uTp2                = torch.matmul(p2,u).view(batch,1,1) + torch.zeros(batch,1,nx) #broadcastind
+        p2                  = xtilde + (x2 - uTx)/norm_u*torch_u
+        uTp2                = torch.matmul(p2,u).view(n,1,1) 
         ind                 = (uTp2 >xmin)&(uTp2 <xmax)
         crit_compare[~ind]  = np.inf
         crit_compare[ind]   = -(torch.log(uTp2[ind]-xmin)+torch.log(xmax-uTp2[ind]))
-        crit_compare        = 0.5*torch.norm(p2-xtilde)**2+gamma_mu*crit_compare
+        crit_compare        = 0.5*torch.norm(p2-xtilde,dim=2).view(n,1,1)**2+gamma_mu*crit_compare
         # Select solution between p1 and p2
-        sol[crit_compare<=crit]  = p2[crit_compare<=crit]
+        ind                      = (crit_compare<=crit) + torch.zeros(n,1,nx)#broadcasting
+        ind                      = ind>0
+        sol[ind]                 = p2[ind]
+        kappa[crit_compare<=crit]= x2[crit_compare<=crit]
         crit[crit_compare<=crit] = crit_compare[crit_compare<=crit]
         #########################################################################
         #test x3
-        p3                  = xtilde + (x3 - uTx)/torch.norm(u)**2*u
-        uTp3                = torch.matmul(p3,u).view(batch,1,1) + torch.zeros(batch,1,nx) #broadcastind
+        p3                  = xtilde + (x3 - uTx)/norm_u*torch_u
+        uTp3                = torch.matmul(p3,u).view(n,1,1)
         ind                 = (uTp3>xmin)&(uTp3<xmax)
-        crit_compare[~ind] = np.inf
+        crit_compare[~ind]  = np.inf
         crit_compare[ind]   = -(torch.log(uTp3[ind]-xmin)+torch.log(xmax-uTp3[ind]))
-        crit_compare = 0.5*torch.norm(p3-xtilde)**2+gamma_mu*crit_compare
+        crit_compare = 0.5*torch.norm(p3-xtilde,dim=2).view(n,1,1)**2+gamma_mu*crit_compare
         # Select solution between p3 and (p2,p1)
-        sol[crit_compare<=crit]  = p3[crit_compare<=crit]
+        ind                 = (crit_compare<=crit)+ torch.zeros(n,1,nx)#broadcasting
+        ind                 = ind>0
+        sol[ind]            = p3[ind]
+        kappa[crit_compare<=crit]= x3[crit_compare<=crit]
         crit[crit_compare<=crit] = crit_compare[crit_compare<=crit]
         #########################################################################
         #test xmin+1e-10
-        uTx = uTx + torch.zeros(batch,1,nx) #broadcastind
-        crit_compare             = (0.5*(xmin+1e-10-uTx)**2)-gamma_mu*(
+        crit_compare             = 0.5*torch.norm(xtilde-xmin-1e-10,dim=2).view(n,1,1)**2-gamma_mu*(
             torch.log(1e-10*torch_one)+torch.log((xmax-xmin-1e-10)*torch_one))
-        sol[crit_compare<=crit]  = 0*sol[crit_compare<=crit]+(xmin+1e-10)
+        ind                      = (crit_compare<=crit)+ torch.zeros(n,1,nx)#broadcasting  
+        ind                      = ind>0  
+        sol[ind]                 = 0*sol[ind]+(xmin+1e-10)
+        kappa[crit_compare<=crit]= uTx
         crit[crit_compare<=crit] = crit_compare[crit_compare<=crit]
         #########################################################################
         #test xmax-1e-10
-        crit_compare             = (0.5*(xmax-1e-10-uTx)**2)-gamma_mu*(
+        crit_compare             = 0.5*torch.norm(xtilde-xmax+1e-10,dim=2).view(n,1,1)**2-gamma_mu*(
             torch.log(1e-10*torch_one)+torch.log((xmax-xmin-1e-10)*torch_one))
-        sol[crit_compare<=crit]  = 0*sol[crit_compare<=crit]+(xmax-1e-10)
+        ind                      = (crit_compare<=crit)+ torch.zeros(n,1,nx)#broadcasting
+        ind                      = ind>0
+        sol[ind]                 = 0*sol[ind]+(xmax-1e-10)
+        kappa[crit_compare<=crit]= uTx[crit_compare<=crit]
         crit[crit_compare<=crit] = crit_compare[crit_compare<=crit]
         #########################################################################
-        # when gamma_mu is very small and xtilde is very close to one of the bounds,
+        # when gamma_mu is very small and uTx is very close to one of the bounds,
         # the solution of the cubic equation is not very well estimated -> test xtilde
         #denom       = (sol-xmin)*(sol-xmax)-2*gamma_mu -(sol-xtilde)*(xmin+xmax-2*sol)
-        xtilde_ok                 = (xtilde>xmin)&(xtilde<xmax)
-        crit_compare[~xtilde_ok] = np.inf
-        crit_compare[xtilde_ok]   = -(torch.log(xmax-xtilde[xtilde_ok])+torch.log(xtilde[xtilde_ok]-xmin))
-        crit_compare              = gamma_mu*crit_compare
-        sol[crit_compare<crit]    = xtilde[crit_compare<crit]
+        uTx_ok                 = (uTx>xmin)&(uTx<xmax)
+        crit_compare[~uTx_ok]  = np.inf
+        crit_compare[uTx_ok]   = -(torch.log(xmax-uTx[uTx_ok])+torch.log(uTx[uTx_ok]-xmin))
+        crit_compare           = gamma_mu*crit_compare
+        ind                    = (crit_compare<crit)+ torch.zeros(n,1,nx)#broadcasting
+        ind                    = ind>0
+        sol[ind]               = xtilde[ind]
+        kappa[crit_compare<=crit]= uTx[crit_compare<=crit]
         
         if mode_training==True:
-            ctx.save_for_backward(gamma_mu,xtilde,sol)
+            ctx.save_for_backward(gamma_mu,kappa,uTx,sol)
         return sol
 
     @staticmethod
-    def backward(ctx, grad_output_var, device="cpu"):
+    def backward(ctx, grad_output_var):
         """
         Computes the first derivatives of the proximity operator of the log barrier with respect to x and gamma_mu.
             This method is automatically called by the backward method of the loss function.
@@ -162,23 +181,34 @@ class cardan_slab(torch.autograd.Function):
            grad_input_u (torch.FloatTensor): gradient of the prox wrt x
            None: no gradient wrt the mode (training, testing)
         """
-        xmin           = 0
-        xmax           = 1
-        grad_output    = grad_output_var.data
-        gamma_mu,u,x   = ctx.saved_tensors
-        denom          = (x-xmin)*(x-xmax)-2*gamma_mu -(x-u)*(xmin+xmax-2*x)
-        
-        idx                 = denom.abs()>1e-7
-        denom[~idx]        = denom[~idx]+1
-        grad_input_gamma_mu = (2*x-(xmin+xmax))/denom
-        grad_input_u        = ((x**2-x*(xmin+xmax)+xmin*xmax))/denom
+        xmin                 = 0
+        xmax                 = 1
+        grad_output          = grad_output_var.data
+        gamma_mu,kappa,uTx,x = ctx.saved_tensors
+        n                    = kappa.size()[0]
+        nx                   = grad_output.size()[2]
+        u                    = 1/nx**2*torch.linspace(1,nx,nx)
+        norm_u               = torch.norm(u)**2
+        torch_u              = u.view(1,1,-1)+torch.zeros(n,1,nx)#broadcast
+        denom                = (xmin-kappa)*(xmax-kappa)\
+                              -(kappa-uTx)*(xmin+xmax-2*kappa)\
+                              -2*gamma_mu*norm_u 
+        #
+        idx                  = (denom.abs()>1e-7)
+        ind                  = (denom.abs()>1e-7)+ torch.zeros(n,1,nx)#broadcasting
+        ind                  = ind>0
+        denom[~idx]          = denom[~idx]+1
+        grad_input_gamma_mu  = (2*kappa-(xmin+xmax))/denom*torch_u
+        coeff                = (xmax-kappa)*(xmin-kappa)/denom - 1
+        grad_input_u         = torch.eye(nx) \
+                               +coeff*torch.matmul(torch_u.view(1,1,-1,1),u.view(1,-1))/norm_u
         # if denom is very small, it means that gamma_mu is very small and u is very close to one of the bounds,
         # there is a discontinuity when gamma_mu tends to zero, if 0<u<1 the derivative wrt x is approximately equal to 
-        # 1 and the derivative wrt gamma_mu is approximated by 10^5 times the sign of 2*x[1-idx]-(xmin+xmax)
-        grad_input_gamma_mu[~idx] = 0*grad_input_gamma_mu[~idx]+1e5*torch.sign(2*x[~idx]-(xmin+xmax))
-        grad_input_u[~idx]        = 0*grad_input_u[~idx]+1
+        # 1 and the derivative wrt gamma_mu is approximated by 10^3 times the error 2kappa-xmin-xmax
+        grad_input_gamma_mu[~ind] = 0*grad_input_gamma_mu[~ind]+1e3*(2*kappa[~idx]-(xmin+xmax))
+        grad_input_u[~ind]        = 0*grad_input_u[~ind]+1
         
-        grad_input_gamma_mu = (grad_input_gamma_mu*grad_output).sum(1).sum(1).sum(1).unsqueeze(1).unsqueeze(2).unsqueeze(3)
+        grad_input_gamma_mu = grad_input_gamma_mu*grad_output#.sum(1).sum(1).unsqueeze(1).unsqueeze(2)
         grad_input_u        = grad_input_u*grad_output
         
         # safety check for numerical instabilities
@@ -191,7 +221,7 @@ class cardan_slab(torch.autograd.Function):
             print('there is a nan in grad_input_u')
             sys.exit()
         
-        grad_input_gamma_mu = Variable(grad_input_gamma_mu.type(dtype),requires_grad=True)
-        grad_input_u        = Variable(grad_input_u.type(dtype),requires_grad=True)
+        grad_input_gamma_mu = Variable(grad_input_gamma_mu,requires_grad=True)
+        grad_input_u        = Variable(grad_input_u,requires_grad=True)
         
         return grad_input_gamma_mu, grad_input_u, None

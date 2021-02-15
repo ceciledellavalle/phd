@@ -94,9 +94,12 @@ class FBRestNet(nn.Module):
         # Recuperation des donnees
         nx             = self.physics.nx
         m              = self.physics.m
+        a              = self.physics.a
         noise          = self.noise
         nsample        = self.nsamples
         im_set         = self.im_set
+        Teig           = np.diag(self.physics.eigm**(-2*a))
+        Pelt           = self.physics.Operators()[3]
         # Initialisation
         color          = ('b','g','r')
         #
@@ -139,29 +142,35 @@ class FBRestNet(nn.Module):
                     x_true[x_true<0] = 0
                     if self.constr == 'cube':
                         x_true = x_true/np.amax(x_true)
-                        yp     = filtre.BasisChange(x_true)
                     if self.constr == 'slab':
-                        x_true = np.sqrt(nx)*x_true/np.linalg.norm(x_true)
-                        yp     = filtre.BasisChange(x_true)
+                        u      = 1/nx**2*np.linspace(1,nx,nx)
+                        x_true = 0.5*x_true/np.dot(u,x_true)
                     # reshaping in channelxm
                     x_true  = x_true.reshape(1,-1)
                     # save
                     save_lisse.append(x_true.squeeze())
                     # Etape 2 : passage dans la base de T^*T
+                    yp     = self.physics.BasisChange(x_true)
                     x_true_trsf = yp.reshape(1,-1)
                     # save
                     liste_l_trsf.append(x_true_trsf)
                     save_l_trsf.append( x_true_trsf.squeeze())
                     #  Etape 3 : obtenir les images bruitees par l' operateur d' ordre a
                     # transform
-                    x_blurred  = self.physics.Compute(x_true) 
-                    # Etape 4 : Bruitage 
-                    noise = 0.01*np.random.randn(nx)
-                    x_b   = self.physics.ComputeAdjoint(x_blurred+noise)
-                    x_b   = x_b.reshape(1,-1)
+                    x_blurred  = self.physics.Compute(x_true).squeeze()
                     # save
-                    save_blurred.append(x_blurred.squeeze())
-                    save_blurred_n.append(x_blurred_n.squeeze())
+                    save_blurred.append(x_blurred)
+                    # Etape 4 : noise 
+                    vn          = np.zeros(m)
+                    vn[fmax//2:]= np.random.randn(m-fmax//2)
+                    vn          = self.noise*np.linalg.norm(yp)*vn/np.linalg.norm(vn)
+                    x_blurred_n = x_blurred + Pelt.dot(vn)
+                    # save
+                    save_blurred_n.append(x_blurred_n)
+                    # Etape 5 : bias
+                    x_b  = self.physics.ComputeAdjoint(x_blurred.reshape(1,-1))
+                    x_b += (Teig.dot(vn)).reshape(1,-1) # noise
+                    x_b  = x_b.reshape(1,-1)
                     # and save
                     liste_tT_trsf.append(x_b)
                     save_tT_trsf.append(x_b.squeeze())
@@ -169,7 +178,7 @@ class FBRestNet(nn.Module):
         if save =='yes':
             seq = 'a{}_'.format(self.physics.a) + self.constr
             np.savetxt(self.path+'Datasets/Signals/data_l_'+seq+'.csv',      save_lisse,   delimiter=', ', fmt='%12.8f')
-            np.savetxt(self.path+'Datasets/Signals/data_l_trsf'+seq+'.csv', save_l_trsf,  delimiter=', ', fmt='%12.8f')
+            np.savetxt(self.path+'Datasets/Signals/data_l_trsf_'+seq+'.csv', save_l_trsf,  delimiter=', ', fmt='%12.8f')
             np.savetxt(self.path+'Datasets/Signals/data_b_'+seq+'.csv',    save_blurred, delimiter=', ', fmt='%12.8f')
             np.savetxt(self.path+'Datasets/Signals/data_bn_'+seq+'.csv',  save_blurred_n, delimiter=', ', fmt='%12.8f')
             np.savetxt(self.path+'Datasets/Signals/data_tTb_'+seq+'.csv',  save_tT_trsf, delimiter=', ', fmt='%12.8f')
@@ -247,7 +256,7 @@ class FBRestNet(nn.Module):
                 x_init   = torch.zeros(x_bias.size())
                 inv      = np.diag(self.physics.eigm**(2*self.physics.a))
                 tTTinv   = MyMatmul(inv)
-                x_init[:,:,:25] = tTTinv(y)[:,:,:25] # filtration of high frequences
+                x_init[:,:,:50] = tTTinv(y)[:,:,:50] # filtration of high frequences
                 x_init   = Variable(x_init,requires_grad=False)
                 # prediction
                 x_pred    = self.model(x_init,x_bias) 
@@ -276,7 +285,7 @@ class FBRestNet(nn.Module):
                         x_init   = torch.zeros(x_bias.size())
                         inv      = np.diag(self.physics.eigm**(2*self.physics.a))
                         tTTinv   = MyMatmul(inv)
-                        x_init[:,:,:30] = tTTinv(y)[:,:,:30] # filtration of high frequences
+                        x_init[:,:,:50] = tTTinv(y)[:,:,:50] # filtration of high frequences
                         x_init   = Variable(x_init,requires_grad=False)
                         # prediction
                         x_pred  = self.model(x_init,x_bias).detach()
@@ -341,7 +350,7 @@ class FBRestNet(nn.Module):
                 x_init   = torch.zeros(x_bias.size())
                 inv      = np.diag(self.physics.eigm**(2*self.physics.a))
                 tTTinv   = MyMatmul(inv)
-                x_init[:,:,:30] = tTTinv(y)[:,:,:30] # filtration of high frequences
+                x_init[:,:,:] = tTTinv(y)[:,:,:] # filtration of high frequences
                 x_init   = Variable(x_init,requires_grad=False)
                 # prediction
                 x_pred    = self.model(x_init,x_bias)
@@ -361,11 +370,11 @@ class FBRestNet(nn.Module):
         xp  = self.physics.BasisChangeInv(xpc)
         xi  = self.physics.BasisChangeInv(xic)
         fig, (ax1, ax2) = plt.subplots(1, 2)
-        ax1.plot(xtc,label = 'true')
+        ax1.plot(xtc,'+',label = 'true')
         ax1.plot(xpc,label = 'pred')
         ax1.plot(xic,label = 'init')
         ax1.legend()
-        ax2.plot(np.linspace(0,1,self.physics.nx),xt,label = 'true')
+        ax2.plot(np.linspace(0,1,self.physics.nx),xt,'+',label = 'true')
         ax2.plot(np.linspace(0,1,self.physics.nx),xp,label = 'pred')
         ax2.plot(np.linspace(0,1,self.physics.nx),xi,label = 'init')
         ax2.set_title("Comparaison")
@@ -377,41 +386,51 @@ class FBRestNet(nn.Module):
         return l_x_init, l_x_true, l_x_pred
 #========================================================================================================
 #======================================================================================================== 
-    def test_gauss(self):
+    def test_gauss(self, noise = 0.01):
         # Gaussienne 
         nx    = self.physics.nx
         m     = self.physics.m
+        fmax  = m//2
         t     = np.linspace(0,1,nx)
         gauss = np.exp(-(t-0.5)**2/(0.1)**(2))
         if self.constr == 'cube':
             gauss = gauss/np.amax(gauss)
         if self.constr == 'slab':
-            gauss = np.sqrt(nx)*gauss/np.linalg.norm(gauss)
+            u      = 1/nx**2*np.linspace(1,nx,nx)
+            gauss = 0.5*gauss/np.dot(u,gauss)
         # export
-        Export_Data(t,gauss,'./Redaction/data','gauss')
-        #
-        noise = 0.01*np.random.randn(nx)
-        x_b   = self.physics.ComputeAdjoint(self.physics.Compute(gauss)+noise)
+        Export_Data(t,gauss,'./Redaction/data','gauss_'+self.constr)
+        # obtenir les images bruitees par l' operateur d' ordre a
+        # transform
+        x_blurred  = self.physics.Compute(gauss).squeeze()
+        yp         = self.physics.BasisChange(x_blurred)
+        # Etape 4 : noise 
+        vn          = np.zeros(m)
+        vn[fmax//2:]= np.random.randn(m-fmax//2)
+        vn          = noise*np.linalg.norm(yp)*vn/np.linalg.norm(vn)
+        x_blurred_n = x_blurred + self.physics.BasisChangeInv(vn)
+        # plot
+        plt.plot(x_blurred)
+        plt.plot(x_blurred_n)
+        plt.show()
+        # Etape 5 : bias
+        x_b  = self.physics.ComputeAdjoint(x_blurred_n)
         # passage float tensor
         x_bias    = Variable(torch.FloatTensor(x_b.reshape(1,1,-1)),requires_grad=False)
         # definition of the initialisation tensor
         x_init   = torch.zeros(x_bias.shape)
         tTTinv   = MyMatmul(np.diag(self.physics.eigm**(2*self.physics.a)))
-        print(x_init.shape)
-        print(x_bias.shape)
-        print(tTTinv(x_bias).shape)
         x_init[:,:,:30] = tTTinv(x_bias)[:,:,:30] # filtration of high frequences
         x_init   = Variable(x_init.reshape(1,1,-1),requires_grad=False)
         # prediction
         x_pred   = self.model(x_init,x_bias)
         xpc      = x_pred.detach().numpy()[0,0,:]
         xp       = self.physics.BasisChangeInv(xpc)
-        print(t.shape)
+        xp[xp<0] = 0
         # export
         Export_Data(t,xp,'./Redaction/data','gauss_pred_a{}_'.format(self.physics.a)+self.constr)
         # plot
         plt.plot(t,gauss)
         plt.plot(t,xp)
-        #
-        print("x/xb =",np.linalg.norm(x_b)/(1/np.sqrt(nx)*np.linalg.norm(gauss)))
+        # print("x/xb =",np.linalg.norm(x_b)/(1/np.sqrt(nx)*np.linalg.norm(gauss)))
         
