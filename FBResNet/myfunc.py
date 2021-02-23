@@ -52,7 +52,7 @@ class Physics:
         v2         = (np.ones(self.nx)/2*h).reshape(1,-1)
         base       = 2*np.sqrt(2)/eig_m*np.cos(v1*eig_m)*np.sin(v2*eig_m)
         self.basis = base
-        # Operator T
+        # # Operator T
         # step 0 : Abel operator integral
         # the image of the cos(t) basis is projected in a sin(t) basis
         Tdiag      = np.diag(1/self.eigm**self.a)
@@ -123,12 +123,12 @@ class Physics:
         -------
             (np.array): of size n x c x nl
         """
-        # Change basis from nx (finite element) to m (cos)
-        x_cos = self.BasisChange(x)
-        # Return Tx in finite element basis
-        return np.matmul(x_cos,self.Top.T*self.nx)
+        # Change to eig basis
+        xeig = self.BasisChange(x)
+        # Operator T : Abel operator integral
+        return np.matmul(xeig,self.Top.T)
     
-    def ComputeAdjoint(self,x):
+    def ComputeAdjoint(self,y):
         """
         Compute the transformation by the adjoint operator of Abel integral
         from the basis of finite element to eigenvectors.
@@ -139,9 +139,9 @@ class Physics:
         -------
             (np.array): of size n x c x m
         """
-        # We use the property of adjoint in discrete Hilbert space
-        # < phi_n,T* phi_m > = < T phi_n, phi_m > 
-        return np.matmul(x,self.Top)
+        # T*= tT
+        # < en , T^* phi_m > = < T en , phi_m > 
+        return np.matmul(y,self.nx*self.Top)
 
 #
 class MyMatmul(nn.Module):

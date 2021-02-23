@@ -70,8 +70,8 @@ class FBRestNet(nn.Module):
         """
         Load the parameters of a trained model (in Trainings)
         """
-        path_model = self.path + 'Trainings/param{}_{}_{}_{}.pt'.format(\
-            self.physics.nx,self.physics.m,self.physics.a,self.physics.p)
+        path_model = self.path + 'Trainings/param{}_{}_{}_{}_n{}.pt'.format(\
+            self.physics.nx,self.physics.m,self.physics.a,self.physics.p,self.noise)
         self.model.load_state_dict(torch.load(path_model))
 #========================================================================================================
 #========================================================================================================    
@@ -134,10 +134,9 @@ class FBRestNet(nn.Module):
                     yp[yp<0]      = 0
                     yp            = yp/np.amax(yp)
                     # filtering high frequencies
-                    fmax          = m//2
+                    fmax          = 4*m//5
                     filtre        = Physics(nx,fmax)
                     yp            = filtre.BasisChange(yp)
-                    # 
                     x_true        = filtre.BasisChangeInv(yp)
                     x_true[x_true<0] = 0
                     if self.constr == 'cube':
@@ -162,7 +161,7 @@ class FBRestNet(nn.Module):
                     save_blurred.append(x_blurred)
                     # Etape 4 : noise 
                     vn          = np.zeros(m)
-                    vn[fmax//2:]= np.random.randn(m-fmax//2)
+                    vn[fmax:]   = np.random.randn(m-fmax)
                     vn          = self.noise*np.linalg.norm(yp)*vn/np.linalg.norm(vn)
                     x_blurred_n = x_blurred + Pelt.dot(vn)
                     # save
@@ -256,13 +255,14 @@ class FBRestNet(nn.Module):
                 x_init   = torch.zeros(x_bias.size())
                 inv      = np.diag(self.physics.eigm**(2*self.physics.a))
                 tTTinv   = MyMatmul(inv)
-                x_init[:,:,:50] = tTTinv(y)[:,:,:50] # filtration of high frequences
+                x_init = tTTinv(y) # no filtration of high frequences
                 x_init   = Variable(x_init,requires_grad=False)
                 # prediction
                 x_pred    = self.model(x_init,x_bias) 
                 # Computes and prints loss
                 loss               = self.loss_fn(x_pred, x_true)
-                loss_train[epoch] += torch.Tensor.item(loss)
+                norm               = torch.norm(x_true.detach())
+                loss_train[epoch] += torch.Tensor.item(loss/norm)
                     
                 # sets the gradients to zero, performs a backward pass, and updates the weights.
                 optimizer.zero_grad()
@@ -285,12 +285,14 @@ class FBRestNet(nn.Module):
                         x_init   = torch.zeros(x_bias.size())
                         inv      = np.diag(self.physics.eigm**(2*self.physics.a))
                         tTTinv   = MyMatmul(inv)
-                        x_init[:,:,:50] = tTTinv(y)[:,:,:50] # filtration of high frequences
+                        x_init   = tTTinv(y) # no filtration of high frequences
                         x_init   = Variable(x_init,requires_grad=False)
                         # prediction
                         x_pred  = self.model(x_init,x_bias).detach()
                         # computes loss on validation set
-                        loss_val[epoch//self.freq_val] += torch.Tensor.item(self.loss_fn(x_pred, x_true))
+                        norm    = torch.norm(x_true.detach())
+                        loss    = self.loss_fn(x_pred, x_true)
+                        loss_val[epoch//self.freq_val] += torch.Tensor.item(loss/norm)
                     # normalisation
                     loss_val[epoch//self.freq_val] = loss_val[epoch//self.freq_val]/i
                 # print stat
@@ -323,8 +325,8 @@ class FBRestNet(nn.Module):
                     self.physics.nx,self.physics.m,self.physics.a,self.physics.p))
         # Save model
         if save_model:
-            torch.save(self.model.state_dict(), self.path+'Trainings/param{}_{}_{}_{}.pt'.format(\
-            self.physics.nx,self.physics.m,self.physics.a,self.physics.p))
+            torch.save(self.model.state_dict(), self.path+'Trainings/param{}_{}_{}_{}_n{}.pt'.format(\
+            self.physics.nx,self.physics.m,self.physics.a,self.physics.p,self.noise))
 #========================================================================================================
 #========================================================================================================    
     def test(self,data_set):    
@@ -350,7 +352,7 @@ class FBRestNet(nn.Module):
                 x_init   = torch.zeros(x_bias.size())
                 inv      = np.diag(self.physics.eigm**(2*self.physics.a))
                 tTTinv   = MyMatmul(inv)
-                x_init[:,:,:] = tTTinv(y)[:,:,:] # filtration of high frequences
+                x_init = tTTinv(y) # no filtration of high frequences
                 x_init   = Variable(x_init,requires_grad=False)
                 # prediction
                 x_pred    = self.model(x_init,x_bias)
@@ -386,13 +388,19 @@ class FBRestNet(nn.Module):
         return l_x_init, l_x_true, l_x_pred
 #========================================================================================================
 #======================================================================================================== 
-    def test_gauss(self, noise = 0.01):
+    def test_gauss(self, noise = 0.05):
         # Gaussienne 
         nx    = self.physics.nx
         m     = self.physics.m
-        fmax  = m//2
         t     = np.linspace(0,1,nx)
         gauss = np.exp(-(t-0.5)**2/(0.1)**(2))
+        # filtering high frequencies
+        fmax          = 4*m//5
+        filtre        = Physics(nx,fmax)
+        gauss         = filtre.BasisChange(gauss)
+        gauss         = filtre.BasisChangeInv(gauss)
+        gauss[gauss<0] = 0
+        #
         if self.constr == 'cube':
             gauss = gauss/np.amax(gauss)
         if self.constr == 'slab':
@@ -406,7 +414,7 @@ class FBRestNet(nn.Module):
         yp         = self.physics.BasisChange(x_blurred)
         # Etape 4 : noise 
         vn          = np.zeros(m)
-        vn[fmax//2:]= np.random.randn(m-fmax//2)
+        vn[fmax:]= np.random.randn(m-fmax)
         vn          = noise*np.linalg.norm(yp)*vn/np.linalg.norm(vn)
         x_blurred_n = x_blurred + self.physics.BasisChangeInv(vn)
         # plot
@@ -418,19 +426,23 @@ class FBRestNet(nn.Module):
         # passage float tensor
         x_bias    = Variable(torch.FloatTensor(x_b.reshape(1,1,-1)),requires_grad=False)
         # definition of the initialisation tensor
-        x_init   = torch.zeros(x_bias.shape)
-        tTTinv   = MyMatmul(np.diag(self.physics.eigm**(2*self.physics.a)))
-        x_init[:,:,:30] = tTTinv(x_bias)[:,:,:30] # filtration of high frequences
-        x_init   = Variable(x_init.reshape(1,1,-1),requires_grad=False)
-        # prediction
-        x_pred   = self.model(x_init,x_bias)
-        xpc      = x_pred.detach().numpy()[0,0,:]
-        xp       = self.physics.BasisChangeInv(xpc)
-        xp[xp<0] = 0
+        with torch.no_grad():
+        # tests on validation set
+            self.model.eval()
+            x_init   = torch.zeros(x_bias.shape)
+            tTTinv   = MyMatmul(np.diag(self.physics.eigm**(2*self.physics.a)))
+            x_init   = tTTinv(x_bias) # no filtration of high frequences
+            x_init   = Variable(x_init.reshape(1,1,-1),requires_grad=False)
+            # prediction
+            x_pred   = self.model(x_init,x_bias)
+            xpc      = x_pred.detach().numpy()[0,0,:]
+            xp       = self.physics.BasisChangeInv(xpc)
+            xp[xp<0] = 0
         # export
-        Export_Data(t,xp,'./Redaction/data','gauss_pred_a{}_'.format(self.physics.a)+self.constr)
+        Export_Data(t,xp,'./Redaction/data','gauss_pred_a{}_{}_'.format(\
+                    self.physics.a,np.around(noise*100,0))+self.constr)
         # plot
         plt.plot(t,gauss)
         plt.plot(t,xp)
-        # print("x/xb =",np.linalg.norm(x_b)/(1/np.sqrt(nx)*np.linalg.norm(gauss)))
+        print("x-xp/x =",np.linalg.norm(xp-gauss)/np.linalg.norm(gauss))
         
