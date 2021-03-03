@@ -149,7 +149,7 @@ class FBRestNet(nn.Module):
                     # save
                     save_lisse.append(x_true.squeeze())
                     # Etape 2 : passage dans la base de T^*T
-                    yp     = self.physics.BasisChange(x_true)
+                    yp          = self.physics.BasisChange(x_true)
                     x_true_trsf = yp.reshape(1,-1)
                     # save
                     liste_l_trsf.append(x_true_trsf)
@@ -162,8 +162,9 @@ class FBRestNet(nn.Module):
                     # Etape 4 : noise 
                     vn          = np.zeros(m)
                     vn[fmax:]   = np.random.randn(m-fmax)
-                    vn          = self.noise*np.linalg.norm(yp)*vn/np.linalg.norm(vn)
-                    x_blurred_n = x_blurred + Pelt.dot(vn)
+                    vn_elt      = self.physics.BasisChangeInv(vn)
+                    vn_elt      = vn_elt/np.linalg.norm(vn_elt)
+                    x_blurred_n = x_blurred + self.noise*np.linalg.norm(x_blurred)*vn_elt
                     # save
                     save_blurred_n.append(x_blurred_n)
                     # Etape 5 : bias
@@ -439,8 +440,8 @@ class FBRestNet(nn.Module):
             xp       = self.physics.BasisChangeInv(xpc)
             xp[xp<0] = 0
         # export
-        Export_Data(t,xp,'./Redaction/data','gauss_pred_a{}_{}_'.format(\
-                    self.physics.a,np.around(noise*100,0))+self.constr)
+        Export_Data(t,xp,'./Redaction/data','gauss_pred_a{}_'.format(\
+                    self.physics.a+self.constr)
         # plot
         plt.plot(t,gauss)
         plt.plot(t,xp)

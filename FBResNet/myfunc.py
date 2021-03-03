@@ -126,7 +126,7 @@ class Physics:
         # Change to eig basis
         xeig = self.BasisChange(x)
         # Operator T : Abel operator integral
-        return np.matmul(xeig,self.Top.T)
+        return np.matmul(xeig,self.nx*self.Top.T)
     
     def ComputeAdjoint(self,y):
         """
@@ -141,7 +141,7 @@ class Physics:
         """
         # T*= tT
         # < en , T^* phi_m > = < T en , phi_m > 
-        return np.matmul(y,self.nx*self.Top)
+        return np.matmul(y,self.Top)
 
 #
 class MyMatmul(nn.Module):
