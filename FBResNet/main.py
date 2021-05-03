@@ -70,9 +70,10 @@ class FBRestNet(nn.Module):
         """
         Load the parameters of a trained model (in Trainings)
         """
-        path_model = self.path + 'Trainings/param{}_{}_{}_{}_n{}.pt'.format(\
-            self.physics.nx,self.physics.m,self.physics.a,self.physics.p,self.noise)
-        self.model.load_state_dict(torch.load(path_model))
+        path_model = self.path+'Trainings/param_{}_{}_'.format(\
+                    self.physics.a,self.physics.p)+self.constr+'.pt'
+        self.model.load_state_dict(torch.load(path_model));
+        self.model.eval() # be sure to run this step!
 #========================================================================================================
 #========================================================================================================    
     def CreateDataSet(self,save='yes'):
@@ -140,7 +141,7 @@ class FBRestNet(nn.Module):
                     x_true        = filtre.BasisChangeInv(yp)
                     x_true[x_true<0] = 0
                     if self.constr == 'cube':
-                        x_true = x_true/np.amax(x_true)
+                        x_true = 0.9*x_true/np.amax(x_true)
                     if self.constr == 'slab':
                         u      = 1/nx**2*np.linspace(1,nx,nx)
                         x_true = 0.5*x_true/np.dot(u,x_true)
@@ -176,15 +177,20 @@ class FBRestNet(nn.Module):
                     save_tT_trsf.append(x_b.squeeze())
         # Export data in .csv
         if save =='yes':
-            seq = 'a{}_'.format(self.physics.a) + self.constr
+            seq = 'a{}_'.format(self.physics.a) + self.constr 
+            # initial signal, no noise, elt basis
             np.savetxt(self.path+'Datasets/Signals/data_l_'+seq+'.csv',      save_lisse,   delimiter=', ', fmt='%12.8f')
+            # initial signal, no noise, eig basis
             np.savetxt(self.path+'Datasets/Signals/data_l_trsf_'+seq+'.csv', save_l_trsf,  delimiter=', ', fmt='%12.8f')
+            # blurred signal, no noise, elt basis
             np.savetxt(self.path+'Datasets/Signals/data_b_'+seq+'.csv',    save_blurred, delimiter=', ', fmt='%12.8f')
-            np.savetxt(self.path+'Datasets/Signals/data_bn_'+seq+'.csv',  save_blurred_n, delimiter=', ', fmt='%12.8f')
-            np.savetxt(self.path+'Datasets/Signals/data_tTb_'+seq+'.csv',  save_tT_trsf, delimiter=', ', fmt='%12.8f')
+            # blurred signal, noisy, elt basis
+            np.savetxt(self.path+'Datasets/Signals/data_bn_'+seq+'_n{}'.format(noise)+'.csv',  save_blurred_n, delimiter=', ', fmt='%12.8f')
+            # Transposed blurred signal, noisy, eig basis
+            np.savetxt(self.path+'Datasets/Signals/data_tTb_'+seq+'_n{}'.format(noise)+'.csv',  save_tT_trsf, delimiter=', ', fmt='%12.8f')
         # Tensor completion
-        x_tensor = torch.FloatTensor(liste_l_trsf) # signal in cos basis
-        y_tensor = torch.FloatTensor(liste_tT_trsf)# blurred and noisy signal in element basis
+        x_tensor = torch.FloatTensor(liste_l_trsf) # signal in cos/eig basis
+        y_tensor = torch.FloatTensor(liste_tT_trsf)# blurred and noisy signal in elt basis
         #
         dataset = TensorDataset(y_tensor[:nsample], x_tensor[:nsample])
         l       = len(dataset)
@@ -207,7 +213,7 @@ class FBRestNet(nn.Module):
         #
         seq = 'a{}_'.format(self.physics.a) + self.constr
         dfl     = pd.read_csv(self.path+'Datasets/Signals/data_l_trsf'+seq+'.csv', sep=',',header=None)
-        dfb    = pd.read_csv(folder+'Datasets/Signals/data_tTb_'+seq+'.csv', sep=',',header=None)
+        dfb    = pd.read_csv(folder+'Datasets/Signals/data_tTb_'+seq+'_n{}'.format(noise)+'.csv', sep=',',header=None)
         _,m     = dfl.shape
         _,nx    = dfb.shape
         #
@@ -249,14 +255,14 @@ class FBRestNet(nn.Module):
             # TRAINING
             # goes through all minibatches
             for i,minibatch in enumerate(train_set):
-                [y, x] = minibatch    # get the minibatch
+                [y, x]    = minibatch    # get the minibatch
                 x_bias    = Variable(y,requires_grad=False)
                 x_true    = Variable(x,requires_grad=False) 
                 # definition of the initialisation tensor
                 x_init   = torch.zeros(x_bias.size())
                 inv      = np.diag(self.physics.eigm**(2*self.physics.a))
                 tTTinv   = MyMatmul(inv)
-                x_init = tTTinv(y) # no filtration of high frequences
+                x_init   = tTTinv(y) # no filtration of high frequences
                 x_init   = Variable(x_init,requires_grad=False)
                 # prediction
                 x_pred    = self.model(x_init,x_bias) 
@@ -264,7 +270,7 @@ class FBRestNet(nn.Module):
                 loss               = self.loss_fn(x_pred, x_true)
                 norm               = torch.norm(x_true.detach())
                 loss_train[epoch] += torch.Tensor.item(loss/norm)
-                    
+                # 
                 # sets the gradients to zero, performs a backward pass, and updates the weights.
                 optimizer.zero_grad()
                 loss.backward()
@@ -326,8 +332,8 @@ class FBRestNet(nn.Module):
                     self.physics.nx,self.physics.m,self.physics.a,self.physics.p))
         # Save model
         if save_model:
-            torch.save(self.model.state_dict(), self.path+'Trainings/param{}_{}_{}_{}_n{}.pt'.format(\
-            self.physics.nx,self.physics.m,self.physics.a,self.physics.p,self.noise))
+            torch.save(self.model.state_dict(), self.path+'Trainings/param_{}_{}_'.format(\
+            self.physics.a,self.physics.p)+self.constr+'.pt')
 #========================================================================================================
 #========================================================================================================    
     def test(self,data_set):    
@@ -440,8 +446,9 @@ class FBRestNet(nn.Module):
             xp       = self.physics.BasisChangeInv(xpc)
             xp[xp<0] = 0
         # export
-        Export_Data(t,xp,'./Redaction/data','gauss_pred_a{}_'.format(\
-                    self.physics.a+self.constr)
+        print(type(self.constr))
+        Export_Data(t,xp,'./Redaction/data',\
+                        'gauss_pred_a{}'.format(self.physics.a)+self.constr)
         # plot
         plt.plot(t,gauss)
         plt.plot(t,xp)

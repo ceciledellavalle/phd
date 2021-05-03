@@ -162,7 +162,7 @@ class cardan(torch.autograd.Function):
         grad_input_gamma_mu[~idx] = 0*grad_input_gamma_mu[~idx]+1e5*torch.sign(2*x[~idx]-(xmin+xmax))
         grad_input_u[~idx]        = 0*grad_input_u[~idx]+1
         
-        grad_input_gamma_mu = grad_input_gamma_mu*grad_output#.sum(1).sum(1).unsqueeze(1).unsqueeze(2)
+        grad_input_gamma_mu = grad_input_gamma_mu*grad_output.sum(1).sum(1).unsqueeze(1).unsqueeze(2)
         grad_input_u        = grad_input_u*grad_output
         
         # safety check for numerical instabilities

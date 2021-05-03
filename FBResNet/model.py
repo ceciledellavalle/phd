@@ -111,12 +111,12 @@ class Block(torch.nn.Module):
         # Barrier parameter
         mu       = self.cnn_mu(self.Pelt(x))
         # Regularisation parameter
-        if self.cond: 
+        if self.cond:
             reg  = self.cnn_reg(x_b)
         else :
             reg  = self.reg
         # Gradient descent parameter 
-        gamma    = self.eigmax**(-2*self.p)/reg*self.soft(self.gamma)
+        gamma    = self.eigmax**(-2*self.p)*self.soft(self.gamma)
         # compute x_tilde
         x_tilde = x - gamma*self.Grad(reg, x, x_b)
         # project in finite element basis
@@ -132,6 +132,8 @@ class Block(torch.nn.Module):
         # save
         self.gamma_reg = [gamma.detach().numpy(),reg.detach().numpy()]
         self.mu        = mu.detach().numpy()
+        if np.isnan(self.gamma_reg[0]):
+            print("sos")
         return x_tilde 
 
     
@@ -301,8 +303,8 @@ class Cnn_reg(nn.Module):
         rho              = rho.view(rho.size(0), -1)
         #
         x                = (delta/rho)**(2*(self.a+self.p)/(self.a+2))
-        x                = 0.1*self.soft(self.lin1(x))
-        x                = x.view(x.size(0),1,1)
+        x                = self.soft(self.lin1(x))
+        x                = 10**3*x.view(x.size(0),1,1)
         return x
     
 # Cnn_bar: to compute the barrier parameter
