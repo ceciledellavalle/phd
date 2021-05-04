@@ -44,7 +44,7 @@ class Block(torch.nn.Module):
         TtT  (MyConv1d): 1-D convolution operator corresponding to TtT
         mass (scalar):  maximal integral value
     """
-    def __init__(self,exp,noisy=False,constr='cube'):
+    def __init__(self,exp,noisy=True,constr='cube'):
         """
         Parameters
         ----------
@@ -52,10 +52,11 @@ class Block(torch.nn.Module):
         """
         super(Block, self).__init__()
         #
-        self.eigmax   = exp.eigm[-1]
+        self.eigv     = torch.FloatTensor(exp.eigm)
         self.nx       = exp.nx
         self.m        = exp.m
         self.p        = exp.p
+        self.a        = exp.a
         # if m is big enough, we cut high frequencies that correspond to noise
         # else m is inferior to nx the projection in cos basis functions as a regularisation
         self.cond     = noisy
@@ -116,7 +117,7 @@ class Block(torch.nn.Module):
         else :
             reg  = self.reg
         # Gradient descent parameter 
-        gamma    = self.eigmax**(-2*self.p)*self.soft(self.gamma)
+        gamma    = 1*self.soft(self.gamma)/torch.amax(self.eigv**(-2*self.a)+reg*self.eigv**(2*self.p))
         # compute x_tilde
         x_tilde = x - gamma*self.Grad(reg, x, x_b)
         # project in finite element basis
@@ -146,7 +147,7 @@ class MyModel(torch.nn.Module):
         nL                            (int): number of layers
         param               (Physic object): contains the experimental parameters
     """
-    def __init__(self,exp,noisy=False,nL=20,constr='cube'):
+    def __init__(self,exp,noisy=True,nL=20,constr='cube'):
         super(MyModel, self).__init__()
         self.Layers   = nn.ModuleList()
         self.nL       = nL
@@ -246,7 +247,7 @@ class MyModel(torch.nn.Module):
             # Step 3.1 : if total we go back to the x space
             if opt1 == "total":
                 if opt2 == "entree01":
-                    Lip = np.sqrt(Lip**2)#-1)
+                    Lip = np.sqrt(Lip**2-1)
                 if opt2 == "entree11":
                     Lip = np.sqrt(2*Lip**2-1)
         # Step 3 : return
@@ -271,12 +272,9 @@ class Cnn_reg(nn.Module):
         self.a    = nn.Parameter(torch.FloatTensor([exp.a]),requires_grad=False)
         self.p    = nn.Parameter(torch.FloatTensor([exp.p]),requires_grad=False)
         self.eig  = nn.Parameter(torch.FloatTensor(np.diag(exp.eigm)),requires_grad=False)
-        self.eigm = exp.eigm[-1]
         #
         self.soft = nn.Softplus()
-        self.inv  = MyMatmul(self.eig**(2*self.a))
-        #
-        self.lin1 = nn.Linear(1, 1, False)
+        self.inv  = MyMatmul(self.eig**self.a)
         # numpy
         self.m    = exp.m
          
@@ -294,17 +292,17 @@ class Cnn_reg(nn.Module):
         x_out            = x_in.clone().detach() 
         x_out            = self.inv(x_out)
         x_fil            = x_out.clone().detach()
-        nflt             = self.m//2
+        nflt             = 4*self.m//5
         x_fil[:,:,nflt:] = torch.zeros((1,1,self.m-nflt))
         #
         delta            = torch.sqrt(torch.sum((x_out-x_fil)**2,2))# estimation de l' erreur
         delta            = delta.view(delta.size(0), -1)
-        rho              = torch.sqrt(torch.sum((x_fil)**2,2))# estimation de la norme
+        rho              = torch.ones(1) # torch.sqrt(torch.sum((x_fil)**2,2))# estimation de la norme
         rho              = rho.view(rho.size(0), -1)
         #
         x                = (delta/rho)**(2*(self.a+self.p)/(self.a+2))
-        x                = self.soft(self.lin1(x))
-        x                = 10**3*x.view(x.size(0),1,1)
+        x                = 0.1*self.soft(x)
+        x                = x.view(x.size(0),1,1)
         return x
     
 # Cnn_bar: to compute the barrier parameter

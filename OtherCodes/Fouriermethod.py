@@ -1,3 +1,10 @@
+"""
+SolverCheybyshev classe.
+
+@author: Cecile Della Valle
+@date: 03/01/2021
+"""
+
 # general
 import numpy as np
 import math
@@ -16,18 +23,24 @@ class SolverChebyshev():
         self.dx  = 1/(self.nx-1)
         # Matrice opérateur
         Ta = np.zeros((self.nx,self.nx))
-        for i in range(self.nx):
-            for j in range(self.nx):
-                if j<=i:
-                    Ta[i,j]=1/gamma(a)*1/a*self.dx**(a)*((i-j+1)**a-(i-j)**a)
+        if a==1:
+            for i in range(self.nx):
+                for j in range(self.nx):
+                    if j<=i:
+                        Ta[i,j] = self.dx
+        elif a==0.5:
+            for i in range(self.nx):
+                for j in range(self.nx):
+                    if j<=i:
+                        Ta[i,j]=1/a*self.dx**(a)*((i-j+1)**a-(i-j)**a)
         self.a  = a
         self.Ta = Ta
         
     def DataGen(self,idx,std_dev=0.05):
         # select the data
         folder = './Datasets/Signals'
-        dfle = pd.read_csv(folder+'/'+'data_l_a1_cube.csv', sep=',',header=None)
-        dfbn = pd.read_csv(folder+'/'+'data_bn_a1_cube_n{}'.format(std_dev)+'.csv', sep=',',header=None)
+        dfle = pd.read_csv(folder+'/'+'data_l_a{}_cube.csv'.format(self.a), sep=',',header=None)
+        dfbn = pd.read_csv(folder+'/'+'data_bn_a{}_cube_n{}'.format(self.a,std_dev)+'.csv', sep=',',header=None)
         # numpy array
         fx = np.array(dfle) # initial - elt basis
         fbn = np.array(dfbn)
@@ -49,11 +62,11 @@ class SolverChebyshev():
         v2     = (np.ones(self.nx)/2*h).reshape(1,-1)
         F      = 2*np.sqrt(2)/eig_m*np.cos(v1*eig_m)*np.sin(v2*eig_m)
         # Invertion
-        yfft   = F.dot(Ty)
-        xfft   = np.diag(eig**(2*self.a)).dot(yfft)
+        yfft       = F.dot(Ty)
+        xfft       = np.diag(eig**(2*self.a)).dot(yfft)
         xfft[cut:] = np.zeros(self.m-cut)
-        coeff  = 1/gamma(self.a)**2
-        x_pred = coeff*self.nx*np.transpose(F).dot(xfft)
+        coeff      = 1/gamma(self.a)**2
+        x_pred     = coeff*self.nx*np.transpose(F).dot(xfft)
         # plot
         if display:
             plt.plot(x_pred)
@@ -63,9 +76,9 @@ class SolverChebyshev():
         # retrun
         return err
         
-    def AveragedError(self,std_dev=0.05):
+    def AveragedError(self,std_dev=0.05,cut=25):
         err = 0
         for idx in range(50):
-            err += self.Fourier_filter(idx,std_dev=std_dev)
+            err += self.Fourier_filter(idx,std_dev=std_dev,cut=cut)
         return err/50
             
