@@ -117,7 +117,7 @@ class Block(torch.nn.Module):
         else :
             reg  = self.reg
         # Gradient descent parameter 
-        gamma    = 1*self.soft(self.gamma)/torch.amax(self.eigv**(-2*self.a)+reg*self.eigv**(2*self.p))
+        gamma    = 1.0*self.soft(self.gamma)/torch.amax(self.eigv**(-2*self.a)+reg*self.eigv**(2*self.p))
         # compute x_tilde
         x_tilde = x - gamma*self.Grad(reg, x, x_b)
         # project in finite element basis
@@ -301,7 +301,7 @@ class Cnn_reg(nn.Module):
         rho              = rho.view(rho.size(0), -1)
         #
         x                = (delta/rho)**(2*(self.a+self.p)/(self.a+2))
-        x                = 0.1*self.soft(x)
+        x                = 0.01*self.soft(x)
         x                = x.view(x.size(0),1,1)
         return x
     
