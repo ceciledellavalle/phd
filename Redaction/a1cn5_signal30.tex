@@ -43,6 +43,7 @@
 % ========================================================================
 \def\x{./data/a1cn5_signal30_t.txt}
 \def\xpred{./data/a1cn5_signal30_o.txt}
+\def\xpredo{./data/a05cn5_signal30_o.txt}
 
 
 
@@ -71,11 +72,11 @@
 				 % ==================
 				 % Title options
 				 % ==================
-				 title =  {\Large $a=1$, $0\leq  x_i\leq 1$},
+				 title =  {\Large $0\leq  x_i\leq 1$},
 				 % ==================
 				 % Legend options
 				 % ==================
-				 legend entries={$true$,$pred$},
+				 legend entries={$true$,$a=0.5$,$a=1$},
 				 legend style = {
 				 				 font=\footnotesize, 
 				 				 legend pos = north west, % automatic legend positioning: <north east>, <outer south west>
@@ -114,6 +115,21 @@
  		y = ydata,
  		]
  		{\xpred}
+		;
+		
+		\addplot[
+				 % ==================
+				 % Line options
+				 % ==================
+ 				 gray,
+ 				 line width = 1.5 pt,
+				 style = solid, % <solid>, <dashed>, <dotted>, <dashdotted>, more in documentation p. 181
+				 ]
+ 		table[
+ 		x = xdata,
+ 		y = ydata,
+ 		]
+ 		{\xpredo}
 		;
 		
 
